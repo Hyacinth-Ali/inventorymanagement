@@ -3,28 +3,28 @@
 
 package productmanagemnet;
 
-// line 3 "../productmang.ump"
-public class Product
+// line 15 "../productmang.ump"
+public class Manager
 {
 
   //------------------------
   // MEMBER VARIABLES
   //------------------------
 
-  //Product Attributes
+  //Manager Attributes
   private String name;
-  private double unitprice;
-  private int quantity;
+  private String username;
+  private String password;
 
   //------------------------
   // CONSTRUCTOR
   //------------------------
 
-  public Product(String aName, double aUnitprice, int aQuantity)
+  public Manager(String aName, String aUsername, String aPassword)
   {
     name = aName;
-    unitprice = aUnitprice;
-    quantity = aQuantity;
+    username = aUsername;
+    password = aPassword;
   }
 
   //------------------------
@@ -39,18 +39,18 @@ public class Product
     return wasSet;
   }
 
-  public boolean setUnitprice(double aUnitprice)
+  public boolean setUsername(String aUsername)
   {
     boolean wasSet = false;
-    unitprice = aUnitprice;
+    username = aUsername;
     wasSet = true;
     return wasSet;
   }
 
-  public boolean setQuantity(int aQuantity)
+  public boolean setPassword(String aPassword)
   {
     boolean wasSet = false;
-    quantity = aQuantity;
+    password = aPassword;
     wasSet = true;
     return wasSet;
   }
@@ -60,14 +60,14 @@ public class Product
     return name;
   }
 
-  public double getUnitprice()
+  public String getUsername()
   {
-    return unitprice;
+    return username;
   }
 
-  public int getQuantity()
+  public String getPassword()
   {
-    return quantity;
+    return password;
   }
 
   public void delete()
@@ -78,7 +78,7 @@ public class Product
   {
     return super.toString() + "["+
             "name" + ":" + getName()+ "," +
-            "unitprice" + ":" + getUnitprice()+ "," +
-            "quantity" + ":" + getQuantity()+ "]";
+            "username" + ":" + getUsername()+ "," +
+            "password" + ":" + getPassword()+ "]";
   }
 }

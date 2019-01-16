@@ -6,3 +6,20 @@ class Product
   Double unitprice;
   Integer quantity;
 } 
+
+class Warehouse
+{
+
+}
+
+class Manager
+{
+	String name;
+	String username;
+	String password;
+}
+
+class InventoryManagement
+{
+
+}
