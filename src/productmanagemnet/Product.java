@@ -16,6 +16,9 @@ public class Product
   private double unitprice;
   private int quantity;
 
+  //Product Associations
+  private Warehouse inWarehouse;
+
   //------------------------
   // CONSTRUCTOR
   //------------------------
@@ -69,9 +72,44 @@ public class Product
   {
     return quantity;
   }
+  /* Code from template association_GetOne */
+  public Warehouse getInWarehouse()
+  {
+    return inWarehouse;
+  }
+
+  public boolean hasInWarehouse()
+  {
+    boolean has = inWarehouse != null;
+    return has;
+  }
+  /* Code from template association_SetOptionalOneToMany */
+  public boolean setInWarehouse(Warehouse aInWarehouse)
+  {
+    boolean wasSet = false;
+    Warehouse existingInWarehouse = inWarehouse;
+    inWarehouse = aInWarehouse;
+    if (existingInWarehouse != null && !existingInWarehouse.equals(aInWarehouse))
+    {
+      existingInWarehouse.removeProduct(this);
+    }
+    if (aInWarehouse != null)
+    {
+      aInWarehouse.addProduct(this);
+    }
+    wasSet = true;
+    return wasSet;
+  }
 
   public void delete()
-  {}
+  {
+    if (inWarehouse != null)
+    {
+      Warehouse placeholderInWarehouse = inWarehouse;
+      this.inWarehouse = null;
+      placeholderInWarehouse.removeProduct(this);
+    }
+  }
 
 
   public String toString()
@@ -79,6 +117,7 @@ public class Product
     return super.toString() + "["+
             "name" + ":" + getName()+ "," +
             "unitprice" + ":" + getUnitprice()+ "," +
-            "quantity" + ":" + getQuantity()+ "]";
+            "quantity" + ":" + getQuantity()+ "]" + System.getProperties().getProperty("line.separator") +
+            "  " + "inWarehouse = "+(getInWarehouse()!=null?Integer.toHexString(System.identityHashCode(getInWarehouse())):"null");
   }
 }
