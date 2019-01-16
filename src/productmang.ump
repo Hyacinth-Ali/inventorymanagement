@@ -1,0 +1,8 @@
+namespace productmanagemnet;
+
+class Product
+{
+  studentNumber; // defaults to String
+  String name;
+  Integer gradeAverage; // implemented as int
+} 
