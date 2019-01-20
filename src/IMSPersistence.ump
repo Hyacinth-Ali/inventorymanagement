@@ -1,0 +1,31 @@
+external interface Serializable {}
+
+class IMS {
+  depend java.io.Serializable;
+  isA Serializable;
+  private static final long serialVersionUID = -2683593616927798071L;
+}
+
+class Manager {
+  depend java.io.Serializable;
+  isA Serializable;
+  private static final long serialVersionUID = 2315072607928790501L;
+  }
+ 
+}
+
+class Product {
+  depend java.io.Serializable;
+  isA Serializable;
+  private static final long serialVersionUID = 8896099581655989380L;
+
+  }
+  
+}
+
+class Warehouse {
+  depend java.io.Serializable;
+  isA Serializable;
+  private static final long serialVersionUID = 386717977557499839L;
+}
+

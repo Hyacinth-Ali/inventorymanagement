@@ -1,0 +1,29 @@
+namespace dedon.motors.ims.model;
+
+use IMSPersistence.ump;
+
+class Product
+{
+  unique name;
+  Double unitprice;
+  Integer quantity;
+} 
+
+class Warehouse
+{
+	1 -- * Product products;
+}
+
+class Manager
+{
+	String name;
+	unique String username;
+	String password;
+}
+
+class IMS
+{
+	1 <@>- * Product products;
+	1 <@>- * Warehouse warehouse;
+	1 <@>- * Manager manager;
+}

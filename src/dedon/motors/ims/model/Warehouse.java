@@ -1,10 +1,10 @@
 /*PLEASE DO NOT EDIT THIS CODE*/
 /*This code was generated using the UMPLE 1.29.0.4181.a593105a9 modeling language!*/
 
-package productmanagemnet;
+package dedon.motors.ims.model;
 import java.util.*;
 
-// line 10 "../productmang.ump"
+// line 12 "../../../../ims.ump"
 public class Warehouse
 {
 
@@ -14,14 +14,20 @@ public class Warehouse
 
   //Warehouse Associations
   private List<Product> products;
+  private IMS iMS;
 
   //------------------------
   // CONSTRUCTOR
   //------------------------
 
-  public Warehouse()
+  public Warehouse(IMS aIMS)
   {
     products = new ArrayList<Product>();
+    boolean didAddIMS = setIMS(aIMS);
+    if (!didAddIMS)
+    {
+      throw new RuntimeException("Unable to create warehouse due to iMS");
+    }
   }
 
   //------------------------
@@ -57,25 +63,31 @@ public class Warehouse
     int index = products.indexOf(aProduct);
     return index;
   }
+  /* Code from template association_GetOne */
+  public IMS getIMS()
+  {
+    return iMS;
+  }
   /* Code from template association_MinimumNumberOfMethod */
   public static int minimumNumberOfProducts()
   {
     return 0;
   }
-  /* Code from template association_AddManyToOptionalOne */
+  /* Code from template association_AddManyToOne */
+  public Product addProduct(String aName, double aUnitprice, int aQuantity, IMS aIMS)
+  {
+    return new Product(aName, aUnitprice, aQuantity, this, aIMS);
+  }
+
   public boolean addProduct(Product aProduct)
   {
     boolean wasAdded = false;
     if (products.contains(aProduct)) { return false; }
-    Warehouse existingInWarehouse = aProduct.getInWarehouse();
-    if (existingInWarehouse == null)
+    Warehouse existingWarehouse = aProduct.getWarehouse();
+    boolean isNewWarehouse = existingWarehouse != null && !this.equals(existingWarehouse);
+    if (isNewWarehouse)
     {
-      aProduct.setInWarehouse(this);
-    }
-    else if (!this.equals(existingInWarehouse))
-    {
-      existingInWarehouse.removeProduct(aProduct);
-      addProduct(aProduct);
+      aProduct.setWarehouse(this);
     }
     else
     {
@@ -88,10 +100,10 @@ public class Warehouse
   public boolean removeProduct(Product aProduct)
   {
     boolean wasRemoved = false;
-    if (products.contains(aProduct))
+    //Unable to remove aProduct, as it must always have a warehouse
+    if (!this.equals(aProduct.getWarehouse()))
     {
       products.remove(aProduct);
-      aProduct.setInWarehouse(null);
       wasRemoved = true;
     }
     return wasRemoved;
@@ -128,12 +140,38 @@ public class Warehouse
     }
     return wasAdded;
   }
+  /* Code from template association_SetOneToMany */
+  public boolean setIMS(IMS aIMS)
+  {
+    boolean wasSet = false;
+    if (aIMS == null)
+    {
+      return wasSet;
+    }
+
+    IMS existingIMS = iMS;
+    iMS = aIMS;
+    if (existingIMS != null && !existingIMS.equals(aIMS))
+    {
+      existingIMS.removeWarehouse(this);
+    }
+    iMS.addWarehouse(this);
+    wasSet = true;
+    return wasSet;
+  }
 
   public void delete()
   {
-    while( !products.isEmpty() )
+    for(int i=products.size(); i > 0; i--)
     {
-      products.get(0).setInWarehouse(null);
+      Product aProduct = products.get(i - 1);
+      aProduct.delete();
+    }
+    IMS placeholderIMS = iMS;
+    this.iMS = null;
+    if(placeholderIMS != null)
+    {
+      placeholderIMS.removeWarehouse(this);
     }
   }
 
