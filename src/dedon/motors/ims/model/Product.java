@@ -4,7 +4,7 @@
 package dedon.motors.ims.model;
 import java.util.*;
 
-// line 5 "../../../../ims.ump"
+// line 24 "../../../../IMS.ump"
 public class Product
 {
 
@@ -24,14 +24,14 @@ public class Product
   private int quantity;
 
   //Product Associations
-  private Warehouse warehouse;
   private IMS iMS;
+  private Warehouse warehouse;
 
   //------------------------
   // CONSTRUCTOR
   //------------------------
 
-  public Product(String aName, double aUnitprice, int aQuantity, Warehouse aWarehouse, IMS aIMS)
+  public Product(String aName, double aUnitprice, int aQuantity, IMS aIMS, Warehouse aWarehouse)
   {
     unitprice = aUnitprice;
     quantity = aQuantity;
@@ -39,15 +39,15 @@ public class Product
     {
       throw new RuntimeException("Cannot create due to duplicate name");
     }
-    boolean didAddWarehouse = setWarehouse(aWarehouse);
-    if (!didAddWarehouse)
-    {
-      throw new RuntimeException("Unable to create product due to warehouse");
-    }
     boolean didAddIMS = setIMS(aIMS);
     if (!didAddIMS)
     {
       throw new RuntimeException("Unable to create product due to iMS");
+    }
+    boolean didAddWarehouse = setWarehouse(aWarehouse);
+    if (!didAddWarehouse)
+    {
+      throw new RuntimeException("Unable to create product due to warehouse");
     }
   }
 
@@ -112,33 +112,14 @@ public class Product
     return quantity;
   }
   /* Code from template association_GetOne */
-  public Warehouse getWarehouse()
-  {
-    return warehouse;
-  }
-  /* Code from template association_GetOne */
   public IMS getIMS()
   {
     return iMS;
   }
-  /* Code from template association_SetOneToMany */
-  public boolean setWarehouse(Warehouse aWarehouse)
+  /* Code from template association_GetOne */
+  public Warehouse getWarehouse()
   {
-    boolean wasSet = false;
-    if (aWarehouse == null)
-    {
-      return wasSet;
-    }
-
-    Warehouse existingWarehouse = warehouse;
-    warehouse = aWarehouse;
-    if (existingWarehouse != null && !existingWarehouse.equals(aWarehouse))
-    {
-      existingWarehouse.removeProduct(this);
-    }
-    warehouse.addProduct(this);
-    wasSet = true;
-    return wasSet;
+    return warehouse;
   }
   /* Code from template association_SetOneToMany */
   public boolean setIMS(IMS aIMS)
@@ -159,21 +140,40 @@ public class Product
     wasSet = true;
     return wasSet;
   }
+  /* Code from template association_SetOneToMany */
+  public boolean setWarehouse(Warehouse aWarehouse)
+  {
+    boolean wasSet = false;
+    if (aWarehouse == null)
+    {
+      return wasSet;
+    }
+
+    Warehouse existingWarehouse = warehouse;
+    warehouse = aWarehouse;
+    if (existingWarehouse != null && !existingWarehouse.equals(aWarehouse))
+    {
+      existingWarehouse.removeProduct(this);
+    }
+    warehouse.addProduct(this);
+    wasSet = true;
+    return wasSet;
+  }
 
   public void delete()
   {
     productsByName.remove(getName());
-    Warehouse placeholderWarehouse = warehouse;
-    this.warehouse = null;
-    if(placeholderWarehouse != null)
-    {
-      placeholderWarehouse.removeProduct(this);
-    }
     IMS placeholderIMS = iMS;
     this.iMS = null;
     if(placeholderIMS != null)
     {
       placeholderIMS.removeProduct(this);
+    }
+    Warehouse placeholderWarehouse = warehouse;
+    this.warehouse = null;
+    if(placeholderWarehouse != null)
+    {
+      placeholderWarehouse.removeProduct(this);
     }
   }
 
@@ -184,7 +184,7 @@ public class Product
             "name" + ":" + getName()+ "," +
             "unitprice" + ":" + getUnitprice()+ "," +
             "quantity" + ":" + getQuantity()+ "]" + System.getProperties().getProperty("line.separator") +
-            "  " + "warehouse = "+(getWarehouse()!=null?Integer.toHexString(System.identityHashCode(getWarehouse())):"null") + System.getProperties().getProperty("line.separator") +
-            "  " + "iMS = "+(getIMS()!=null?Integer.toHexString(System.identityHashCode(getIMS())):"null");
+            "  " + "iMS = "+(getIMS()!=null?Integer.toHexString(System.identityHashCode(getIMS())):"null") + System.getProperties().getProperty("line.separator") +
+            "  " + "warehouse = "+(getWarehouse()!=null?Integer.toHexString(System.identityHashCode(getWarehouse())):"null");
   }
 }

@@ -4,7 +4,7 @@
 package dedon.motors.ims.model;
 import java.util.*;
 
-// line 12 "../../../../ims.ump"
+// line 31 "../../../../IMS.ump"
 public class Warehouse
 {
 
@@ -76,7 +76,7 @@ public class Warehouse
   /* Code from template association_AddManyToOne */
   public Product addProduct(String aName, double aUnitprice, int aQuantity, IMS aIMS)
   {
-    return new Product(aName, aUnitprice, aQuantity, this, aIMS);
+    return new Product(aName, aUnitprice, aQuantity, aIMS, this);
   }
 
   public boolean addProduct(Product aProduct)

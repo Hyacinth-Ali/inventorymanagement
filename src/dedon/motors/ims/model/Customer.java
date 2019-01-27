@@ -2,31 +2,33 @@
 /*This code was generated using the UMPLE 1.29.0.4181.a593105a9 modeling language!*/
 
 package dedon.motors.ims.model;
-import java.io.Serializable;
 import java.util.*;
 import java.sql.Date;
 
-// line 9 "../../../../IMSPersistence.ump"
-// line 36 "../../../../IMS.ump"
-public class Manager implements Serializable
+// line 43 "../../../../IMS.ump"
+public class Customer
 {
 
   //------------------------
   // STATIC VARIABLES
   //------------------------
 
-  private static Map<String, Manager> managersByUsername = new HashMap<String, Manager>();
+  private static int nextId = 1;
 
   //------------------------
   // MEMBER VARIABLES
   //------------------------
 
-  //Manager Attributes
-  private String name;
-  private String username;
-  private String password;
+  //Customer Attributes
+  private String firtName;
+  private String otherNames;
+  private String surName;
+  private String address;
 
-  //Manager Associations
+  //Autounique Attributes
+  private int id;
+
+  //Customer Associations
   private IMS iMS;
   private List<Transaction> transactions;
 
@@ -34,18 +36,17 @@ public class Manager implements Serializable
   // CONSTRUCTOR
   //------------------------
 
-  public Manager(String aName, String aUsername, String aPassword, IMS aIMS)
+  public Customer(String aFirtName, String aOtherNames, String aSurName, String aAddress, IMS aIMS)
   {
-    name = aName;
-    password = aPassword;
-    if (!setUsername(aUsername))
-    {
-      throw new RuntimeException("Cannot create due to duplicate username");
-    }
+    firtName = aFirtName;
+    otherNames = aOtherNames;
+    surName = aSurName;
+    address = aAddress;
+    id = nextId++;
     boolean didAddIMS = setIMS(aIMS);
     if (!didAddIMS)
     {
-      throw new RuntimeException("Unable to create manager due to iMS");
+      throw new RuntimeException("Unable to create customer due to iMS");
     }
     transactions = new ArrayList<Transaction>();
   }
@@ -54,61 +55,61 @@ public class Manager implements Serializable
   // INTERFACE
   //------------------------
 
-  public boolean setName(String aName)
+  public boolean setFirtName(String aFirtName)
   {
     boolean wasSet = false;
-    name = aName;
+    firtName = aFirtName;
     wasSet = true;
     return wasSet;
   }
 
-  public boolean setUsername(String aUsername)
+  public boolean setOtherNames(String aOtherNames)
   {
     boolean wasSet = false;
-    String anOldUsername = getUsername();
-    if (hasWithUsername(aUsername)) {
-      return wasSet;
-    }
-    username = aUsername;
-    wasSet = true;
-    if (anOldUsername != null) {
-      managersByUsername.remove(anOldUsername);
-    }
-    managersByUsername.put(aUsername, this);
-    return wasSet;
-  }
-
-  public boolean setPassword(String aPassword)
-  {
-    boolean wasSet = false;
-    password = aPassword;
+    otherNames = aOtherNames;
     wasSet = true;
     return wasSet;
   }
 
-  public String getName()
+  public boolean setSurName(String aSurName)
   {
-    return name;
+    boolean wasSet = false;
+    surName = aSurName;
+    wasSet = true;
+    return wasSet;
   }
 
-  public String getUsername()
+  public boolean setAddress(String aAddress)
   {
-    return username;
-  }
-  /* Code from template attribute_GetUnique */
-  public static Manager getWithUsername(String aUsername)
-  {
-    return managersByUsername.get(aUsername);
-  }
-  /* Code from template attribute_HasUnique */
-  public static boolean hasWithUsername(String aUsername)
-  {
-    return getWithUsername(aUsername) != null;
+    boolean wasSet = false;
+    address = aAddress;
+    wasSet = true;
+    return wasSet;
   }
 
-  public String getPassword()
+  public String getFirtName()
   {
-    return password;
+    return firtName;
+  }
+
+  public String getOtherNames()
+  {
+    return otherNames;
+  }
+
+  public String getSurName()
+  {
+    return surName;
+  }
+
+  public String getAddress()
+  {
+    return address;
+  }
+
+  public int getId()
+  {
+    return id;
   }
   /* Code from template association_GetOne */
   public IMS getIMS()
@@ -158,9 +159,9 @@ public class Manager implements Serializable
     iMS = aIMS;
     if (existingIMS != null && !existingIMS.equals(aIMS))
     {
-      existingIMS.removeManager(this);
+      existingIMS.removeCustomer(this);
     }
-    iMS.addManager(this);
+    iMS.addCustomer(this);
     wasSet = true;
     return wasSet;
   }
@@ -170,20 +171,20 @@ public class Manager implements Serializable
     return 0;
   }
   /* Code from template association_AddManyToOne */
-  public Transaction addTransaction(Date aDate, int aTotalAmount, int aAmountPaid, Customer aBuyer, IMS aIMS)
+  public Transaction addTransaction(Date aDate, int aTotalAmount, int aAmountPaid, Manager aManager, IMS aIMS)
   {
-    return new Transaction(aDate, aTotalAmount, aAmountPaid, aBuyer, this, aIMS);
+    return new Transaction(aDate, aTotalAmount, aAmountPaid, this, aManager, aIMS);
   }
 
   public boolean addTransaction(Transaction aTransaction)
   {
     boolean wasAdded = false;
     if (transactions.contains(aTransaction)) { return false; }
-    Manager existingManager = aTransaction.getManager();
-    boolean isNewManager = existingManager != null && !this.equals(existingManager);
-    if (isNewManager)
+    Customer existingBuyer = aTransaction.getBuyer();
+    boolean isNewBuyer = existingBuyer != null && !this.equals(existingBuyer);
+    if (isNewBuyer)
     {
-      aTransaction.setManager(this);
+      aTransaction.setBuyer(this);
     }
     else
     {
@@ -196,8 +197,8 @@ public class Manager implements Serializable
   public boolean removeTransaction(Transaction aTransaction)
   {
     boolean wasRemoved = false;
-    //Unable to remove aTransaction, as it must always have a manager
-    if (!this.equals(aTransaction.getManager()))
+    //Unable to remove aTransaction, as it must always have a buyer
+    if (!this.equals(aTransaction.getBuyer()))
     {
       transactions.remove(aTransaction);
       wasRemoved = true;
@@ -239,12 +240,11 @@ public class Manager implements Serializable
 
   public void delete()
   {
-    managersByUsername.remove(getUsername());
     IMS placeholderIMS = iMS;
     this.iMS = null;
     if(placeholderIMS != null)
     {
-      placeholderIMS.removeManager(this);
+      placeholderIMS.removeCustomer(this);
     }
     for(int i=transactions.size(); i > 0; i--)
     {
@@ -257,17 +257,11 @@ public class Manager implements Serializable
   public String toString()
   {
     return super.toString() + "["+
-            "name" + ":" + getName()+ "," +
-            "username" + ":" + getUsername()+ "," +
-            "password" + ":" + getPassword()+ "]" + System.getProperties().getProperty("line.separator") +
+            "id" + ":" + getId()+ "," +
+            "firtName" + ":" + getFirtName()+ "," +
+            "otherNames" + ":" + getOtherNames()+ "," +
+            "surName" + ":" + getSurName()+ "," +
+            "address" + ":" + getAddress()+ "]" + System.getProperties().getProperty("line.separator") +
             "  " + "iMS = "+(getIMS()!=null?Integer.toHexString(System.identityHashCode(getIMS())):"null");
-  }  
-  //------------------------
-  // DEVELOPER CODE - PROVIDED AS-IS
-  //------------------------
-  
-  // line 12 "../../../../IMSPersistence.ump"
-  private static final long serialVersionUID = 2315072607928790501L ;
-
-  
+  }
 }

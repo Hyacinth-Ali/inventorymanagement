@@ -17,7 +17,7 @@ public class ImsApplication implements Serializable {
 	 * 
 	 */
 	private static IMS ims;
-	private static String filename = "data.txt";
+	private static String filename = "data.ims";
 
 	/**
 	 * Launch the application.
@@ -26,6 +26,8 @@ public class ImsApplication implements Serializable {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
+					ims = new IMS();
+					System.out.println(ims.getCurrentDate());
 					ImsPage window = new ImsPage();
 					window.getFrame().setVisible(true);
 				} catch (Exception e) {
@@ -53,6 +55,8 @@ public class ImsApplication implements Serializable {
 		// model cannot be loaded - create empty BTMS
 		if (ims == null) {
 			ims = new IMS();
+		} else {
+			//Product.
 		}
 		return ims;
 	}

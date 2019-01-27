@@ -4,9 +4,10 @@
 package dedon.motors.ims.model;
 import java.io.Serializable;
 import java.util.*;
+import java.sql.Date;
 
 // line 3 "../../../../IMSPersistence.ump"
-// line 24 "../../../../ims.ump"
+// line 5 "../../../../IMS.ump"
 public class IMS implements Serializable
 {
 
@@ -18,6 +19,8 @@ public class IMS implements Serializable
   private List<Product> products;
   private List<Warehouse> warehouse;
   private List<Manager> manager;
+  private List<Customer> customers;
+  private List<Transaction> transactions;
 
   //------------------------
   // CONSTRUCTOR
@@ -28,6 +31,8 @@ public class IMS implements Serializable
     products = new ArrayList<Product>();
     warehouse = new ArrayList<Warehouse>();
     manager = new ArrayList<Manager>();
+    customers = new ArrayList<Customer>();
+    transactions = new ArrayList<Transaction>();
   }
 
   //------------------------
@@ -123,6 +128,66 @@ public class IMS implements Serializable
     int index = manager.indexOf(aManager);
     return index;
   }
+  /* Code from template association_GetMany */
+  public Customer getCustomer(int index)
+  {
+    Customer aCustomer = customers.get(index);
+    return aCustomer;
+  }
+
+  public List<Customer> getCustomers()
+  {
+    List<Customer> newCustomers = Collections.unmodifiableList(customers);
+    return newCustomers;
+  }
+
+  public int numberOfCustomers()
+  {
+    int number = customers.size();
+    return number;
+  }
+
+  public boolean hasCustomers()
+  {
+    boolean has = customers.size() > 0;
+    return has;
+  }
+
+  public int indexOfCustomer(Customer aCustomer)
+  {
+    int index = customers.indexOf(aCustomer);
+    return index;
+  }
+  /* Code from template association_GetMany */
+  public Transaction getTransaction(int index)
+  {
+    Transaction aTransaction = transactions.get(index);
+    return aTransaction;
+  }
+
+  public List<Transaction> getTransactions()
+  {
+    List<Transaction> newTransactions = Collections.unmodifiableList(transactions);
+    return newTransactions;
+  }
+
+  public int numberOfTransactions()
+  {
+    int number = transactions.size();
+    return number;
+  }
+
+  public boolean hasTransactions()
+  {
+    boolean has = transactions.size() > 0;
+    return has;
+  }
+
+  public int indexOfTransaction(Transaction aTransaction)
+  {
+    int index = transactions.indexOf(aTransaction);
+    return index;
+  }
   /* Code from template association_MinimumNumberOfMethod */
   public static int minimumNumberOfProducts()
   {
@@ -131,7 +196,7 @@ public class IMS implements Serializable
   /* Code from template association_AddManyToOne */
   public Product addProduct(String aName, double aUnitprice, int aQuantity, Warehouse aWarehouse)
   {
-    return new Product(aName, aUnitprice, aQuantity, aWarehouse, this);
+    return new Product(aName, aUnitprice, aQuantity, this, aWarehouse);
   }
 
   public boolean addProduct(Product aProduct)
@@ -339,6 +404,150 @@ public class IMS implements Serializable
     }
     return wasAdded;
   }
+  /* Code from template association_MinimumNumberOfMethod */
+  public static int minimumNumberOfCustomers()
+  {
+    return 0;
+  }
+  /* Code from template association_AddManyToOne */
+  public Customer addCustomer(String aFirtName, String aOtherNames, String aSurName, String aAddress)
+  {
+    return new Customer(aFirtName, aOtherNames, aSurName, aAddress, this);
+  }
+
+  public boolean addCustomer(Customer aCustomer)
+  {
+    boolean wasAdded = false;
+    if (customers.contains(aCustomer)) { return false; }
+    IMS existingIMS = aCustomer.getIMS();
+    boolean isNewIMS = existingIMS != null && !this.equals(existingIMS);
+    if (isNewIMS)
+    {
+      aCustomer.setIMS(this);
+    }
+    else
+    {
+      customers.add(aCustomer);
+    }
+    wasAdded = true;
+    return wasAdded;
+  }
+
+  public boolean removeCustomer(Customer aCustomer)
+  {
+    boolean wasRemoved = false;
+    //Unable to remove aCustomer, as it must always have a iMS
+    if (!this.equals(aCustomer.getIMS()))
+    {
+      customers.remove(aCustomer);
+      wasRemoved = true;
+    }
+    return wasRemoved;
+  }
+  /* Code from template association_AddIndexControlFunctions */
+  public boolean addCustomerAt(Customer aCustomer, int index)
+  {  
+    boolean wasAdded = false;
+    if(addCustomer(aCustomer))
+    {
+      if(index < 0 ) { index = 0; }
+      if(index > numberOfCustomers()) { index = numberOfCustomers() - 1; }
+      customers.remove(aCustomer);
+      customers.add(index, aCustomer);
+      wasAdded = true;
+    }
+    return wasAdded;
+  }
+
+  public boolean addOrMoveCustomerAt(Customer aCustomer, int index)
+  {
+    boolean wasAdded = false;
+    if(customers.contains(aCustomer))
+    {
+      if(index < 0 ) { index = 0; }
+      if(index > numberOfCustomers()) { index = numberOfCustomers() - 1; }
+      customers.remove(aCustomer);
+      customers.add(index, aCustomer);
+      wasAdded = true;
+    } 
+    else 
+    {
+      wasAdded = addCustomerAt(aCustomer, index);
+    }
+    return wasAdded;
+  }
+  /* Code from template association_MinimumNumberOfMethod */
+  public static int minimumNumberOfTransactions()
+  {
+    return 0;
+  }
+  /* Code from template association_AddManyToOne */
+  public Transaction addTransaction(Date aDate, int aTotalAmount, int aAmountPaid, Customer aBuyer, Manager aManager)
+  {
+    return new Transaction(aDate, aTotalAmount, aAmountPaid, aBuyer, aManager, this);
+  }
+
+  public boolean addTransaction(Transaction aTransaction)
+  {
+    boolean wasAdded = false;
+    if (transactions.contains(aTransaction)) { return false; }
+    IMS existingIMS = aTransaction.getIMS();
+    boolean isNewIMS = existingIMS != null && !this.equals(existingIMS);
+    if (isNewIMS)
+    {
+      aTransaction.setIMS(this);
+    }
+    else
+    {
+      transactions.add(aTransaction);
+    }
+    wasAdded = true;
+    return wasAdded;
+  }
+
+  public boolean removeTransaction(Transaction aTransaction)
+  {
+    boolean wasRemoved = false;
+    //Unable to remove aTransaction, as it must always have a iMS
+    if (!this.equals(aTransaction.getIMS()))
+    {
+      transactions.remove(aTransaction);
+      wasRemoved = true;
+    }
+    return wasRemoved;
+  }
+  /* Code from template association_AddIndexControlFunctions */
+  public boolean addTransactionAt(Transaction aTransaction, int index)
+  {  
+    boolean wasAdded = false;
+    if(addTransaction(aTransaction))
+    {
+      if(index < 0 ) { index = 0; }
+      if(index > numberOfTransactions()) { index = numberOfTransactions() - 1; }
+      transactions.remove(aTransaction);
+      transactions.add(index, aTransaction);
+      wasAdded = true;
+    }
+    return wasAdded;
+  }
+
+  public boolean addOrMoveTransactionAt(Transaction aTransaction, int index)
+  {
+    boolean wasAdded = false;
+    if(transactions.contains(aTransaction))
+    {
+      if(index < 0 ) { index = 0; }
+      if(index > numberOfTransactions()) { index = numberOfTransactions() - 1; }
+      transactions.remove(aTransaction);
+      transactions.add(index, aTransaction);
+      wasAdded = true;
+    } 
+    else 
+    {
+      wasAdded = addTransactionAt(aTransaction, index);
+    }
+    return wasAdded;
+  }
 
   public void delete()
   {
@@ -363,6 +572,31 @@ public class IMS implements Serializable
       manager.remove(aManager);
     }
     
+    while (customers.size() > 0)
+    {
+      Customer aCustomer = customers.get(customers.size() - 1);
+      aCustomer.delete();
+      customers.remove(aCustomer);
+    }
+    
+    while (transactions.size() > 0)
+    {
+      Transaction aTransaction = transactions.get(transactions.size() - 1);
+      aTransaction.delete();
+      transactions.remove(aTransaction);
+    }
+    
+  }
+
+  // line 14 "../../../../IMS.ump"
+   public java.util.Date getCurrentDate(){
+    java.util.Calendar cal = java.util.Calendar.getInstance();
+    //cal.set(Calendar.HOUR_OF_DAY, 0);
+    //cal.set(Calendar.MINUTE, 0);
+    //cal.set(Calendar.SECOND, 0);
+    //cal.set(Calendar.MILLISECOND, 0);
+    java.util.Date date = cal.getTime();
+    return date;
   }
   
   //------------------------
