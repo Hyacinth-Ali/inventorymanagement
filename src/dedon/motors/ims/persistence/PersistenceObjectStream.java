@@ -1,13 +1,16 @@
 package dedon.motors.ims.persistence;
 
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
 public class PersistenceObjectStream {
 	
-	private static String filename = "output.txt";
+	private static String filename = "output.ims";
+	private static String dataName = "data.xlsx";
 
 	public static void serialize(Object object) {
 		FileOutputStream fileOut;
@@ -36,6 +39,30 @@ public class PersistenceObjectStream {
 			o = null;
 		}
 		return o;
+	}
+	
+	public static void saveData() {
+		FileOutputStream out = null;
+		try {
+			out = new FileOutputStream(dataName);
+		} catch (FileNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		try {
+			for (int x = 0; x <= 10; x++) {
+				out.write('a');
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		try {
+			out.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	public static void setFilename(String newFilename) {
