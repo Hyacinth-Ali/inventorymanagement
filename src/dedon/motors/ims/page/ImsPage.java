@@ -1,12 +1,14 @@
 package dedon.motors.ims.page;
 
 import java.awt.Color;
+import java.util.HashMap;
 
 import javax.swing.GroupLayout;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JSeparator;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
@@ -18,20 +20,23 @@ public class ImsPage extends JFrame {
 	//data elements
 	private JLabel errorMessage;
 	
-	//create products ui
+	//product
 	private JLabel productNameLabel;
 	private JTextField productNameTextField;
 	private JButton productAddButton;
-	
-	//view products and select ui
 	private JLabel productSelectLabel;
 	private JComboBox<String> productSelectComboBox;
+	private JButton productSubmitButton;
+	private JLabel productQuantityLabel;
 	private JTextField productQuantityTextField;
-	private JButton productSelectButton;
-	private JLabel enterQuantityLabel;
+	private JButton productClearSelectionButton;
+	
 	
 	//data elements
 	private String error = null;
+	
+	//select product
+	private HashMap<Integer, String> products;
 
 	/**
 	 * Create the application.
@@ -45,33 +50,57 @@ public class ImsPage extends JFrame {
 	 */
 	private void initComponents() {
 		
-		productNameLabel = new JLabel("Name");
-		productNameTextField = new JTextField();
-		productAddButton = new JButton("ADD");
-		
-		productSelectLabel = new JLabel("Select");
-		productSelectComboBox = new JComboBox<String>(new String[0]);
-		productQuantityTextField  = new JTextField();
-		productSelectButton = new JButton("Select");
-		enterQuantityLabel = new JLabel();
-		enterQuantityLabel.setText("Enter Quantity");
-		
+		//elements for error message
 		errorMessage = new JLabel();
 		errorMessage.setForeground(Color.RED);
 		
-
+		//elements for products
+		productNameLabel = new JLabel();
+		productNameLabel.setText("Name");
+		productNameTextField = new JTextField();
+		productAddButton = new JButton();
+		productAddButton.setText("ADD");
+		productSelectLabel = new JLabel();
+		productSelectLabel.setText("Select");
+		productSelectComboBox = new JComboBox<String>(new String[0]);
+		productSubmitButton = new JButton();
+		productSubmitButton.setText("Submit");
+		productQuantityLabel = new JLabel();
+		productQuantityLabel.setText("Quantity");
+		productQuantityTextField  = new JTextField();
+		productClearSelectionButton = new JButton();
+		productClearSelectionButton.setText("Clear");
+		
+		//global settings
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setTitle("De-Don Motor : Inventory Management System");
-		setSize(600, 600);
+		//setSize(600, 600);
 		
-		// listeners for driver
+		// listeners for product
 		productAddButton.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent evt) {
 			productAddButtonActionPerformed(evt);
 				}
 		});
 		
+		productSubmitButton.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+		productSubmitButtonActionPerformed(evt);
+			}
+		});
 		
+		productAddButton.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+		productClearSelectionButtonActionPerformed(evt);
+			}
+		});
+		
+		// horizontal line elements
+		JSeparator horizontalLineTop = new JSeparator();
+		JSeparator horizontalLineMiddle = new JSeparator();
+		JSeparator horizontalLineBottom = new JSeparator();
+				
+				                                                                                                                  
 		//layout
 		GroupLayout layout = new GroupLayout(getContentPane());
 		getContentPane().setLayout(layout);
@@ -81,24 +110,33 @@ public class ImsPage extends JFrame {
 		layout.setHorizontalGroup(
 				layout.createParallelGroup()
 					.addComponent(errorMessage)
+					.addComponent(horizontalLineTop)
+					.addComponent(horizontalLineMiddle)
+					.addComponent(horizontalLineBottom)
 					.addGroup(layout.createSequentialGroup()
-						.addGroup(layout.createParallelGroup()
+						.addGroup(layout.createSequentialGroup()
 								.addComponent(productNameLabel)
-								.addComponent(productSelectLabel))
+								.addComponent(productNameTextField)
+								.addComponent(productAddButton))
 						.addGroup(layout.createParallelGroup()
-								.addComponent(productNameTextField, 200, 200, 400)
-								.addComponent(productAddButton)
-								.addComponent(productSelectComboBox, 200, 200, 400)
 								.addGroup(layout.createSequentialGroup()
-										.addComponent(productQuantityTextField, 110, 110, 220)
-										.addComponent(productSelectButton, 70, 70, 140)
-						   				)
+										.addComponent(productSelectLabel)
+										.addComponent(productSelectComboBox)
+										.addComponent(productSubmitButton))
+								.addGroup(layout.createSequentialGroup()
+										.addComponent(productQuantityLabel)
+										.addComponent(productQuantityTextField)
+										.addComponent(productClearSelectionButton))
 								)
 						)
 				);
 		
-		layout.linkSize(SwingConstants.VERTICAL, new java.awt.Component[] {productNameLabel, productSelectLabel});
-		layout.linkSize(SwingConstants.VERTICAL, new java.awt.Component[] {productNameTextField, productAddButton, productSelectComboBox});
+		layout.linkSize(SwingConstants.VERTICAL, new java.awt.Component[] {productNameLabel, productAddButton});
+		layout.linkSize(SwingConstants.VERTICAL, new java.awt.Component[] {productSelectComboBox, productSubmitButton, productQuantityTextField,
+				productClearSelectionButton});
+		layout.linkSize(SwingConstants.HORIZONTAL, new java.awt.Component[] {productNameLabel, productSelectLabel, productQuantityLabel});
+		layout.linkSize(SwingConstants.HORIZONTAL, new java.awt.Component[] {productNameTextField, productSelectComboBox, productQuantityTextField});
+		layout.linkSize(SwingConstants.HORIZONTAL, new java.awt.Component[] {productAddButton, productSubmitButton, productClearSelectionButton});
 		
 		layout.setVerticalGroup(
 				layout.createSequentialGroup()
