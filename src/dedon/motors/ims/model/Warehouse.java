@@ -2,10 +2,12 @@
 /*This code was generated using the UMPLE 1.29.0.4181.a593105a9 modeling language!*/
 
 package dedon.motors.ims.model;
+import java.io.Serializable;
 import java.util.*;
 
-// line 31 "../../../../IMS.ump"
-public class Warehouse
+// line 51 "../../../../IMSPersistence.ump"
+// line 41 "../../../../IMS.ump"
+public class Warehouse implements Serializable
 {
 
   //------------------------
@@ -73,21 +75,20 @@ public class Warehouse
   {
     return 0;
   }
-  /* Code from template association_AddManyToOne */
-  public Product addProduct(String aName, double aUnitprice, int aQuantity, IMS aIMS)
-  {
-    return new Product(aName, aUnitprice, aQuantity, aIMS, this);
-  }
-
+  /* Code from template association_AddManyToOptionalOne */
   public boolean addProduct(Product aProduct)
   {
     boolean wasAdded = false;
     if (products.contains(aProduct)) { return false; }
     Warehouse existingWarehouse = aProduct.getWarehouse();
-    boolean isNewWarehouse = existingWarehouse != null && !this.equals(existingWarehouse);
-    if (isNewWarehouse)
+    if (existingWarehouse == null)
     {
       aProduct.setWarehouse(this);
+    }
+    else if (!this.equals(existingWarehouse))
+    {
+      existingWarehouse.removeProduct(aProduct);
+      addProduct(aProduct);
     }
     else
     {
@@ -100,10 +101,10 @@ public class Warehouse
   public boolean removeProduct(Product aProduct)
   {
     boolean wasRemoved = false;
-    //Unable to remove aProduct, as it must always have a warehouse
-    if (!this.equals(aProduct.getWarehouse()))
+    if (products.contains(aProduct))
     {
       products.remove(aProduct);
+      aProduct.setWarehouse(null);
       wasRemoved = true;
     }
     return wasRemoved;
@@ -162,10 +163,9 @@ public class Warehouse
 
   public void delete()
   {
-    for(int i=products.size(); i > 0; i--)
+    while( !products.isEmpty() )
     {
-      Product aProduct = products.get(i - 1);
-      aProduct.delete();
+      products.get(0).setWarehouse(null);
     }
     IMS placeholderIMS = iMS;
     this.iMS = null;
@@ -174,5 +174,13 @@ public class Warehouse
       placeholderIMS.removeWarehouse(this);
     }
   }
+  
+  //------------------------
+  // DEVELOPER CODE - PROVIDED AS-IS
+  //------------------------
+  
+  // line 54 "../../../../IMSPersistence.ump"
+  private static final long serialVersionUID = 386717977557499839L ;
 
+  
 }

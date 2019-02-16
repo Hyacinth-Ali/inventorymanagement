@@ -194,9 +194,9 @@ public class IMS implements Serializable
     return 0;
   }
   /* Code from template association_AddManyToOne */
-  public Product addProduct(String aName, double aUnitprice, int aQuantity, Warehouse aWarehouse)
+  public Product addProduct(String aName)
   {
-    return new Product(aName, aUnitprice, aQuantity, this, aWarehouse);
+    return new Product(aName, this);
   }
 
   public boolean addProduct(Product aProduct)
@@ -586,6 +586,13 @@ public class IMS implements Serializable
       transactions.remove(aTransaction);
     }
     
+  }
+
+  // line 9 "../../../../IMSPersistence.ump"
+   public void reinitialize(){
+    //Driver.reinitializeAutouniqueID(this.getDrivers());
+    Product.reinitializeUniqueName(this.getProducts());
+    //Route.reinitializeUniqueNumber(this.getRoutes());
   }
 
   // line 14 "../../../../IMS.ump"

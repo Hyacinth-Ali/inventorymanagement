@@ -1,5 +1,7 @@
 package dedon.motors.ims.page;
 
+import java.awt.Color;
+
 import javax.swing.GroupLayout;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -8,8 +10,12 @@ import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
+import dedon.motors.ims.controller.ImsController;
+import dedon.motors.ims.controller.InvalidInputException;
+
 public class ImsPage extends JFrame {
 	
+	//data elements
 	private JLabel errorMessage;
 	
 	//create products ui
@@ -22,6 +28,10 @@ public class ImsPage extends JFrame {
 	private JComboBox<String> productSelectComboBox;
 	private JTextField productQuantityTextField;
 	private JButton productSelectButton;
+	private JLabel enterQuantityLabel;
+	
+	//data elements
+	private String error = null;
 
 	/**
 	 * Create the application.
@@ -43,11 +53,24 @@ public class ImsPage extends JFrame {
 		productSelectComboBox = new JComboBox<String>(new String[0]);
 		productQuantityTextField  = new JTextField();
 		productSelectButton = new JButton("Select");
+		enterQuantityLabel = new JLabel();
+		enterQuantityLabel.setText("Enter Quantity");
+		
+		errorMessage = new JLabel();
+		errorMessage.setForeground(Color.RED);
 		
 
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setTitle("De-Don Motor : Inventory Management System");
-		setSize(600, 200);
+		setSize(600, 600);
+		
+		// listeners for driver
+		productAddButton.addActionListener(new java.awt.event.ActionListener() {
+				public void actionPerformed(java.awt.event.ActionEvent evt) {
+			productAddButtonActionPerformed(evt);
+				}
+		});
+		
 		
 		//layout
 		GroupLayout layout = new GroupLayout(getContentPane());
@@ -56,19 +79,22 @@ public class ImsPage extends JFrame {
 		layout.setAutoCreateContainerGaps(true);
 		//setBounds(100, 100, 936, 592);
 		layout.setHorizontalGroup(
-				layout.createSequentialGroup()
+				layout.createParallelGroup()
+					.addComponent(errorMessage)
+					.addGroup(layout.createSequentialGroup()
 						.addGroup(layout.createParallelGroup()
 								.addComponent(productNameLabel)
 								.addComponent(productSelectLabel))
 						.addGroup(layout.createParallelGroup()
-								.addComponent(productNameTextField, 200, 200, 200)
+								.addComponent(productNameTextField, 200, 200, 400)
 								.addComponent(productAddButton)
-								.addComponent(productSelectComboBox, 200, 200, 200)
+								.addComponent(productSelectComboBox, 200, 200, 400)
 								.addGroup(layout.createSequentialGroup()
-										.addComponent(productQuantityTextField, 110, 110, 110)
-										.addComponent(productSelectButton, 70, 70, 100)
-										)
+										.addComponent(productQuantityTextField, 110, 110, 220)
+										.addComponent(productSelectButton, 70, 70, 140)
+						   				)
 								)
+						)
 				);
 		
 		layout.linkSize(SwingConstants.VERTICAL, new java.awt.Component[] {productNameLabel, productSelectLabel});
@@ -76,6 +102,7 @@ public class ImsPage extends JFrame {
 		
 		layout.setVerticalGroup(
 				layout.createSequentialGroup()
+					.addComponent(errorMessage)
 					.addGroup(layout.createParallelGroup()
 							.addComponent(productNameLabel)
 							.addComponent(productNameTextField)
@@ -91,6 +118,25 @@ public class ImsPage extends JFrame {
 							)
 				);
 		//pack();
+	}
+	
+	private void productAddButtonActionPerformed(java.awt.event.ActionEvent evt) {
+		//clear the error
+		error = null;
+		
+		try {
+			ImsController.createProduct(productNameTextField.getText());
+		} catch (InvalidInputException e) {
+			error = e.getMessage();
+		}
+		
+		//update visuals
+		refreshData();
+		
+	}
+	
+	private void refreshData() {
+		errorMessage.setText(error);
 	}
 
 }

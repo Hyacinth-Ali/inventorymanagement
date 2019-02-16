@@ -2,11 +2,13 @@
 /*This code was generated using the UMPLE 1.29.0.4181.a593105a9 modeling language!*/
 
 package dedon.motors.ims.model;
+import java.io.Serializable;
 import java.util.*;
 import java.sql.Date;
 
-// line 43 "../../../../IMS.ump"
-public class Customer
+// line 36 "../../../../IMSPersistence.ump"
+// line 53 "../../../../IMS.ump"
+public class Customer implements Serializable
 {
 
   //------------------------
@@ -263,5 +265,13 @@ public class Customer
             "surName" + ":" + getSurName()+ "," +
             "address" + ":" + getAddress()+ "]" + System.getProperties().getProperty("line.separator") +
             "  " + "iMS = "+(getIMS()!=null?Integer.toHexString(System.identityHashCode(getIMS())):"null");
-  }
+  }  
+  //------------------------
+  // DEVELOPER CODE - PROVIDED AS-IS
+  //------------------------
+  
+  // line 39 "../../../../IMSPersistence.ump"
+  private static final long serialVersionUID = 2315070137928790501L ;
+
+  
 }

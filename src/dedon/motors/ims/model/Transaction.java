@@ -2,10 +2,12 @@
 /*This code was generated using the UMPLE 1.29.0.4181.a593105a9 modeling language!*/
 
 package dedon.motors.ims.model;
+import java.io.Serializable;
 import java.sql.Date;
 
-// line 51 "../../../../IMS.ump"
-public class Transaction
+// line 43 "../../../../IMSPersistence.ump"
+// line 61 "../../../../IMS.ump"
+public class Transaction implements Serializable
 {
 
   //------------------------
@@ -211,5 +213,13 @@ public class Transaction
             "  " + "buyer = "+(getBuyer()!=null?Integer.toHexString(System.identityHashCode(getBuyer())):"null") + System.getProperties().getProperty("line.separator") +
             "  " + "manager = "+(getManager()!=null?Integer.toHexString(System.identityHashCode(getManager())):"null") + System.getProperties().getProperty("line.separator") +
             "  " + "iMS = "+(getIMS()!=null?Integer.toHexString(System.identityHashCode(getIMS())):"null");
-  }
+  }  
+  //------------------------
+  // DEVELOPER CODE - PROVIDED AS-IS
+  //------------------------
+  
+  // line 46 "../../../../IMSPersistence.ump"
+  private static final long serialVersionUID = 8896099585515989380L ;
+
+  
 }

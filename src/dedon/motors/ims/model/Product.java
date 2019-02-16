@@ -2,10 +2,12 @@
 /*This code was generated using the UMPLE 1.29.0.4181.a593105a9 modeling language!*/
 
 package dedon.motors.ims.model;
+import java.io.Serializable;
 import java.util.*;
 
+// line 22 "../../../../IMSPersistence.ump"
 // line 24 "../../../../IMS.ump"
-public class Product
+public class Product implements Serializable
 {
 
   //------------------------
@@ -20,7 +22,7 @@ public class Product
 
   //Product Attributes
   private String name;
-  private double unitprice;
+  private int unitprice;
   private int quantity;
 
   //Product Associations
@@ -31,10 +33,18 @@ public class Product
   // CONSTRUCTOR
   //------------------------
 
-  public Product(String aName, double aUnitprice, int aQuantity, IMS aIMS, Warehouse aWarehouse)
+  public Product(String aName, IMS aIMS)
   {
-    unitprice = aUnitprice;
-    quantity = aQuantity;
+    // line 31 "../../../../IMS.ump"
+    if(aName == null || aName.length() == 0 ) {
+      		throw new RuntimeException("The name of a product cannot be empty");
+      	}
+      	if (aName.length() > 30) {
+      		throw new RuntimeException("Product character cannot be more than 30");
+      	}
+    // END OF UMPLE BEFORE INJECTION
+    unitprice = 0;
+    quantity = 0;
     if (!setName(aName))
     {
       throw new RuntimeException("Cannot create due to duplicate name");
@@ -43,11 +53,6 @@ public class Product
     if (!didAddIMS)
     {
       throw new RuntimeException("Unable to create product due to iMS");
-    }
-    boolean didAddWarehouse = setWarehouse(aWarehouse);
-    if (!didAddWarehouse)
-    {
-      throw new RuntimeException("Unable to create product due to warehouse");
     }
   }
 
@@ -58,6 +63,14 @@ public class Product
   public boolean setName(String aName)
   {
     boolean wasSet = false;
+    // line 31 "../../../../IMS.ump"
+    if(aName == null || aName.length() == 0 ) {
+      		throw new RuntimeException("The name of a product cannot be empty");
+      	}
+      	if (aName.length() > 30) {
+      		throw new RuntimeException("Product character cannot be more than 30");
+      	}
+    // END OF UMPLE BEFORE INJECTION
     String anOldName = getName();
     if (hasWithName(aName)) {
       return wasSet;
@@ -71,7 +84,7 @@ public class Product
     return wasSet;
   }
 
-  public boolean setUnitprice(double aUnitprice)
+  public boolean setUnitprice(int aUnitprice)
   {
     boolean wasSet = false;
     unitprice = aUnitprice;
@@ -102,7 +115,7 @@ public class Product
     return getWithName(aName) != null;
   }
 
-  public double getUnitprice()
+  public int getUnitprice()
   {
     return unitprice;
   }
@@ -120,6 +133,12 @@ public class Product
   public Warehouse getWarehouse()
   {
     return warehouse;
+  }
+
+  public boolean hasWarehouse()
+  {
+    boolean has = warehouse != null;
+    return has;
   }
   /* Code from template association_SetOneToMany */
   public boolean setIMS(IMS aIMS)
@@ -140,22 +159,20 @@ public class Product
     wasSet = true;
     return wasSet;
   }
-  /* Code from template association_SetOneToMany */
+  /* Code from template association_SetOptionalOneToMany */
   public boolean setWarehouse(Warehouse aWarehouse)
   {
     boolean wasSet = false;
-    if (aWarehouse == null)
-    {
-      return wasSet;
-    }
-
     Warehouse existingWarehouse = warehouse;
     warehouse = aWarehouse;
     if (existingWarehouse != null && !existingWarehouse.equals(aWarehouse))
     {
       existingWarehouse.removeProduct(this);
     }
-    warehouse.addProduct(this);
+    if (aWarehouse != null)
+    {
+      aWarehouse.addProduct(this);
+    }
     wasSet = true;
     return wasSet;
   }
@@ -169,11 +186,19 @@ public class Product
     {
       placeholderIMS.removeProduct(this);
     }
-    Warehouse placeholderWarehouse = warehouse;
-    this.warehouse = null;
-    if(placeholderWarehouse != null)
+    if (warehouse != null)
     {
+      Warehouse placeholderWarehouse = warehouse;
+      this.warehouse = null;
       placeholderWarehouse.removeProduct(this);
+    }
+  }
+
+  // line 28 "../../../../IMSPersistence.ump"
+   public static  void reinitializeUniqueName(List<Product> products){
+    productsByName = new HashMap<String, Product>();
+    for (Product product : products) {
+      productsByName.put(product.getName(), product);
     }
   }
 
@@ -186,5 +211,13 @@ public class Product
             "quantity" + ":" + getQuantity()+ "]" + System.getProperties().getProperty("line.separator") +
             "  " + "iMS = "+(getIMS()!=null?Integer.toHexString(System.identityHashCode(getIMS())):"null") + System.getProperties().getProperty("line.separator") +
             "  " + "warehouse = "+(getWarehouse()!=null?Integer.toHexString(System.identityHashCode(getWarehouse())):"null");
-  }
+  }  
+  //------------------------
+  // DEVELOPER CODE - PROVIDED AS-IS
+  //------------------------
+  
+  // line 25 "../../../../IMSPersistence.ump"
+  private static final long serialVersionUID = 8896099581655989380L ;
+
+  
 }

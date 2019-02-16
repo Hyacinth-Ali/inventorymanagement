@@ -9,8 +9,7 @@ import java.io.ObjectOutputStream;
 
 public class PersistenceObjectStream {
 	
-	private static String filename = "output.ims";
-	private static String dataName = "data.xlsx";
+	private static String filename = "output.txt";
 
 	public static void serialize(Object object) {
 		FileOutputStream fileOut;
@@ -41,7 +40,7 @@ public class PersistenceObjectStream {
 		return o;
 	}
 	
-	public static void saveData() {
+	/*public static void saveData() {
 		FileOutputStream out = null;
 		try {
 			out = new FileOutputStream(dataName);
@@ -63,7 +62,7 @@ public class PersistenceObjectStream {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	}
+	}*/
 	
 	public static void setFilename(String newFilename) {
 		filename = newFilename;

@@ -24,13 +24,23 @@ class IMS
 class Product
 {
   unique name;
-  Double unitprice;
-  Integer quantity;
+  lazy Integer unitprice;
+  lazy Integer quantity;
+  
+  before constructor, setName {
+  	if(aName == null || aName.length() == 0 ) {
+  		throw new RuntimeException("The name of a product cannot be empty");
+  	}
+  	if (aName.length() > 30) {
+  		throw new RuntimeException("Product character cannot be more than 30");
+  	}
+  }
+  
 } 
 
 class Warehouse
 {
-	1 -- * Product products;
+	0..1 -- * Product products;
 }
 
 class Manager

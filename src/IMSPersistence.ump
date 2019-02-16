@@ -4,6 +4,12 @@ class IMS {
   depend java.io.Serializable;
   isA Serializable;
   private static final long serialVersionUID = -2683593616927798071L;
+  
+  public void reinitialize() {
+    //Driver.reinitializeAutouniqueID(this.getDrivers());
+    Product.reinitializeUniqueName(this.getProducts());
+    //Route.reinitializeUniqueNumber(this.getRoutes());
+  }
 }
 
 class Manager {
@@ -12,16 +18,35 @@ class Manager {
   private static final long serialVersionUID = 2315072607928790501L;
   }
  
-}
 
 class Product {
   depend java.io.Serializable;
   isA Serializable;
   private static final long serialVersionUID = 8896099581655989380L;
 
+  public static void reinitializeUniqueName(List<Product> products) {
+    productsByName = new HashMap<String, Product>();
+    for (Product product : products) {
+      productsByName.put(product.getName(), product);
+    }
   }
   
-}
+  }
+  
+  class Customer {
+  depend java.io.Serializable;
+  isA Serializable;
+  private static final long serialVersionUID = 2315070137928790501L;
+  }
+ 
+
+class Transaction {
+  depend java.io.Serializable;
+  isA Serializable;
+  private static final long serialVersionUID = 8896099585515989380L;
+
+  }
+  
 
 class Warehouse {
   depend java.io.Serializable;
