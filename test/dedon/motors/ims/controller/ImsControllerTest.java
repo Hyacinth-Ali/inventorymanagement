@@ -99,8 +99,8 @@ private static int nextCustomerID = 1;
 			assertEquals(unitPrice, ims.getProduct(0).getUnitprice());	
 		}
 		assertEquals(0, ims.getCustomers().size());
-		assertEquals(0, ims.getWarehouse().size());
-		assertEquals(0, ims.getManager().size());
+		//assertEquals(0, ims.getWarehouse().size());
+		//assertEquals(0, ims.getManager().size());
 		assertEquals(0, ims.getTransactions().size());
 	}
 	

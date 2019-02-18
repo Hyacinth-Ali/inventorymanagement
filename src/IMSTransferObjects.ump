@@ -2,4 +2,16 @@ namespace dedon.motors.ims.model;
 
 class TOCustomer {
 	Integer id;
+	firstName;
+}
+
+class TOProduct {
+	name;
+  Integer unitprice;
+  Integer quantity;
+}
+
+class TOTransaction {
+	Integer id;
+	name;
 }

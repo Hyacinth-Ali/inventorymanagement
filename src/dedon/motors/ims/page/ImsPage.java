@@ -17,6 +17,8 @@ import javax.swing.plaf.FontUIResource;
 import dedon.motors.ims.controller.ImsController;
 import dedon.motors.ims.controller.InvalidInputException;
 import dedon.motors.ims.model.TOCustomer;
+import dedon.motors.ims.model.TOProduct;
+import dedon.motors.ims.model.TOTransaction;
 
 public class ImsPage extends JFrame {
 	
@@ -76,7 +78,7 @@ public class ImsPage extends JFrame {
 	
 	//transaction
 	private HashMap<Integer, String> availableProducts;
-	private HashMap<Integer, TOCustomer> availableTransactions;
+	private HashMap<Integer, Integer> availableTransactions;
 	
 	//delete transaction
 	private HashMap<Integer, TOCustomer> transactionList ;
@@ -117,6 +119,7 @@ public class ImsPage extends JFrame {
 		
 		//elements for customer
 		customerFirstNameLabel = new JLabel();
+		//customerFirstNameLabel.setSize(1000, 200);
 		customerFirstNameLabel.setText("First Name");
 		customerFirstNameTextField = new JTextField();
 		customerSurNameLabel = new JLabel();
@@ -135,7 +138,7 @@ public class ImsPage extends JFrame {
 		
 		//elements for transaction		
 		selectProductLabel = new JLabel();
-		selectProductLabel.setText("Quantity");
+		selectProductLabel.setText("Select Product");
 		//selectProductLabel.setFont(new FontUIResource("Serif", Font.BOLD, 16));
 		selectProductComboBox  = new JComboBox<String>(new String [0]);
 		unitPriceLabel = new JLabel();
@@ -165,6 +168,7 @@ public class ImsPage extends JFrame {
 		//global settings
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setTitle("De-Don Motor : Inventory Management System");
+		setLocation(300, 200);
 		//setBounds(200, 200, 670, 400);
 		//setResizable(false);
 		
@@ -175,22 +179,23 @@ public class ImsPage extends JFrame {
 				}
 		});
 		
-		productUpdateButton.addActionListener(new java.awt.event.ActionListener() {
+		//suspended
+		/*productUpdateButton.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				//productUpdateButtonActionPerformed(evt);
+				productUpdateButtonActionPerformed(evt);
 			}
-		});
+		});*/
 		
 		productDeleteButton.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				//productDeleteButtonActionPerformed(evt);
+				productDeleteButtonActionPerformed(evt);
 			}
 		});
 		
 		// listeners for customers
 		customerAddButton.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				//customerAddButtonActionPerformed(evt);
+				customerAddButtonActionPerformed(evt);
 			}
 		});
 		
@@ -202,7 +207,7 @@ public class ImsPage extends JFrame {
 		
 		createTransactionButton.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				//createTransactionButtonActionPerformed(evt);
+				createTransactionButtonActionPerformed(evt);
 			}
 		});
 		
@@ -293,7 +298,7 @@ public class ImsPage extends JFrame {
 				);
 		
 		layout.linkSize(SwingConstants.VERTICAL, new java.awt.Component[] {productNameLabel, productAddButton});
-		//layout.linkSize(SwingConstants.VERTICAL, new java.awt.Component[] {customerSurNameTextField, customerFirstNameTextField});
+		layout.linkSize(SwingConstants.VERTICAL, new java.awt.Component[] {customerSurNameTextField, customerFirstNameTextField});
 		layout.linkSize(SwingConstants.HORIZONTAL, new java.awt.Component[] {customerAddButton, submitButton, clearButton});
 		layout.linkSize(SwingConstants.HORIZONTAL, new java.awt.Component[] {productDeleteButton, addSelectedProductButton, deleteTransactionButton});
 		//layout.linkSize(SwingConstants.HORIZONTAL, new java.awt.Component[] {productAddButton, productSubmitButton, productClearSelectionButton});
@@ -350,7 +355,7 @@ public class ImsPage extends JFrame {
 	
 	private void productAddButtonActionPerformed(java.awt.event.ActionEvent evt) {
 		//clear the error
-		error = null;
+		error = "";
 		
 		try {
 			ImsController.createProduct(productNameTextField.getText());
@@ -363,12 +368,42 @@ public class ImsPage extends JFrame {
 		
 	}
 	
-	private void productSubmitButtonActionPerformed(java.awt.event.ActionEvent evt) {
-		//clear the error
-		error = null;
-		
+	/*private void deleteTransactionButtonActionPerformed(java.awt.event.ActionEvent evt) {
+		//clear error message
+		error = "";
+		int selectedTransaction = productDeleteComboBox.getSelectedIndex();
+		if (selectedProduct < 0) {
+			error = "Product needs to be selected!";
+		}
 		try {
-			ImsController.createProduct(productNameTextField.getText());
+			ImsController.deleteProduct(productList.get(selectedProduct));
+		} catch (InvalidInputException e) {
+			error = e.getMessage();
+		}
+		refreshData();
+	}*/
+	
+	private void productDeleteButtonActionPerformed(java.awt.event.ActionEvent evt) {
+		//clear error message
+		error = "";
+		int selectedProduct = productDeleteComboBox.getSelectedIndex();
+		if (selectedProduct < 0) {
+			error = "Product needs to be selected!";
+		}
+		try {
+			ImsController.deleteProduct(productList.get(selectedProduct));
+		} catch (InvalidInputException e) {
+			error = e.getMessage();
+		}
+		refreshData();
+	}
+	
+	
+	private void customerAddButtonActionPerformed(java.awt.event.ActionEvent evt) {
+		//clear the error
+		error = "";
+		try {
+			ImsController.createCustomer(customerFirstNameTextField.getText(), customerSurNameTextField.getText());
 		} catch (InvalidInputException e) {
 			error = e.getMessage();
 		}
@@ -378,12 +413,13 @@ public class ImsPage extends JFrame {
 		
 	}
 	
-	private void productClearSelectionButtonActionPerformed(java.awt.event.ActionEvent evt) {
+	private void createTransactionButtonActionPerformed(java.awt.event.ActionEvent evt) {
 		//clear the error
-		error = null;
+		error = "";
 		
 		try {
-			ImsController.createProduct(productNameTextField.getText());
+			int id = customerList.get(customerSelectComboBox.getSelectedIndex());
+			ImsController.createTransaction(id);
 		} catch (InvalidInputException e) {
 			error = e.getMessage();
 		}
@@ -395,6 +431,57 @@ public class ImsPage extends JFrame {
 	
 	private void refreshData() {
 		errorMessage.setText(error);
+		if (error == null || error.length() == 0) {
+			//populate page with data
+			//product
+			productNameTextField.setText("");
+			
+			productList = new HashMap<Integer, String>();
+			productDeleteComboBox.removeAllItems();
+			Integer index = 0;
+			for (TOProduct product : ImsController.getProducts()) {
+				productList.put(index, product.getName());
+				productDeleteComboBox.addItem(product.getName());
+				index++;
+			}
+			productDeleteComboBox.setSelectedIndex(-1);
+			
+			availableProducts = new HashMap<Integer, String>();
+			selectProductComboBox.removeAllItems();
+			index = 0;
+			for (TOProduct product : ImsController.getProducts()) {
+				availableProducts.put(index, product.getName());
+				selectProductComboBox.addItem(product.getName());
+				index++;
+			}
+			selectProductComboBox.setSelectedIndex(-1);
+			
+			//customer
+			customerFirstNameTextField.setText("");
+			customerSurNameTextField.setText("");
+			
+			customerList = new HashMap<Integer, Integer>();
+			customerSelectComboBox.removeAllItems();
+			index = 0;
+			for (TOCustomer customer : ImsController.getCustomers()) {
+				customerList.put(index, customer.getId());
+				customerSelectComboBox.addItem("#" + customer.getId() + " " + customer.getFirstName());
+				index++;
+			}
+			customerSelectComboBox.setSelectedIndex(-1);
+			
+			//transaction
+			availableTransactions = new HashMap<Integer, Integer>();
+			selectTransactionComboBox.removeAllItems();
+			index = 0;
+			for (TOTransaction t : ImsController.getTransactions()) {
+				availableTransactions.put(index, t.getId());
+				selectTransactionComboBox.addItem(t.getName());
+				index++;
+			}
+			selectTransactionComboBox.setSelectedIndex(-1);
+			
+		}
 	}
 
 }

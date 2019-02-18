@@ -5,11 +5,9 @@ use IMSPersistence.ump;
 class IMS
 {
 	1 <@>- * Product products;
-	1 <@>- * Warehouse warehouse;
-	1 <@>- * Manager manager;
+	//1 <@>- * Warehouse warehouse;
 	1 <@>- * Customer customers;
 	1 <@>- * Transaction transactions;
-	1 <@>- * User;
 	
 	public java.util.Date getCurrentDate() {
     java.util.Calendar cal = java.util.Calendar.getInstance();
@@ -39,34 +37,54 @@ class Product
   
 } 
 
-class Warehouse
-{
-	0..1 -- * Product products;
-}
+//class Warehouse
+//{
+	//0..1 -- * Product products;
+//}
 
-class Manager
-{
-	unique String username;
-	String password;
-}
+//class Manager
+//{
+	//unique String username;
+	//String password;
+//}
 
 class Customer {
 	autounique id;
+	firstName;
+	surName;
+	
+	before constructor, setFirstName {
+  	if(aFirstName == null || aFirstName.length() == 0 ) {
+  		throw new RuntimeException("The first name of a customer cannot be empty");
+  	}
+  	if (aFirstName.length() > 20) {
+  		throw new RuntimeException("Customer first name character cannot be more than 20");
+  	}
+  }
+  
+  before constructor, setSurName {
+  	if(aSurName == null || aSurName.length() == 0 ) {
+  		throw new RuntimeException("The sur name of a customer cannot be empty");
+  	}
+  	if (aSurName.length() > 20) {
+  		throw new RuntimeException("Customer sur name character cannot be more than 20");
+  	}
+  }
 }
 
 class Transaction {
-	Date date;
-	Integer totalAmount;
-	Integer amountPaid;
+	//Date date;
+	autounique id;
+	lazy Integer totalAmount;
+	lazy Integer amountPaid;
 	Integer debt = totalAmount - amountPaid; 
-	* transactions -- 1..2 User users;
-    * transactions -- * Product products;
+	* transactions -- 1 Customer customer;
+    0..1 transactions -- * Product products;
 }
 
-class User {
-  name;
-  address;
-  1 user -- 0..1 Manager manager;
-  1 user -- 0..1 Customer customer;
-}
+//class User {
+  
+  //1 user -- 0..1 Manager manager;
+  //1 user -- 0..1 Customer customer;
+//}
 

@@ -3,26 +3,26 @@
 
 package dedon.motors.ims.model;
 
-// line 3 "../../../../IMSTransferObjects.ump"
-public class TOCustomer
+// line 14 "../../../../IMSTransferObjects.ump"
+public class TOTransaction
 {
 
   //------------------------
   // MEMBER VARIABLES
   //------------------------
 
-  //TOCustomer Attributes
+  //TOTransaction Attributes
   private int id;
-  private String firstName;
+  private String name;
 
   //------------------------
   // CONSTRUCTOR
   //------------------------
 
-  public TOCustomer(int aId, String aFirstName)
+  public TOTransaction(int aId, String aName)
   {
     id = aId;
-    firstName = aFirstName;
+    name = aName;
   }
 
   //------------------------
@@ -37,10 +37,10 @@ public class TOCustomer
     return wasSet;
   }
 
-  public boolean setFirstName(String aFirstName)
+  public boolean setName(String aName)
   {
     boolean wasSet = false;
-    firstName = aFirstName;
+    name = aName;
     wasSet = true;
     return wasSet;
   }
@@ -50,9 +50,9 @@ public class TOCustomer
     return id;
   }
 
-  public String getFirstName()
+  public String getName()
   {
-    return firstName;
+    return name;
   }
 
   public void delete()
@@ -63,6 +63,6 @@ public class TOCustomer
   {
     return super.toString() + "["+
             "id" + ":" + getId()+ "," +
-            "firstName" + ":" + getFirstName()+ "]";
+            "name" + ":" + getName()+ "]";
   }
 }
