@@ -5,16 +5,18 @@ use IMSPersistence.ump;
 class IMS
 {
 	1 <@>- * Product products;
-	//1 <@>- * Warehouse warehouse;
+	1 <@>- * Warehouse warehouse;
 	1 <@>- * Customer customers;
 	1 <@>- * Transaction transactions;
+	1 <@>- * Manager managers;
+	1 <@>- * User users;
 	
 	public java.util.Date getCurrentDate() {
     java.util.Calendar cal = java.util.Calendar.getInstance();
-    //cal.set(Calendar.HOUR_OF_DAY, 0);
-    //cal.set(Calendar.MINUTE, 0);
-    //cal.set(Calendar.SECOND, 0);
-    //cal.set(Calendar.MILLISECOND, 0);
+    cal.set(Calendar.HOUR_OF_DAY, 0);
+    cal.set(Calendar.MINUTE, 0);
+    cal.set(Calendar.SECOND, 0);
+    cal.set(Calendar.MILLISECOND, 0);
     java.util.Date date = cal.getTime();
     return date;
   }
@@ -37,54 +39,71 @@ class Product
   
 } 
 
-//class Warehouse
-//{
-	//0..1 -- * Product products;
-//}
+class Warehouse
+{
+	0..1 -- * Product products;
+}
 
-//class Manager
-//{
-	//unique String username;
-	//String password;
-//}
 
-class Customer {
-	autounique id;
-	firstName;
-	surName;
+class UserRole {
+	abstract;
+}
+
+class Manager
+{
+	isA UserRole;
+	unique String userName;
+	String password;
 	
-	before constructor, setFirstName {
-  	if(aFirstName == null || aFirstName.length() == 0 ) {
-  		throw new RuntimeException("The first name of a customer cannot be empty");
+	before constructor, setUserName {
+  	if(aUserName == null || aUserName.length() == 0 ) {
+  		throw new RuntimeException("The user name of a manager cannot be empty");
   	}
-  	if (aFirstName.length() > 20) {
-  		throw new RuntimeException("Customer first name character cannot be more than 20");
+  	if (aUserName.length() > 10 || aUserName.length() < 5) {
+  		throw new RuntimeException("Manager user name character should be between 5 to 10 characters");
   	}
   }
   
-  before constructor, setSurName {
-  	if(aSurName == null || aSurName.length() == 0 ) {
-  		throw new RuntimeException("The sur name of a customer cannot be empty");
-  	}
-  	if (aSurName.length() > 20) {
-  		throw new RuntimeException("Customer sur name character cannot be more than 20");
-  	}
-  }
+}
+
+class Customer {
+	isA UserRole;
 }
 
 class Transaction {
-	//Date date;
+	Date date;
 	autounique id;
 	lazy Integer totalAmount;
 	lazy Integer amountPaid;
 	Integer debt = totalAmount - amountPaid; 
 	* transactions -- 1 Customer customer;
     0..1 transactions -- * Product products;
+    * transactions -- 1 Manager manager;
 }
 
-//class User {
-  
-  //1 user -- 0..1 Manager manager;
-  //1 user -- 0..1 Customer customer;
-//}
+class User {
+  	1 -> 1..2 UserRole roles;
+  	firstName;
+ 	lastName;
+ 	autounique id;
+	
+	before constructor, setFirstName {
+  	if(aFirstName == null || aFirstName.length() == 0 ) {
+  		throw new RuntimeException("The first name of a user cannot be empty");
+  	}
+  	if (aFirstName.length() > 20) {
+  		throw new RuntimeException("User first name character cannot be more than 20");
+  	}
+  	}
+  	
+  	before constructor, setLastName {
+  	if(aLastName == null || aLastName.length() == 0 ) {
+  		throw new RuntimeException("The last name of a user cannot be empty");
+  	}
+  	if (aLastName.length() > 20) {
+  		throw new RuntimeException("User last name character cannot be more than 20");
+  	}
+}
+}
+
 

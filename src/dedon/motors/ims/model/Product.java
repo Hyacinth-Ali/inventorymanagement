@@ -5,8 +5,8 @@ package dedon.motors.ims.model;
 import java.io.Serializable;
 import java.util.*;
 
-// line 22 "../../../../IMSPersistence.ump"
-// line 23 "../../../../IMS.ump"
+// line 31 "../../../../IMSPersistence.ump"
+// line 25 "../../../../IMS.ump"
 public class Product implements Serializable
 {
 
@@ -27,6 +27,7 @@ public class Product implements Serializable
 
   //Product Associations
   private IMS iMS;
+  private Warehouse warehouse;
   private Transaction transactions;
 
   //------------------------
@@ -35,7 +36,7 @@ public class Product implements Serializable
 
   public Product(String aName, IMS aIMS)
   {
-    // line 30 "../../../../IMS.ump"
+    // line 32 "../../../../IMS.ump"
     if(aName == null || aName.length() == 0 ) {
       		throw new RuntimeException("The name of a product cannot be empty");
       	}
@@ -63,7 +64,7 @@ public class Product implements Serializable
   public boolean setName(String aName)
   {
     boolean wasSet = false;
-    // line 30 "../../../../IMS.ump"
+    // line 32 "../../../../IMS.ump"
     if(aName == null || aName.length() == 0 ) {
       		throw new RuntimeException("The name of a product cannot be empty");
       	}
@@ -130,6 +131,17 @@ public class Product implements Serializable
     return iMS;
   }
   /* Code from template association_GetOne */
+  public Warehouse getWarehouse()
+  {
+    return warehouse;
+  }
+
+  public boolean hasWarehouse()
+  {
+    boolean has = warehouse != null;
+    return has;
+  }
+  /* Code from template association_GetOne */
   public Transaction getTransactions()
   {
     return transactions;
@@ -160,6 +172,23 @@ public class Product implements Serializable
     return wasSet;
   }
   /* Code from template association_SetOptionalOneToMany */
+  public boolean setWarehouse(Warehouse aWarehouse)
+  {
+    boolean wasSet = false;
+    Warehouse existingWarehouse = warehouse;
+    warehouse = aWarehouse;
+    if (existingWarehouse != null && !existingWarehouse.equals(aWarehouse))
+    {
+      existingWarehouse.removeProduct(this);
+    }
+    if (aWarehouse != null)
+    {
+      aWarehouse.addProduct(this);
+    }
+    wasSet = true;
+    return wasSet;
+  }
+  /* Code from template association_SetOptionalOneToMany */
   public boolean setTransactions(Transaction aTransactions)
   {
     boolean wasSet = false;
@@ -186,6 +215,12 @@ public class Product implements Serializable
     {
       placeholderIMS.removeProduct(this);
     }
+    if (warehouse != null)
+    {
+      Warehouse placeholderWarehouse = warehouse;
+      this.warehouse = null;
+      placeholderWarehouse.removeProduct(this);
+    }
     if (transactions != null)
     {
       Transaction placeholderTransactions = transactions;
@@ -194,7 +229,7 @@ public class Product implements Serializable
     }
   }
 
-  // line 28 "../../../../IMSPersistence.ump"
+  // line 37 "../../../../IMSPersistence.ump"
    public static  void reinitializeUniqueName(List<Product> products){
     productsByName = new HashMap<String, Product>();
     for (Product product : products) {
@@ -210,13 +245,14 @@ public class Product implements Serializable
             "unitprice" + ":" + getUnitprice()+ "," +
             "quantity" + ":" + getQuantity()+ "]" + System.getProperties().getProperty("line.separator") +
             "  " + "iMS = "+(getIMS()!=null?Integer.toHexString(System.identityHashCode(getIMS())):"null") + System.getProperties().getProperty("line.separator") +
+            "  " + "warehouse = "+(getWarehouse()!=null?Integer.toHexString(System.identityHashCode(getWarehouse())):"null") + System.getProperties().getProperty("line.separator") +
             "  " + "transactions = "+(getTransactions()!=null?Integer.toHexString(System.identityHashCode(getTransactions())):"null");
   }  
   //------------------------
   // DEVELOPER CODE - PROVIDED AS-IS
   //------------------------
   
-  // line 25 "../../../../IMSPersistence.ump"
+  // line 34 "../../../../IMSPersistence.ump"
   private static final long serialVersionUID = 8896099581655989380L ;
 
   

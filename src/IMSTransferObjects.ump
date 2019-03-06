@@ -1,4 +1,4 @@
-namespace dedon.motors.ims.model;
+namespace dedon.motors.ims.controller;
 
 class TOCustomer {
 	Integer id;

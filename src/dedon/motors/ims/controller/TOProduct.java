@@ -1,7 +1,7 @@
 /*PLEASE DO NOT EDIT THIS CODE*/
 /*This code was generated using the UMPLE 1.29.0.4181.a593105a9 modeling language!*/
 
-package dedon.motors.ims.model;
+package dedon.motors.ims.controller;
 
 // line 8 "../../../../IMSTransferObjects.ump"
 public class TOProduct

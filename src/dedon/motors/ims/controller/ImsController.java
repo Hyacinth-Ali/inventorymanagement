@@ -7,9 +7,6 @@ import dedon.motors.ims.application.ImsApplication;
 import dedon.motors.ims.model.Customer;
 import dedon.motors.ims.model.IMS;
 import dedon.motors.ims.model.Product;
-import dedon.motors.ims.model.TOCustomer;
-import dedon.motors.ims.model.TOProduct;
-import dedon.motors.ims.model.TOTransaction;
 import dedon.motors.ims.model.Transaction;
 import dedon.motors.ims.persistence.ImsPersistence;
 

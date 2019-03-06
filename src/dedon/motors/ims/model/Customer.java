@@ -4,39 +4,16 @@
 package dedon.motors.ims.model;
 import java.io.Serializable;
 import java.util.*;
+import java.sql.Date;
 
-/**
- * class Warehouse
- * {
- * 0..1 -- * Product products;
- * }
- * class Manager
- * {
- * unique String username;
- * String password;
- * }
- */
-// line 36 "../../../../IMSPersistence.ump"
-// line 51 "../../../../IMS.ump"
-public class Customer implements Serializable
+// line 45 "../../../../IMSPersistence.ump"
+// line 69 "../../../../IMS.ump"
+public class Customer extends UserRole implements Serializable
 {
-
-  //------------------------
-  // STATIC VARIABLES
-  //------------------------
-
-  private static int nextId = 1;
 
   //------------------------
   // MEMBER VARIABLES
   //------------------------
-
-  //Customer Attributes
-  private String firstName;
-  private String surName;
-
-  //Autounique Attributes
-  private int id;
 
   //Customer Associations
   private IMS iMS;
@@ -46,27 +23,9 @@ public class Customer implements Serializable
   // CONSTRUCTOR
   //------------------------
 
-  public Customer(String aFirstName, String aSurName, IMS aIMS)
+  public Customer(IMS aIMS)
   {
-    // line 57 "../../../../IMS.ump"
-    if(aFirstName == null || aFirstName.length() == 0 ) {
-      		throw new RuntimeException("The first name of a customer cannot be empty");
-      	}
-      	if (aFirstName.length() > 20) {
-      		throw new RuntimeException("Customer first name character cannot be more than 20");
-      	}
-    // END OF UMPLE BEFORE INJECTION
-    // line 66 "../../../../IMS.ump"
-    if(aSurName == null || aSurName.length() == 0 ) {
-      		throw new RuntimeException("The sur name of a customer cannot be empty");
-      	}
-      	if (aSurName.length() > 20) {
-      		throw new RuntimeException("Customer sur name character cannot be more than 20");
-      	}
-    // END OF UMPLE BEFORE INJECTION
-    firstName = aFirstName;
-    surName = aSurName;
-    id = nextId++;
+    super();
     boolean didAddIMS = setIMS(aIMS);
     if (!didAddIMS)
     {
@@ -78,53 +37,6 @@ public class Customer implements Serializable
   //------------------------
   // INTERFACE
   //------------------------
-
-  public boolean setFirstName(String aFirstName)
-  {
-    boolean wasSet = false;
-    // line 57 "../../../../IMS.ump"
-    if(aFirstName == null || aFirstName.length() == 0 ) {
-      		throw new RuntimeException("The first name of a customer cannot be empty");
-      	}
-      	if (aFirstName.length() > 20) {
-      		throw new RuntimeException("Customer first name character cannot be more than 20");
-      	}
-    // END OF UMPLE BEFORE INJECTION
-    firstName = aFirstName;
-    wasSet = true;
-    return wasSet;
-  }
-
-  public boolean setSurName(String aSurName)
-  {
-    boolean wasSet = false;
-    // line 66 "../../../../IMS.ump"
-    if(aSurName == null || aSurName.length() == 0 ) {
-      		throw new RuntimeException("The sur name of a customer cannot be empty");
-      	}
-      	if (aSurName.length() > 20) {
-      		throw new RuntimeException("Customer sur name character cannot be more than 20");
-      	}
-    // END OF UMPLE BEFORE INJECTION
-    surName = aSurName;
-    wasSet = true;
-    return wasSet;
-  }
-
-  public String getFirstName()
-  {
-    return firstName;
-  }
-
-  public String getSurName()
-  {
-    return surName;
-  }
-
-  public int getId()
-  {
-    return id;
-  }
   /* Code from template association_GetOne */
   public IMS getIMS()
   {
@@ -185,9 +97,9 @@ public class Customer implements Serializable
     return 0;
   }
   /* Code from template association_AddManyToOne */
-  public Transaction addTransaction(IMS aIMS)
+  public Transaction addTransaction(Date aDate, Manager aManager, IMS aIMS)
   {
-    return new Transaction(this, aIMS);
+    return new Transaction(aDate, this, aManager, aIMS);
   }
 
   public boolean addTransaction(Transaction aTransaction)
@@ -265,22 +177,14 @@ public class Customer implements Serializable
       Transaction aTransaction = transactions.get(i - 1);
       aTransaction.delete();
     }
+    super.delete();
   }
-
-
-  public String toString()
-  {
-    return super.toString() + "["+
-            "id" + ":" + getId()+ "," +
-            "firstName" + ":" + getFirstName()+ "," +
-            "surName" + ":" + getSurName()+ "]" + System.getProperties().getProperty("line.separator") +
-            "  " + "iMS = "+(getIMS()!=null?Integer.toHexString(System.identityHashCode(getIMS())):"null");
-  }  
+  
   //------------------------
   // DEVELOPER CODE - PROVIDED AS-IS
   //------------------------
   
-  // line 39 "../../../../IMSPersistence.ump"
+  // line 48 "../../../../IMSPersistence.ump"
   private static final long serialVersionUID = 2315070137928790501L ;
 
   

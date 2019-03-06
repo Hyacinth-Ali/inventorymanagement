@@ -4,6 +4,7 @@
 package dedon.motors.ims.model;
 import java.io.Serializable;
 import java.util.*;
+import java.sql.Date;
 
 // line 3 "../../../../IMSPersistence.ump"
 // line 5 "../../../../IMS.ump"
@@ -16,8 +17,11 @@ public class IMS implements Serializable
 
   //IMS Associations
   private List<Product> products;
+  private List<Warehouse> warehouse;
   private List<Customer> customers;
   private List<Transaction> transactions;
+  private List<Manager> managers;
+  private List<User> users;
 
   //------------------------
   // CONSTRUCTOR
@@ -26,8 +30,11 @@ public class IMS implements Serializable
   public IMS()
   {
     products = new ArrayList<Product>();
+    warehouse = new ArrayList<Warehouse>();
     customers = new ArrayList<Customer>();
     transactions = new ArrayList<Transaction>();
+    managers = new ArrayList<Manager>();
+    users = new ArrayList<User>();
   }
 
   //------------------------
@@ -64,15 +71,42 @@ public class IMS implements Serializable
     return index;
   }
   /* Code from template association_GetMany */
+  public Warehouse getWarehouse(int index)
+  {
+    Warehouse aWarehouse = warehouse.get(index);
+    return aWarehouse;
+  }
+
+  public List<Warehouse> getWarehouse()
+  {
+    List<Warehouse> newWarehouse = Collections.unmodifiableList(warehouse);
+    return newWarehouse;
+  }
+
+  public int numberOfWarehouse()
+  {
+    int number = warehouse.size();
+    return number;
+  }
+
+  public boolean hasWarehouse()
+  {
+    boolean has = warehouse.size() > 0;
+    return has;
+  }
+
+  public int indexOfWarehouse(Warehouse aWarehouse)
+  {
+    int index = warehouse.indexOf(aWarehouse);
+    return index;
+  }
+  /* Code from template association_GetMany */
   public Customer getCustomer(int index)
   {
     Customer aCustomer = customers.get(index);
     return aCustomer;
   }
 
-  /**
-   * 1 <@>- * Warehouse warehouse;
-   */
   public List<Customer> getCustomers()
   {
     List<Customer> newCustomers = Collections.unmodifiableList(customers);
@@ -124,6 +158,66 @@ public class IMS implements Serializable
   public int indexOfTransaction(Transaction aTransaction)
   {
     int index = transactions.indexOf(aTransaction);
+    return index;
+  }
+  /* Code from template association_GetMany */
+  public Manager getManager(int index)
+  {
+    Manager aManager = managers.get(index);
+    return aManager;
+  }
+
+  public List<Manager> getManagers()
+  {
+    List<Manager> newManagers = Collections.unmodifiableList(managers);
+    return newManagers;
+  }
+
+  public int numberOfManagers()
+  {
+    int number = managers.size();
+    return number;
+  }
+
+  public boolean hasManagers()
+  {
+    boolean has = managers.size() > 0;
+    return has;
+  }
+
+  public int indexOfManager(Manager aManager)
+  {
+    int index = managers.indexOf(aManager);
+    return index;
+  }
+  /* Code from template association_GetMany */
+  public User getUser(int index)
+  {
+    User aUser = users.get(index);
+    return aUser;
+  }
+
+  public List<User> getUsers()
+  {
+    List<User> newUsers = Collections.unmodifiableList(users);
+    return newUsers;
+  }
+
+  public int numberOfUsers()
+  {
+    int number = users.size();
+    return number;
+  }
+
+  public boolean hasUsers()
+  {
+    boolean has = users.size() > 0;
+    return has;
+  }
+
+  public int indexOfUser(User aUser)
+  {
+    int index = users.indexOf(aUser);
     return index;
   }
   /* Code from template association_MinimumNumberOfMethod */
@@ -199,14 +293,86 @@ public class IMS implements Serializable
     return wasAdded;
   }
   /* Code from template association_MinimumNumberOfMethod */
+  public static int minimumNumberOfWarehouse()
+  {
+    return 0;
+  }
+  /* Code from template association_AddManyToOne */
+  public Warehouse addWarehouse()
+  {
+    return new Warehouse(this);
+  }
+
+  public boolean addWarehouse(Warehouse aWarehouse)
+  {
+    boolean wasAdded = false;
+    if (warehouse.contains(aWarehouse)) { return false; }
+    IMS existingIMS = aWarehouse.getIMS();
+    boolean isNewIMS = existingIMS != null && !this.equals(existingIMS);
+    if (isNewIMS)
+    {
+      aWarehouse.setIMS(this);
+    }
+    else
+    {
+      warehouse.add(aWarehouse);
+    }
+    wasAdded = true;
+    return wasAdded;
+  }
+
+  public boolean removeWarehouse(Warehouse aWarehouse)
+  {
+    boolean wasRemoved = false;
+    //Unable to remove aWarehouse, as it must always have a iMS
+    if (!this.equals(aWarehouse.getIMS()))
+    {
+      warehouse.remove(aWarehouse);
+      wasRemoved = true;
+    }
+    return wasRemoved;
+  }
+  /* Code from template association_AddIndexControlFunctions */
+  public boolean addWarehouseAt(Warehouse aWarehouse, int index)
+  {  
+    boolean wasAdded = false;
+    if(addWarehouse(aWarehouse))
+    {
+      if(index < 0 ) { index = 0; }
+      if(index > numberOfWarehouse()) { index = numberOfWarehouse() - 1; }
+      warehouse.remove(aWarehouse);
+      warehouse.add(index, aWarehouse);
+      wasAdded = true;
+    }
+    return wasAdded;
+  }
+
+  public boolean addOrMoveWarehouseAt(Warehouse aWarehouse, int index)
+  {
+    boolean wasAdded = false;
+    if(warehouse.contains(aWarehouse))
+    {
+      if(index < 0 ) { index = 0; }
+      if(index > numberOfWarehouse()) { index = numberOfWarehouse() - 1; }
+      warehouse.remove(aWarehouse);
+      warehouse.add(index, aWarehouse);
+      wasAdded = true;
+    } 
+    else 
+    {
+      wasAdded = addWarehouseAt(aWarehouse, index);
+    }
+    return wasAdded;
+  }
+  /* Code from template association_MinimumNumberOfMethod */
   public static int minimumNumberOfCustomers()
   {
     return 0;
   }
   /* Code from template association_AddManyToOne */
-  public Customer addCustomer(String aFirstName, String aSurName)
+  public Customer addCustomer()
   {
-    return new Customer(aFirstName, aSurName, this);
+    return new Customer(this);
   }
 
   public boolean addCustomer(Customer aCustomer)
@@ -276,9 +442,9 @@ public class IMS implements Serializable
     return 0;
   }
   /* Code from template association_AddManyToOne */
-  public Transaction addTransaction(Customer aCustomer)
+  public Transaction addTransaction(Date aDate, Customer aCustomer, Manager aManager)
   {
-    return new Transaction(aCustomer, this);
+    return new Transaction(aDate, aCustomer, aManager, this);
   }
 
   public boolean addTransaction(Transaction aTransaction)
@@ -342,6 +508,150 @@ public class IMS implements Serializable
     }
     return wasAdded;
   }
+  /* Code from template association_MinimumNumberOfMethod */
+  public static int minimumNumberOfManagers()
+  {
+    return 0;
+  }
+  /* Code from template association_AddManyToOne */
+  public Manager addManager(String aUserName, String aPassword)
+  {
+    return new Manager(aUserName, aPassword, this);
+  }
+
+  public boolean addManager(Manager aManager)
+  {
+    boolean wasAdded = false;
+    if (managers.contains(aManager)) { return false; }
+    IMS existingIMS = aManager.getIMS();
+    boolean isNewIMS = existingIMS != null && !this.equals(existingIMS);
+    if (isNewIMS)
+    {
+      aManager.setIMS(this);
+    }
+    else
+    {
+      managers.add(aManager);
+    }
+    wasAdded = true;
+    return wasAdded;
+  }
+
+  public boolean removeManager(Manager aManager)
+  {
+    boolean wasRemoved = false;
+    //Unable to remove aManager, as it must always have a iMS
+    if (!this.equals(aManager.getIMS()))
+    {
+      managers.remove(aManager);
+      wasRemoved = true;
+    }
+    return wasRemoved;
+  }
+  /* Code from template association_AddIndexControlFunctions */
+  public boolean addManagerAt(Manager aManager, int index)
+  {  
+    boolean wasAdded = false;
+    if(addManager(aManager))
+    {
+      if(index < 0 ) { index = 0; }
+      if(index > numberOfManagers()) { index = numberOfManagers() - 1; }
+      managers.remove(aManager);
+      managers.add(index, aManager);
+      wasAdded = true;
+    }
+    return wasAdded;
+  }
+
+  public boolean addOrMoveManagerAt(Manager aManager, int index)
+  {
+    boolean wasAdded = false;
+    if(managers.contains(aManager))
+    {
+      if(index < 0 ) { index = 0; }
+      if(index > numberOfManagers()) { index = numberOfManagers() - 1; }
+      managers.remove(aManager);
+      managers.add(index, aManager);
+      wasAdded = true;
+    } 
+    else 
+    {
+      wasAdded = addManagerAt(aManager, index);
+    }
+    return wasAdded;
+  }
+  /* Code from template association_MinimumNumberOfMethod */
+  public static int minimumNumberOfUsers()
+  {
+    return 0;
+  }
+  /* Code from template association_AddManyToOne */
+  public User addUser(String aFirstName, String aLastName, UserRole... allRoles)
+  {
+    return new User(aFirstName, aLastName, this, allRoles);
+  }
+
+  public boolean addUser(User aUser)
+  {
+    boolean wasAdded = false;
+    if (users.contains(aUser)) { return false; }
+    IMS existingIMS = aUser.getIMS();
+    boolean isNewIMS = existingIMS != null && !this.equals(existingIMS);
+    if (isNewIMS)
+    {
+      aUser.setIMS(this);
+    }
+    else
+    {
+      users.add(aUser);
+    }
+    wasAdded = true;
+    return wasAdded;
+  }
+
+  public boolean removeUser(User aUser)
+  {
+    boolean wasRemoved = false;
+    //Unable to remove aUser, as it must always have a iMS
+    if (!this.equals(aUser.getIMS()))
+    {
+      users.remove(aUser);
+      wasRemoved = true;
+    }
+    return wasRemoved;
+  }
+  /* Code from template association_AddIndexControlFunctions */
+  public boolean addUserAt(User aUser, int index)
+  {  
+    boolean wasAdded = false;
+    if(addUser(aUser))
+    {
+      if(index < 0 ) { index = 0; }
+      if(index > numberOfUsers()) { index = numberOfUsers() - 1; }
+      users.remove(aUser);
+      users.add(index, aUser);
+      wasAdded = true;
+    }
+    return wasAdded;
+  }
+
+  public boolean addOrMoveUserAt(User aUser, int index)
+  {
+    boolean wasAdded = false;
+    if(users.contains(aUser))
+    {
+      if(index < 0 ) { index = 0; }
+      if(index > numberOfUsers()) { index = numberOfUsers() - 1; }
+      users.remove(aUser);
+      users.add(index, aUser);
+      wasAdded = true;
+    } 
+    else 
+    {
+      wasAdded = addUserAt(aUser, index);
+    }
+    return wasAdded;
+  }
 
   public void delete()
   {
@@ -350,6 +660,13 @@ public class IMS implements Serializable
       Product aProduct = products.get(products.size() - 1);
       aProduct.delete();
       products.remove(aProduct);
+    }
+    
+    while (warehouse.size() > 0)
+    {
+      Warehouse aWarehouse = warehouse.get(warehouse.size() - 1);
+      aWarehouse.delete();
+      warehouse.remove(aWarehouse);
     }
     
     while (customers.size() > 0)
@@ -366,22 +683,37 @@ public class IMS implements Serializable
       transactions.remove(aTransaction);
     }
     
+    while (managers.size() > 0)
+    {
+      Manager aManager = managers.get(managers.size() - 1);
+      aManager.delete();
+      managers.remove(aManager);
+    }
+    
+    while (users.size() > 0)
+    {
+      User aUser = users.get(users.size() - 1);
+      aUser.delete();
+      users.remove(aUser);
+    }
+    
   }
 
   // line 9 "../../../../IMSPersistence.ump"
    public void reinitialize(){
-    //Driver.reinitializeAutouniqueID(this.getDrivers());
+    User.reinitializeAutouniqueID(this.getUsers());
     Product.reinitializeUniqueName(this.getProducts());
-    //Route.reinitializeUniqueNumber(this.getRoutes());
+    Manager.reinitializeUniqueUserName(this.getManagers());
+    Transaction.reinitializeAutouniqueID(this.getTransactions());
   }
 
-  // line 13 "../../../../IMS.ump"
+  // line 15 "../../../../IMS.ump"
    public java.util.Date getCurrentDate(){
     java.util.Calendar cal = java.util.Calendar.getInstance();
-    //cal.set(Calendar.HOUR_OF_DAY, 0);
-    //cal.set(Calendar.MINUTE, 0);
-    //cal.set(Calendar.SECOND, 0);
-    //cal.set(Calendar.MILLISECOND, 0);
+    cal.set(Calendar.HOUR_OF_DAY, 0);
+    cal.set(Calendar.MINUTE, 0);
+    cal.set(Calendar.SECOND, 0);
+    cal.set(Calendar.MILLISECOND, 0);
     java.util.Date date = cal.getTime();
     return date;
   }

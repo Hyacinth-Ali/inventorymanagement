@@ -6,9 +6,10 @@ class IMS {
   private static final long serialVersionUID = -2683593616927798071L;
   
   public void reinitialize() {
-    //Driver.reinitializeAutouniqueID(this.getDrivers());
+    User.reinitializeAutouniqueID(this.getUsers());
     Product.reinitializeUniqueName(this.getProducts());
-    //Route.reinitializeUniqueNumber(this.getRoutes());
+    Manager.reinitializeUniqueUserName(this.getManagers());
+    Transaction.reinitializeAutouniqueID(this.getTransactions());
   }
 }
 
@@ -16,6 +17,14 @@ class Manager {
   depend java.io.Serializable;
   isA Serializable;
   private static final long serialVersionUID = 2315072607928790501L;
+  
+  public static void reinitializeUniqueUserName(List<Manager> managers) {
+    managersByUserName = new HashMap<String, Manager>();
+    for (Manager manager : managers) {
+      managersByUserName.put(manager.getUserName(), manager);
+    }
+  }
+  
   }
  
 
@@ -44,6 +53,16 @@ class Transaction {
   depend java.io.Serializable;
   isA Serializable;
   private static final long serialVersionUID = 8896099585515989380L;
+  
+  public static void reinitializeAutouniqueID(List<Transaction> transactions) {
+    nextId = 0; 
+    for (Transaction transaction : transactions) {
+      if (transaction.getId() > nextId) {
+        nextId = transaction.getId();
+      }
+    }
+    nextId++;
+  }
 
   }
   
@@ -52,5 +71,23 @@ class Warehouse {
   depend java.io.Serializable;
   isA Serializable;
   private static final long serialVersionUID = 386717977557499839L;
+}
+
+class User {
+
+	depend java.io.Serializable;
+  	isA Serializable;
+  	private static final long serialVersionUID = 386717976743499839L;
+	
+	public static void reinitializeAutouniqueID(List<User> users) {
+    nextId = 0; 
+    for (User user : users) {
+      if (user.getId() > nextId) {
+        nextId = user.getId();
+      }
+    }
+    nextId++;
+  }
+
 }
 

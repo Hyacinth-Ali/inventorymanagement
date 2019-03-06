@@ -3,10 +3,11 @@
 
 package dedon.motors.ims.model;
 import java.io.Serializable;
+import java.sql.Date;
 import java.util.*;
 
-// line 43 "../../../../IMSPersistence.ump"
-// line 75 "../../../../IMS.ump"
+// line 52 "../../../../IMSPersistence.ump"
+// line 73 "../../../../IMS.ump"
 public class Transaction implements Serializable
 {
 
@@ -21,28 +22,27 @@ public class Transaction implements Serializable
   //------------------------
 
   //Transaction Attributes
+  private Date date;
   private int totalAmount;
   private int amountPaid;
   private int debt;
 
   //Autounique Attributes
-
-  /**
-   * Date date;
-   */
   private int id;
 
   //Transaction Associations
   private Customer customer;
   private List<Product> products;
+  private Manager manager;
   private IMS iMS;
 
   //------------------------
   // CONSTRUCTOR
   //------------------------
 
-  public Transaction(Customer aCustomer, IMS aIMS)
+  public Transaction(Date aDate, Customer aCustomer, Manager aManager, IMS aIMS)
   {
+    date = aDate;
     totalAmount = 0;
     amountPaid = 0;
     debt = totalAmount - amountPaid;
@@ -53,6 +53,11 @@ public class Transaction implements Serializable
       throw new RuntimeException("Unable to create transaction due to customer");
     }
     products = new ArrayList<Product>();
+    boolean didAddManager = setManager(aManager);
+    if (!didAddManager)
+    {
+      throw new RuntimeException("Unable to create transaction due to manager");
+    }
     boolean didAddIMS = setIMS(aIMS);
     if (!didAddIMS)
     {
@@ -63,6 +68,14 @@ public class Transaction implements Serializable
   //------------------------
   // INTERFACE
   //------------------------
+
+  public boolean setDate(Date aDate)
+  {
+    boolean wasSet = false;
+    date = aDate;
+    wasSet = true;
+    return wasSet;
+  }
 
   public boolean setTotalAmount(int aTotalAmount)
   {
@@ -88,6 +101,11 @@ public class Transaction implements Serializable
     return wasSet;
   }
 
+  public Date getDate()
+  {
+    return date;
+  }
+
   public int getTotalAmount()
   {
     return totalAmount;
@@ -103,9 +121,6 @@ public class Transaction implements Serializable
     return debt;
   }
 
-  /**
-   * Date date;
-   */
   public int getId()
   {
     return id;
@@ -144,6 +159,11 @@ public class Transaction implements Serializable
   {
     int index = products.indexOf(aProduct);
     return index;
+  }
+  /* Code from template association_GetOne */
+  public Manager getManager()
+  {
+    return manager;
   }
   /* Code from template association_GetOne */
   public IMS getIMS()
@@ -241,6 +261,25 @@ public class Transaction implements Serializable
     return wasAdded;
   }
   /* Code from template association_SetOneToMany */
+  public boolean setManager(Manager aManager)
+  {
+    boolean wasSet = false;
+    if (aManager == null)
+    {
+      return wasSet;
+    }
+
+    Manager existingManager = manager;
+    manager = aManager;
+    if (existingManager != null && !existingManager.equals(aManager))
+    {
+      existingManager.removeTransaction(this);
+    }
+    manager.addTransaction(this);
+    wasSet = true;
+    return wasSet;
+  }
+  /* Code from template association_SetOneToMany */
   public boolean setIMS(IMS aIMS)
   {
     boolean wasSet = false;
@@ -272,12 +311,29 @@ public class Transaction implements Serializable
     {
       products.get(0).setTransactions(null);
     }
+    Manager placeholderManager = manager;
+    this.manager = null;
+    if(placeholderManager != null)
+    {
+      placeholderManager.removeTransaction(this);
+    }
     IMS placeholderIMS = iMS;
     this.iMS = null;
     if(placeholderIMS != null)
     {
       placeholderIMS.removeTransaction(this);
     }
+  }
+
+  // line 58 "../../../../IMSPersistence.ump"
+   public static  void reinitializeAutouniqueID(List<Transaction> transactions){
+    nextId = 0; 
+    for (Transaction transaction : transactions) {
+      if (transaction.getId() > nextId) {
+        nextId = transaction.getId();
+      }
+    }
+    nextId++;
   }
 
 
@@ -288,14 +344,16 @@ public class Transaction implements Serializable
             "totalAmount" + ":" + getTotalAmount()+ "," +
             "amountPaid" + ":" + getAmountPaid()+ "," +
             "debt" + ":" + getDebt()+ "]" + System.getProperties().getProperty("line.separator") +
+            "  " + "date" + "=" + (getDate() != null ? !getDate().equals(this)  ? getDate().toString().replaceAll("  ","    ") : "this" : "null") + System.getProperties().getProperty("line.separator") +
             "  " + "customer = "+(getCustomer()!=null?Integer.toHexString(System.identityHashCode(getCustomer())):"null") + System.getProperties().getProperty("line.separator") +
+            "  " + "manager = "+(getManager()!=null?Integer.toHexString(System.identityHashCode(getManager())):"null") + System.getProperties().getProperty("line.separator") +
             "  " + "iMS = "+(getIMS()!=null?Integer.toHexString(System.identityHashCode(getIMS())):"null");
   }  
   //------------------------
   // DEVELOPER CODE - PROVIDED AS-IS
   //------------------------
   
-  // line 46 "../../../../IMSPersistence.ump"
+  // line 55 "../../../../IMSPersistence.ump"
   private static final long serialVersionUID = 8896099585515989380L ;
 
   

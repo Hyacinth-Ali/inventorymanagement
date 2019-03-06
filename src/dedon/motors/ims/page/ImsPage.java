@@ -16,9 +16,9 @@ import javax.swing.plaf.FontUIResource;
 
 import dedon.motors.ims.controller.ImsController;
 import dedon.motors.ims.controller.InvalidInputException;
-import dedon.motors.ims.model.TOCustomer;
-import dedon.motors.ims.model.TOProduct;
-import dedon.motors.ims.model.TOTransaction;
+import dedon.motors.ims.controller.TOCustomer;
+import dedon.motors.ims.controller.TOProduct;
+import dedon.motors.ims.controller.TOTransaction;
 
 public class ImsPage extends JFrame {
 	
