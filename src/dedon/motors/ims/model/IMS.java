@@ -338,9 +338,9 @@ public class IMS implements Serializable
     return 0;
   }
   /* Code from template association_AddManyToOne */
-  public Manager addManager(String aName, String aUsername, String aPassword)
+  public Manager addManager(String aName, String aAddress, String aUsername, String aPassword)
   {
-    return new Manager(aName, aUsername, aPassword, this);
+    return new Manager(aName, aAddress, aUsername, aPassword, this);
   }
 
   public boolean addManager(Manager aManager)
@@ -410,9 +410,9 @@ public class IMS implements Serializable
     return 0;
   }
   /* Code from template association_AddManyToOne */
-  public Customer addCustomer(String aFirtName, String aOtherNames, String aSurName, String aAddress)
+  public Customer addCustomer(String aName, String aAddress)
   {
-    return new Customer(aFirtName, aOtherNames, aSurName, aAddress, this);
+    return new Customer(aName, aAddress, this);
   }
 
   public boolean addCustomer(Customer aCustomer)
@@ -482,9 +482,9 @@ public class IMS implements Serializable
     return 0;
   }
   /* Code from template association_AddManyToOne */
-  public Transaction addTransaction(Date aDate, int aTotalAmount, int aAmountPaid, Customer aBuyer, Manager aManager)
+  public Transaction addTransaction(Date aDate, int aTotalAmount, int aAmountPaid, UserRole... allUserRoles)
   {
-    return new Transaction(aDate, aTotalAmount, aAmountPaid, aBuyer, aManager, this);
+    return new Transaction(aDate, aTotalAmount, aAmountPaid, this, allUserRoles);
   }
 
   public boolean addTransaction(Transaction aTransaction)

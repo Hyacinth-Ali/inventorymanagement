@@ -6,7 +6,6 @@ import static org.junit.Assert.fail;
 import java.io.File;
 
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import dedon.motors.ims.application.ImsApplication;
@@ -17,7 +16,7 @@ public class ImsControllerTest {
 	
 private static int nextCustomerID = 1;
 	
-	@BeforeClass
+	@Before
 	public static void setUpOnce() {
 		String filename = "testdata.btms";
 		ImsPersistence.setFilename(filename);

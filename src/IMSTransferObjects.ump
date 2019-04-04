@@ -1,0 +1,5 @@
+namespace dedon.motors.ims.model;
+
+class TOCustomer {
+	Integer id;
+}

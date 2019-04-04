@@ -28,6 +28,7 @@ public class Product implements Serializable
   //Product Associations
   private IMS iMS;
   private Warehouse warehouse;
+  private List<Transaction> transactions;
 
   //------------------------
   // CONSTRUCTOR
@@ -54,6 +55,7 @@ public class Product implements Serializable
     {
       throw new RuntimeException("Unable to create product due to iMS");
     }
+    transactions = new ArrayList<Transaction>();
   }
 
   //------------------------
@@ -140,6 +142,36 @@ public class Product implements Serializable
     boolean has = warehouse != null;
     return has;
   }
+  /* Code from template association_GetMany */
+  public Transaction getTransaction(int index)
+  {
+    Transaction aTransaction = transactions.get(index);
+    return aTransaction;
+  }
+
+  public List<Transaction> getTransactions()
+  {
+    List<Transaction> newTransactions = Collections.unmodifiableList(transactions);
+    return newTransactions;
+  }
+
+  public int numberOfTransactions()
+  {
+    int number = transactions.size();
+    return number;
+  }
+
+  public boolean hasTransactions()
+  {
+    boolean has = transactions.size() > 0;
+    return has;
+  }
+
+  public int indexOfTransaction(Transaction aTransaction)
+  {
+    int index = transactions.indexOf(aTransaction);
+    return index;
+  }
   /* Code from template association_SetOneToMany */
   public boolean setIMS(IMS aIMS)
   {
@@ -176,6 +208,88 @@ public class Product implements Serializable
     wasSet = true;
     return wasSet;
   }
+  /* Code from template association_MinimumNumberOfMethod */
+  public static int minimumNumberOfTransactions()
+  {
+    return 0;
+  }
+  /* Code from template association_AddManyToManyMethod */
+  public boolean addTransaction(Transaction aTransaction)
+  {
+    boolean wasAdded = false;
+    if (transactions.contains(aTransaction)) { return false; }
+    transactions.add(aTransaction);
+    if (aTransaction.indexOfProduct(this) != -1)
+    {
+      wasAdded = true;
+    }
+    else
+    {
+      wasAdded = aTransaction.addProduct(this);
+      if (!wasAdded)
+      {
+        transactions.remove(aTransaction);
+      }
+    }
+    return wasAdded;
+  }
+  /* Code from template association_RemoveMany */
+  public boolean removeTransaction(Transaction aTransaction)
+  {
+    boolean wasRemoved = false;
+    if (!transactions.contains(aTransaction))
+    {
+      return wasRemoved;
+    }
+
+    int oldIndex = transactions.indexOf(aTransaction);
+    transactions.remove(oldIndex);
+    if (aTransaction.indexOfProduct(this) == -1)
+    {
+      wasRemoved = true;
+    }
+    else
+    {
+      wasRemoved = aTransaction.removeProduct(this);
+      if (!wasRemoved)
+      {
+        transactions.add(oldIndex,aTransaction);
+      }
+    }
+    return wasRemoved;
+  }
+  /* Code from template association_AddIndexControlFunctions */
+  public boolean addTransactionAt(Transaction aTransaction, int index)
+  {  
+    boolean wasAdded = false;
+    if(addTransaction(aTransaction))
+    {
+      if(index < 0 ) { index = 0; }
+      if(index > numberOfTransactions()) { index = numberOfTransactions() - 1; }
+      transactions.remove(aTransaction);
+      transactions.add(index, aTransaction);
+      wasAdded = true;
+    }
+    return wasAdded;
+  }
+
+  public boolean addOrMoveTransactionAt(Transaction aTransaction, int index)
+  {
+    boolean wasAdded = false;
+    if(transactions.contains(aTransaction))
+    {
+      if(index < 0 ) { index = 0; }
+      if(index > numberOfTransactions()) { index = numberOfTransactions() - 1; }
+      transactions.remove(aTransaction);
+      transactions.add(index, aTransaction);
+      wasAdded = true;
+    } 
+    else 
+    {
+      wasAdded = addTransactionAt(aTransaction, index);
+    }
+    return wasAdded;
+  }
 
   public void delete()
   {
@@ -191,6 +305,12 @@ public class Product implements Serializable
       Warehouse placeholderWarehouse = warehouse;
       this.warehouse = null;
       placeholderWarehouse.removeProduct(this);
+    }
+    ArrayList<Transaction> copyOfTransactions = new ArrayList<Transaction>(transactions);
+    transactions.clear();
+    for(Transaction aTransaction : copyOfTransactions)
+    {
+      aTransaction.removeProduct(this);
     }
   }
 
