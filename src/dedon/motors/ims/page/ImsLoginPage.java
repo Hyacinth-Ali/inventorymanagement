@@ -5,6 +5,8 @@ import javax.swing.JLabel;
 import javax.swing.JTextField;
 
 public class ImsLoginPage extends JFrame{
+	public ImsLoginPage() {
+	}
 	
 	//data elements
 	private JLabel errorMessage;
