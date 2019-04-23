@@ -6,7 +6,7 @@ import java.io.Serializable;
 import java.util.*;
 
 // line 76 "../../../../IMSPersistence.ump"
-// line 84 "../../../../IMS.ump"
+// line 107 "../../../../IMS.ump"
 public class User implements Serializable
 {
 
@@ -21,51 +21,41 @@ public class User implements Serializable
   //------------------------
 
   //User Attributes
-  private String firstName;
-  private String lastName;
+  private String name;
 
   //Autounique Attributes
   private int id;
 
   //User Associations
-  private List<UserRole> roles;
   private IMS iMS;
+  private List<UserRole> roles;
 
   //------------------------
   // CONSTRUCTOR
   //------------------------
 
-  public User(String aFirstName, String aLastName, IMS aIMS, UserRole... allRoles)
+  public User(String aName, IMS aIMS, UserRole... allRoles)
   {
-    // line 91 "../../../../IMS.ump"
-    if(aFirstName == null || aFirstName.length() == 0 ) {
-      		throw new RuntimeException("The first name of a user cannot be empty");
+    // line 112 "../../../../IMS.ump"
+    if(aName == null || aName.length() == 0 ) {
+      		throw new RuntimeException("The name of a user cannot be empty");
       	}
-      	if (aFirstName.length() > 20) {
-      		throw new RuntimeException("User first name character cannot be more than 20");
-      	}
-    // END OF UMPLE BEFORE INJECTION
-    // line 100 "../../../../IMS.ump"
-    if(aLastName == null || aLastName.length() == 0 ) {
-      		throw new RuntimeException("The last name of a user cannot be empty");
-      	}
-      	if (aLastName.length() > 20) {
-      		throw new RuntimeException("User last name character cannot be more than 20");
+      	if (aName.length() > 30) {
+      		throw new RuntimeException("User characters of user name cannot be more than 30");
       	}
     // END OF UMPLE BEFORE INJECTION
-    firstName = aFirstName;
-    lastName = aLastName;
+    name = aName;
     id = nextId++;
+    boolean didAddIMS = setIMS(aIMS);
+    if (!didAddIMS)
+    {
+      throw new RuntimeException("Unable to create user due to iMS");
+    }
     roles = new ArrayList<UserRole>();
     boolean didAddRoles = setRoles(allRoles);
     if (!didAddRoles)
     {
       throw new RuntimeException("Unable to create User, must have 1 to 2 roles");
-    }
-    boolean didAddIMS = setIMS(aIMS);
-    if (!didAddIMS)
-    {
-      throw new RuntimeException("Unable to create user due to iMS");
     }
   }
 
@@ -73,51 +63,35 @@ public class User implements Serializable
   // INTERFACE
   //------------------------
 
-  public boolean setFirstName(String aFirstName)
+  public boolean setName(String aName)
   {
     boolean wasSet = false;
-    // line 91 "../../../../IMS.ump"
-    if(aFirstName == null || aFirstName.length() == 0 ) {
-      		throw new RuntimeException("The first name of a user cannot be empty");
+    // line 112 "../../../../IMS.ump"
+    if(aName == null || aName.length() == 0 ) {
+      		throw new RuntimeException("The name of a user cannot be empty");
       	}
-      	if (aFirstName.length() > 20) {
-      		throw new RuntimeException("User first name character cannot be more than 20");
+      	if (aName.length() > 30) {
+      		throw new RuntimeException("User characters of user name cannot be more than 30");
       	}
     // END OF UMPLE BEFORE INJECTION
-    firstName = aFirstName;
+    name = aName;
     wasSet = true;
     return wasSet;
   }
 
-  public boolean setLastName(String aLastName)
+  public String getName()
   {
-    boolean wasSet = false;
-    // line 100 "../../../../IMS.ump"
-    if(aLastName == null || aLastName.length() == 0 ) {
-      		throw new RuntimeException("The last name of a user cannot be empty");
-      	}
-      	if (aLastName.length() > 20) {
-      		throw new RuntimeException("User last name character cannot be more than 20");
-      	}
-    // END OF UMPLE BEFORE INJECTION
-    lastName = aLastName;
-    wasSet = true;
-    return wasSet;
-  }
-
-  public String getFirstName()
-  {
-    return firstName;
-  }
-
-  public String getLastName()
-  {
-    return lastName;
+    return name;
   }
 
   public int getId()
   {
     return id;
+  }
+  /* Code from template association_GetOne */
+  public IMS getIMS()
+  {
+    return iMS;
   }
   /* Code from template association_GetMany */
   public UserRole getRole(int index)
@@ -149,10 +123,24 @@ public class User implements Serializable
     int index = roles.indexOf(aRole);
     return index;
   }
-  /* Code from template association_GetOne */
-  public IMS getIMS()
+  /* Code from template association_SetOneToMany */
+  public boolean setIMS(IMS aIMS)
   {
-    return iMS;
+    boolean wasSet = false;
+    if (aIMS == null)
+    {
+      return wasSet;
+    }
+
+    IMS existingIMS = iMS;
+    iMS = aIMS;
+    if (existingIMS != null && !existingIMS.equals(aIMS))
+    {
+      existingIMS.removeUser(this);
+    }
+    iMS.addUser(this);
+    wasSet = true;
+    return wasSet;
   }
   /* Code from template association_MinimumNumberOfMethod */
   public static int minimumNumberOfRoles()
@@ -250,35 +238,16 @@ public class User implements Serializable
     }
     return wasAdded;
   }
-  /* Code from template association_SetOneToMany */
-  public boolean setIMS(IMS aIMS)
-  {
-    boolean wasSet = false;
-    if (aIMS == null)
-    {
-      return wasSet;
-    }
-
-    IMS existingIMS = iMS;
-    iMS = aIMS;
-    if (existingIMS != null && !existingIMS.equals(aIMS))
-    {
-      existingIMS.removeUser(this);
-    }
-    iMS.addUser(this);
-    wasSet = true;
-    return wasSet;
-  }
 
   public void delete()
   {
-    roles.clear();
     IMS placeholderIMS = iMS;
     this.iMS = null;
     if(placeholderIMS != null)
     {
       placeholderIMS.removeUser(this);
     }
+    roles.clear();
   }
 
   // line 83 "../../../../IMSPersistence.ump"
@@ -297,8 +266,7 @@ public class User implements Serializable
   {
     return super.toString() + "["+
             "id" + ":" + getId()+ "," +
-            "firstName" + ":" + getFirstName()+ "," +
-            "lastName" + ":" + getLastName()+ "]" + System.getProperties().getProperty("line.separator") +
+            "name" + ":" + getName()+ "]" + System.getProperties().getProperty("line.separator") +
             "  " + "iMS = "+(getIMS()!=null?Integer.toHexString(System.identityHashCode(getIMS())):"null");
   }  
   //------------------------

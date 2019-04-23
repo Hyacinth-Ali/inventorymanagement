@@ -13,18 +13,14 @@ public class TOProduct
 
   //TOProduct Attributes
   private String name;
-  private int unitprice;
-  private int quantity;
 
   //------------------------
   // CONSTRUCTOR
   //------------------------
 
-  public TOProduct(String aName, int aUnitprice, int aQuantity)
+  public TOProduct(String aName)
   {
     name = aName;
-    unitprice = aUnitprice;
-    quantity = aQuantity;
   }
 
   //------------------------
@@ -39,35 +35,9 @@ public class TOProduct
     return wasSet;
   }
 
-  public boolean setUnitprice(int aUnitprice)
-  {
-    boolean wasSet = false;
-    unitprice = aUnitprice;
-    wasSet = true;
-    return wasSet;
-  }
-
-  public boolean setQuantity(int aQuantity)
-  {
-    boolean wasSet = false;
-    quantity = aQuantity;
-    wasSet = true;
-    return wasSet;
-  }
-
   public String getName()
   {
     return name;
-  }
-
-  public int getUnitprice()
-  {
-    return unitprice;
-  }
-
-  public int getQuantity()
-  {
-    return quantity;
   }
 
   public void delete()
@@ -77,8 +47,6 @@ public class TOProduct
   public String toString()
   {
     return super.toString() + "["+
-            "name" + ":" + getName()+ "," +
-            "unitprice" + ":" + getUnitprice()+ "," +
-            "quantity" + ":" + getQuantity()+ "]";
+            "name" + ":" + getName()+ "]";
   }
 }

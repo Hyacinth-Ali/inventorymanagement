@@ -19,7 +19,7 @@ private static int nextCustomerID = 1;
 	
 	@BeforeClass
 	public static void setUpOnce() {
-		String filename = "testdata.btms";
+		String filename = "testdata.ims";
 		ImsPersistence.setFilename(filename);
 		File f = new File(filename);
 		f.delete();
@@ -45,7 +45,7 @@ private static int nextCustomerID = 1;
 		}
 		
 		// check model in memory
-		checkResultProduct(name, ims, 1, 0, 0);
+		checkResultProduct(name, ims, 1);
 	}
 	
 	@Test
@@ -58,11 +58,10 @@ private static int nextCustomerID = 1;
 		} catch (InvalidInputException e) {
 			error = e.getMessage();
 		}
-		
 		// check error
 		assertEquals("The name of a product cannot be empty", error);
 		// check no change in memory
-		checkResultProduct(name, ims, 0, 0, 0);
+		checkResultProduct(name, ims, 0);
 	}
 	
 	@Test
@@ -77,7 +76,7 @@ private static int nextCustomerID = 1;
 			fail(); 
 		}
 		//check model in memory
-		checkResultProduct(name, ims, 1, 0, 0);
+		checkResultProduct(name, ims, 1);
 		
 		try {
 			ImsController.deleteProduct(name);
@@ -87,21 +86,17 @@ private static int nextCustomerID = 1;
 		}
 		
 		//check model in memory
-		checkResultProduct(name, ims, 0, 0, 0);
+		checkResultProduct(name, ims, 0);
 	}
 	
-	private void checkResultProduct(String name, IMS ims, int numberProducts, int qnty, int unitPrice) {
-		assertEquals(numberProducts, ims.getProducts().size());
-		if (numberProducts > 0) {
+	private void checkResultProduct(String name, IMS ims, int numberOfProducts) {
+		assertEquals(numberOfProducts, ims.getProducts().size());
+		if (numberOfProducts > 0) {
 			assertEquals(name, ims.getProduct(0).getName());
-			assertEquals(numberProducts, ims.getProducts().size());
-			assertEquals(qnty, ims.getProduct(0).getQuantity());
-			assertEquals(unitPrice, ims.getProduct(0).getUnitprice());	
+			assertEquals(numberOfProducts, ims.getProducts().size());
+			assertEquals(0, ims.getProduct(0).getItems().size());
 		}
-		assertEquals(0, ims.getCustomers().size());
-		//assertEquals(0, ims.getWarehouse().size());
-		//assertEquals(0, ims.getManager().size());
-		assertEquals(0, ims.getTransactions().size());
+		assertEquals(null, ims.getWarehouse());
 	}
 	
 	@Test
@@ -119,7 +114,7 @@ private static int nextCustomerID = 1;
 		// check error
 		assertEquals("The name of a product cannot be empty", error);
 		// check no change in memory
-		checkResultProduct(name, ims, 0, 0, 0);
+		checkResultProduct(name, ims, 0);
 	}
 	
 	@Test
@@ -134,9 +129,9 @@ private static int nextCustomerID = 1;
 			error = e.getMessage();
 		}
 		
-		assertEquals("Product character cannot be more than 30", error);
+		assertEquals("Product character cannot be more than 25", error);
 		
-		checkResultProduct(name, ims, 0, 0, 0);
+		checkResultProduct(name, ims, 0);
 	}
 
 

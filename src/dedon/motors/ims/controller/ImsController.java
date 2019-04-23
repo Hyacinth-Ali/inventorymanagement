@@ -8,10 +8,15 @@ import dedon.motors.ims.model.Customer;
 import dedon.motors.ims.model.IMS;
 import dedon.motors.ims.model.Product;
 import dedon.motors.ims.model.Transaction;
+import dedon.motors.ims.model.User;
+import dedon.motors.ims.model.UserRole;
 import dedon.motors.ims.persistence.ImsPersistence;
 
 public class ImsController {
 	
+	/******************************/
+	//Product CRUD, Begin
+	/******************************/
 	/**
 	 * Creates an instance of a product.
 	 * @param name of the product.
@@ -22,11 +27,9 @@ public class ImsController {
 		try {
 			ims.addProduct(name);
 			ImsPersistence.save(ims);
-			System.out.println("You just created a product with name : " + name);
-			for (Product p : ims.getProducts()) {
+			/*for (Product p : ims.getProducts()) {
 				System.out.println("Name : " + p.getName());
-			}
-			
+			}*/		
 		} catch (RuntimeException e) {
 			throw new InvalidInputException (e.getMessage());
 		}
@@ -37,7 +40,7 @@ public class ImsController {
 	 * @param name of the product.
 	 */
 	public static void deleteProduct(String name) throws InvalidInputException {
-		Product product = Product.getWithName(name);
+		Product product = findProduct(name);
 		if (product != null) {
 			product.delete();
 			try {
@@ -49,23 +52,162 @@ public class ImsController {
 		
 	}
 	
+	private static Product findProduct(String name) {
+		Product p = null;
+		IMS ims = ImsApplication.getIms();
+		for (Product prod : ims.getProducts()) {
+			if (prod.getName().equals(name)) {
+				p = prod;
+				break;
+			}
+		}
+		return p;
+	}
+	
+	/**
+	 * Query method to retrieve products in data.
+	 * @return product list
+	 */
 	public static List<TOProduct> getProducts() {
 		ArrayList<TOProduct> products = new ArrayList<TOProduct>();
 		for (Product p : ImsApplication.getIms().getProducts()) {
-			TOProduct toProduct = new TOProduct(p.getName(), p.getUnitprice(), p.getQuantity());
+			TOProduct toProduct = new TOProduct(p.getName());
 			products.add(toProduct);
 		}
 		return products;
 	}
 	
+	/**
+	 * Updates product
+	 */
+	public static void updateProduct(String oldName, String newName) throws InvalidInputException {
+		Product product = findProduct(oldName);
+		if (product != null) {
+			try {
+				product.setName(newName);
+				ImsPersistence.save(ImsApplication.getIms());
+			} catch (RuntimeException e) {
+				throw new InvalidInputException(e.getMessage());
+			}
+			
+		}
+	}
+	
+	/******************************/
+	//Product CRUD, End
+	/******************************/
+	
+	/******************************/
+	//Customer CRUD, Begin
+	/******************************/
+	
+	/**
+	 * Query method for Customer
+	 * @return list of customers
+	 */
 	public static List<TOCustomer> getCustomers() {
 		ArrayList<TOCustomer> customers = new ArrayList<TOCustomer>();
-		for (Customer c : ImsApplication.getIms().getCustomers()) {
-			TOCustomer toCustomer = new TOCustomer(c.getId(), c.getFirstName());
-			customers.add(toCustomer);
+		for (User user : ImsApplication.getIms().getUsers()) {
+			for (UserRole role : user.getRoles()) {
+				if (role instanceof Customer) {
+					Customer c = (Customer)role;
+					TOCustomer toCustomer = new TOCustomer(c.getId(), user.getName());
+					customers.add(toCustomer);
+				}
+			}
+			
 		}
 		return customers;
 	}
+	
+	private static Customer findCustomer(String id) {
+		Customer c = null;
+		for (Customer customer : ImsApplication.getIms().getCustomers()) {
+			if (id == customer.getId()) {
+				c = customer;
+				break;
+			}
+		}
+		return c;
+	}
+	
+	 /**
+	 * Create an object of a customer.
+	 * @param name of the customer.
+	 * @param id of the customer.
+	 * @throws InvalidInputException throws an exception.
+	 */
+	public static void createCustomer(String name, String customerID, int userID) throws InvalidInputException{
+		IMS ims = ImsApplication.getIms();
+		User user = findUser(userID);
+		if (user != null) {
+			for (UserRole role : user.getRoles()) {
+				if (role instanceof Customer) {
+					throw new InvalidInputException("The customer already exist.");
+				}
+				try { 
+					Customer customer = ims.addCustomer(customerID);
+					user.addRole(customer);
+					ImsPersistence.save(ims);
+				} catch (RuntimeException e) {
+					throw new InvalidInputException ("Customer cannot be created due to "+e.getMessage());
+				}
+			}
+			
+		} else {
+			try {
+				Customer c = ims.addCustomer(customerID);
+				ims.addUser(name, c);
+			} catch (RuntimeException e) {
+				throw new InvalidInputException(e.getMessage());
+			}
+		}
+		
+		
+	}
+	
+	private static User findUser(int id) {
+		User user = null;
+		for (User u: ImsApplication.getIms().getUsers()) {
+			if (u.getId() == id) {
+				user = u;
+			}
+		}
+		return user;
+	}
+	
+	public static void deleteCustomer(String id) throws InvalidInputException{
+		
+		Customer customer = findCustomer(id);
+		if (customer != null) {
+			customer.delete();
+		}
+		try {
+			ImsPersistence.save(ImsApplication.getIms());
+		} catch (RuntimeException e) {
+			throw new InvalidInputException (e.getMessage());
+		}
+	}
+	
+	public static void upDateCustomer(int userID, String oldName, String newName) 
+			throws InvalidInputException {
+		
+		User user = findUser(userID);
+		if (user != null) {
+			try {
+				user.setName(newName);
+				ImsPersistence.save(ImsApplication.getIms());
+			} catch (RuntimeException e) {
+				throw new InvalidInputException(e.getMessage());
+			}
+			
+		}
+		
+	}
+	
+	/******************************/
+	//Customer CRUD, End
+	/******************************/
 	
 	public static List<TOTransaction> getTransactions() {
 		ArrayList<TOTransaction> transactions = new ArrayList<TOTransaction>();
@@ -77,16 +219,7 @@ public class ImsController {
 		return transactions;
 	}
 	
-	private static Customer findCustomer(int id) {
-		Customer c = null;
-		for (Customer customer : ImsApplication.getIms().getCustomers()) {
-			if (id == customer.getId()) {
-				c = customer;
-				break;
-			}
-		}
-		return c;
-	}
+	
 	
 	private static Transaction findTransaction(int id) {
 		Transaction t = null;
@@ -99,35 +232,6 @@ public class ImsController {
 		return t;
 	}
 	
-	//customer
-	/**
-	 * Create an object of a customer.
-	 * @param firstName of the customer.
-	 * @param surName of the customer.
-	 * @throws InvalidInputException throws an exception.
-	 */
-	public static void createCustomer(String firstName, String surName) throws InvalidInputException{
-		IMS ims = ImsApplication.getIms();
-		try {
-			ims.addCustomer(firstName, surName);
-			ImsPersistence.save(ims);
-		} catch (RuntimeException e) {
-			throw new InvalidInputException (e.getMessage());
-		}
-		
-	}
-	
-	public static void deleteCustomer(int id) throws InvalidInputException{
-		Customer customer = findCustomer(id);
-		if (customer != null) {
-			customer.delete();
-		}
-		try {
-			ImsPersistence.save(ImsApplication.getIms());
-		} catch (RuntimeException e) {
-			throw new InvalidInputException (e.getMessage());
-		}
-	}
 	
 	/**
 	 * Create an instance of a transaction.

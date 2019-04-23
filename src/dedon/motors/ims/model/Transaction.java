@@ -7,7 +7,7 @@ import java.sql.Date;
 import java.util.*;
 
 // line 52 "../../../../IMSPersistence.ump"
-// line 73 "../../../../IMS.ump"
+// line 100 "../../../../IMS.ump"
 public class Transaction implements Serializable
 {
 
@@ -23,30 +23,34 @@ public class Transaction implements Serializable
 
   //Transaction Attributes
   private Date date;
-  private int totalAmount;
-  private int amountPaid;
-  private int debt;
+  private double totalAmount;
+  private double amountPaid;
 
   //Autounique Attributes
   private int id;
 
   //Transaction Associations
+  private IMS iMS;
   private Customer customer;
   private List<Product> products;
   private Manager manager;
-  private IMS iMS;
+  private List<Receipt> receipts;
 
   //------------------------
   // CONSTRUCTOR
   //------------------------
 
-  public Transaction(Date aDate, Customer aCustomer, Manager aManager, IMS aIMS)
+  public Transaction(Date aDate, IMS aIMS, Customer aCustomer, Manager aManager)
   {
     date = aDate;
     totalAmount = 0;
     amountPaid = 0;
-    debt = totalAmount - amountPaid;
     id = nextId++;
+    boolean didAddIMS = setIMS(aIMS);
+    if (!didAddIMS)
+    {
+      throw new RuntimeException("Unable to create transaction due to iMS");
+    }
     boolean didAddCustomer = setCustomer(aCustomer);
     if (!didAddCustomer)
     {
@@ -58,11 +62,7 @@ public class Transaction implements Serializable
     {
       throw new RuntimeException("Unable to create transaction due to manager");
     }
-    boolean didAddIMS = setIMS(aIMS);
-    if (!didAddIMS)
-    {
-      throw new RuntimeException("Unable to create transaction due to iMS");
-    }
+    receipts = new ArrayList<Receipt>();
   }
 
   //------------------------
@@ -77,7 +77,7 @@ public class Transaction implements Serializable
     return wasSet;
   }
 
-  public boolean setTotalAmount(int aTotalAmount)
+  public boolean setTotalAmount(double aTotalAmount)
   {
     boolean wasSet = false;
     totalAmount = aTotalAmount;
@@ -85,18 +85,10 @@ public class Transaction implements Serializable
     return wasSet;
   }
 
-  public boolean setAmountPaid(int aAmountPaid)
+  public boolean setAmountPaid(double aAmountPaid)
   {
     boolean wasSet = false;
     amountPaid = aAmountPaid;
-    wasSet = true;
-    return wasSet;
-  }
-
-  public boolean setDebt(int aDebt)
-  {
-    boolean wasSet = false;
-    debt = aDebt;
     wasSet = true;
     return wasSet;
   }
@@ -106,24 +98,24 @@ public class Transaction implements Serializable
     return date;
   }
 
-  public int getTotalAmount()
+  public double getTotalAmount()
   {
     return totalAmount;
   }
 
-  public int getAmountPaid()
+  public double getAmountPaid()
   {
     return amountPaid;
-  }
-
-  public int getDebt()
-  {
-    return debt;
   }
 
   public int getId()
   {
     return id;
+  }
+  /* Code from template association_GetOne */
+  public IMS getIMS()
+  {
+    return iMS;
   }
   /* Code from template association_GetOne */
   public Customer getCustomer()
@@ -165,10 +157,54 @@ public class Transaction implements Serializable
   {
     return manager;
   }
-  /* Code from template association_GetOne */
-  public IMS getIMS()
+  /* Code from template association_GetMany */
+  public Receipt getReceipt(int index)
   {
-    return iMS;
+    Receipt aReceipt = receipts.get(index);
+    return aReceipt;
+  }
+
+  public List<Receipt> getReceipts()
+  {
+    List<Receipt> newReceipts = Collections.unmodifiableList(receipts);
+    return newReceipts;
+  }
+
+  public int numberOfReceipts()
+  {
+    int number = receipts.size();
+    return number;
+  }
+
+  public boolean hasReceipts()
+  {
+    boolean has = receipts.size() > 0;
+    return has;
+  }
+
+  public int indexOfReceipt(Receipt aReceipt)
+  {
+    int index = receipts.indexOf(aReceipt);
+    return index;
+  }
+  /* Code from template association_SetOneToMany */
+  public boolean setIMS(IMS aIMS)
+  {
+    boolean wasSet = false;
+    if (aIMS == null)
+    {
+      return wasSet;
+    }
+
+    IMS existingIMS = iMS;
+    iMS = aIMS;
+    if (existingIMS != null && !existingIMS.equals(aIMS))
+    {
+      existingIMS.removeTransaction(this);
+    }
+    iMS.addTransaction(this);
+    wasSet = true;
+    return wasSet;
   }
   /* Code from template association_SetOneToMany */
   public boolean setCustomer(Customer aCustomer)
@@ -194,25 +230,12 @@ public class Transaction implements Serializable
   {
     return 0;
   }
-  /* Code from template association_AddManyToOptionalOne */
+  /* Code from template association_AddUnidirectionalMany */
   public boolean addProduct(Product aProduct)
   {
     boolean wasAdded = false;
     if (products.contains(aProduct)) { return false; }
-    Transaction existingTransactions = aProduct.getTransactions();
-    if (existingTransactions == null)
-    {
-      aProduct.setTransactions(this);
-    }
-    else if (!this.equals(existingTransactions))
-    {
-      existingTransactions.removeProduct(aProduct);
-      addProduct(aProduct);
-    }
-    else
-    {
-      products.add(aProduct);
-    }
+    products.add(aProduct);
     wasAdded = true;
     return wasAdded;
   }
@@ -223,7 +246,6 @@ public class Transaction implements Serializable
     if (products.contains(aProduct))
     {
       products.remove(aProduct);
-      aProduct.setTransactions(null);
       wasRemoved = true;
     }
     return wasRemoved;
@@ -279,49 +301,104 @@ public class Transaction implements Serializable
     wasSet = true;
     return wasSet;
   }
-  /* Code from template association_SetOneToMany */
-  public boolean setIMS(IMS aIMS)
+  /* Code from template association_MinimumNumberOfMethod */
+  public static int minimumNumberOfReceipts()
   {
-    boolean wasSet = false;
-    if (aIMS == null)
-    {
-      return wasSet;
-    }
+    return 0;
+  }
+  /* Code from template association_AddManyToOne */
+  public Receipt addReceipt(Date aDate, IMS aIMS)
+  {
+    return new Receipt(aDate, aIMS, this);
+  }
 
-    IMS existingIMS = iMS;
-    iMS = aIMS;
-    if (existingIMS != null && !existingIMS.equals(aIMS))
+  public boolean addReceipt(Receipt aReceipt)
+  {
+    boolean wasAdded = false;
+    if (receipts.contains(aReceipt)) { return false; }
+    Transaction existingTransaction = aReceipt.getTransaction();
+    boolean isNewTransaction = existingTransaction != null && !this.equals(existingTransaction);
+    if (isNewTransaction)
     {
-      existingIMS.removeTransaction(this);
+      aReceipt.setTransaction(this);
     }
-    iMS.addTransaction(this);
-    wasSet = true;
-    return wasSet;
+    else
+    {
+      receipts.add(aReceipt);
+    }
+    wasAdded = true;
+    return wasAdded;
+  }
+
+  public boolean removeReceipt(Receipt aReceipt)
+  {
+    boolean wasRemoved = false;
+    //Unable to remove aReceipt, as it must always have a transaction
+    if (!this.equals(aReceipt.getTransaction()))
+    {
+      receipts.remove(aReceipt);
+      wasRemoved = true;
+    }
+    return wasRemoved;
+  }
+  /* Code from template association_AddIndexControlFunctions */
+  public boolean addReceiptAt(Receipt aReceipt, int index)
+  {  
+    boolean wasAdded = false;
+    if(addReceipt(aReceipt))
+    {
+      if(index < 0 ) { index = 0; }
+      if(index > numberOfReceipts()) { index = numberOfReceipts() - 1; }
+      receipts.remove(aReceipt);
+      receipts.add(index, aReceipt);
+      wasAdded = true;
+    }
+    return wasAdded;
+  }
+
+  public boolean addOrMoveReceiptAt(Receipt aReceipt, int index)
+  {
+    boolean wasAdded = false;
+    if(receipts.contains(aReceipt))
+    {
+      if(index < 0 ) { index = 0; }
+      if(index > numberOfReceipts()) { index = numberOfReceipts() - 1; }
+      receipts.remove(aReceipt);
+      receipts.add(index, aReceipt);
+      wasAdded = true;
+    } 
+    else 
+    {
+      wasAdded = addReceiptAt(aReceipt, index);
+    }
+    return wasAdded;
   }
 
   public void delete()
   {
+    IMS placeholderIMS = iMS;
+    this.iMS = null;
+    if(placeholderIMS != null)
+    {
+      placeholderIMS.removeTransaction(this);
+    }
     Customer placeholderCustomer = customer;
     this.customer = null;
     if(placeholderCustomer != null)
     {
       placeholderCustomer.removeTransaction(this);
     }
-    while( !products.isEmpty() )
-    {
-      products.get(0).setTransactions(null);
-    }
+    products.clear();
     Manager placeholderManager = manager;
     this.manager = null;
     if(placeholderManager != null)
     {
       placeholderManager.removeTransaction(this);
     }
-    IMS placeholderIMS = iMS;
-    this.iMS = null;
-    if(placeholderIMS != null)
+    for(int i=receipts.size(); i > 0; i--)
     {
-      placeholderIMS.removeTransaction(this);
+      Receipt aReceipt = receipts.get(i - 1);
+      aReceipt.delete();
     }
   }
 
@@ -342,12 +419,11 @@ public class Transaction implements Serializable
     return super.toString() + "["+
             "id" + ":" + getId()+ "," +
             "totalAmount" + ":" + getTotalAmount()+ "," +
-            "amountPaid" + ":" + getAmountPaid()+ "," +
-            "debt" + ":" + getDebt()+ "]" + System.getProperties().getProperty("line.separator") +
+            "amountPaid" + ":" + getAmountPaid()+ "]" + System.getProperties().getProperty("line.separator") +
             "  " + "date" + "=" + (getDate() != null ? !getDate().equals(this)  ? getDate().toString().replaceAll("  ","    ") : "this" : "null") + System.getProperties().getProperty("line.separator") +
+            "  " + "iMS = "+(getIMS()!=null?Integer.toHexString(System.identityHashCode(getIMS())):"null") + System.getProperties().getProperty("line.separator") +
             "  " + "customer = "+(getCustomer()!=null?Integer.toHexString(System.identityHashCode(getCustomer())):"null") + System.getProperties().getProperty("line.separator") +
-            "  " + "manager = "+(getManager()!=null?Integer.toHexString(System.identityHashCode(getManager())):"null") + System.getProperties().getProperty("line.separator") +
-            "  " + "iMS = "+(getIMS()!=null?Integer.toHexString(System.identityHashCode(getIMS())):"null");
+            "  " + "manager = "+(getManager()!=null?Integer.toHexString(System.identityHashCode(getManager())):"null");
   }  
   //------------------------
   // DEVELOPER CODE - PROVIDED AS-IS

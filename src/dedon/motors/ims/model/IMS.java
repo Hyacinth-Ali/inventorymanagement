@@ -17,7 +17,12 @@ public class IMS implements Serializable
 
   //IMS Associations
   private List<Product> products;
-  private List<Warehouse> warehouse;
+  private List<Audit> audits;
+  private Warehouse warehouse;
+  private List<Supplier> suppliers;
+  private List<Receipt> receipts;
+  private List<Employee> employees;
+  private List<Order> orders;
   private List<Customer> customers;
   private List<Transaction> transactions;
   private List<Manager> managers;
@@ -30,7 +35,11 @@ public class IMS implements Serializable
   public IMS()
   {
     products = new ArrayList<Product>();
-    warehouse = new ArrayList<Warehouse>();
+    audits = new ArrayList<Audit>();
+    suppliers = new ArrayList<Supplier>();
+    receipts = new ArrayList<Receipt>();
+    employees = new ArrayList<Employee>();
+    orders = new ArrayList<Order>();
     customers = new ArrayList<Customer>();
     transactions = new ArrayList<Transaction>();
     managers = new ArrayList<Manager>();
@@ -71,33 +80,164 @@ public class IMS implements Serializable
     return index;
   }
   /* Code from template association_GetMany */
-  public Warehouse getWarehouse(int index)
+  public Audit getAudit(int index)
   {
-    Warehouse aWarehouse = warehouse.get(index);
-    return aWarehouse;
+    Audit aAudit = audits.get(index);
+    return aAudit;
   }
 
-  public List<Warehouse> getWarehouse()
+  public List<Audit> getAudits()
   {
-    List<Warehouse> newWarehouse = Collections.unmodifiableList(warehouse);
-    return newWarehouse;
+    List<Audit> newAudits = Collections.unmodifiableList(audits);
+    return newAudits;
   }
 
-  public int numberOfWarehouse()
+  public int numberOfAudits()
   {
-    int number = warehouse.size();
+    int number = audits.size();
     return number;
+  }
+
+  public boolean hasAudits()
+  {
+    boolean has = audits.size() > 0;
+    return has;
+  }
+
+  public int indexOfAudit(Audit aAudit)
+  {
+    int index = audits.indexOf(aAudit);
+    return index;
+  }
+  /* Code from template association_GetOne */
+  public Warehouse getWarehouse()
+  {
+    return warehouse;
   }
 
   public boolean hasWarehouse()
   {
-    boolean has = warehouse.size() > 0;
+    boolean has = warehouse != null;
+    return has;
+  }
+  /* Code from template association_GetMany */
+  public Supplier getSupplier(int index)
+  {
+    Supplier aSupplier = suppliers.get(index);
+    return aSupplier;
+  }
+
+  public List<Supplier> getSuppliers()
+  {
+    List<Supplier> newSuppliers = Collections.unmodifiableList(suppliers);
+    return newSuppliers;
+  }
+
+  public int numberOfSuppliers()
+  {
+    int number = suppliers.size();
+    return number;
+  }
+
+  public boolean hasSuppliers()
+  {
+    boolean has = suppliers.size() > 0;
     return has;
   }
 
-  public int indexOfWarehouse(Warehouse aWarehouse)
+  public int indexOfSupplier(Supplier aSupplier)
   {
-    int index = warehouse.indexOf(aWarehouse);
+    int index = suppliers.indexOf(aSupplier);
+    return index;
+  }
+  /* Code from template association_GetMany */
+  public Receipt getReceipt(int index)
+  {
+    Receipt aReceipt = receipts.get(index);
+    return aReceipt;
+  }
+
+  public List<Receipt> getReceipts()
+  {
+    List<Receipt> newReceipts = Collections.unmodifiableList(receipts);
+    return newReceipts;
+  }
+
+  public int numberOfReceipts()
+  {
+    int number = receipts.size();
+    return number;
+  }
+
+  public boolean hasReceipts()
+  {
+    boolean has = receipts.size() > 0;
+    return has;
+  }
+
+  public int indexOfReceipt(Receipt aReceipt)
+  {
+    int index = receipts.indexOf(aReceipt);
+    return index;
+  }
+  /* Code from template association_GetMany */
+  public Employee getEmployee(int index)
+  {
+    Employee aEmployee = employees.get(index);
+    return aEmployee;
+  }
+
+  public List<Employee> getEmployees()
+  {
+    List<Employee> newEmployees = Collections.unmodifiableList(employees);
+    return newEmployees;
+  }
+
+  public int numberOfEmployees()
+  {
+    int number = employees.size();
+    return number;
+  }
+
+  public boolean hasEmployees()
+  {
+    boolean has = employees.size() > 0;
+    return has;
+  }
+
+  public int indexOfEmployee(Employee aEmployee)
+  {
+    int index = employees.indexOf(aEmployee);
+    return index;
+  }
+  /* Code from template association_GetMany */
+  public Order getOrder(int index)
+  {
+    Order aOrder = orders.get(index);
+    return aOrder;
+  }
+
+  public List<Order> getOrders()
+  {
+    List<Order> newOrders = Collections.unmodifiableList(orders);
+    return newOrders;
+  }
+
+  public int numberOfOrders()
+  {
+    int number = orders.size();
+    return number;
+  }
+
+  public boolean hasOrders()
+  {
+    boolean has = orders.size() > 0;
+    return has;
+  }
+
+  public int indexOfOrder(Order aOrder)
+  {
+    int index = orders.indexOf(aOrder);
     return index;
   }
   /* Code from template association_GetMany */
@@ -293,74 +433,389 @@ public class IMS implements Serializable
     return wasAdded;
   }
   /* Code from template association_MinimumNumberOfMethod */
-  public static int minimumNumberOfWarehouse()
+  public static int minimumNumberOfAudits()
   {
     return 0;
   }
   /* Code from template association_AddManyToOne */
-  public Warehouse addWarehouse()
+  public Audit addAudit()
   {
-    return new Warehouse(this);
+    return new Audit(this);
   }
 
-  public boolean addWarehouse(Warehouse aWarehouse)
+  public boolean addAudit(Audit aAudit)
   {
     boolean wasAdded = false;
-    if (warehouse.contains(aWarehouse)) { return false; }
-    IMS existingIMS = aWarehouse.getIMS();
+    if (audits.contains(aAudit)) { return false; }
+    IMS existingIMS = aAudit.getIMS();
     boolean isNewIMS = existingIMS != null && !this.equals(existingIMS);
     if (isNewIMS)
     {
-      aWarehouse.setIMS(this);
+      aAudit.setIMS(this);
     }
     else
     {
-      warehouse.add(aWarehouse);
+      audits.add(aAudit);
     }
     wasAdded = true;
     return wasAdded;
   }
 
-  public boolean removeWarehouse(Warehouse aWarehouse)
+  public boolean removeAudit(Audit aAudit)
   {
     boolean wasRemoved = false;
-    //Unable to remove aWarehouse, as it must always have a iMS
-    if (!this.equals(aWarehouse.getIMS()))
+    //Unable to remove aAudit, as it must always have a iMS
+    if (!this.equals(aAudit.getIMS()))
     {
-      warehouse.remove(aWarehouse);
+      audits.remove(aAudit);
       wasRemoved = true;
     }
     return wasRemoved;
   }
   /* Code from template association_AddIndexControlFunctions */
-  public boolean addWarehouseAt(Warehouse aWarehouse, int index)
+  public boolean addAuditAt(Audit aAudit, int index)
   {  
     boolean wasAdded = false;
-    if(addWarehouse(aWarehouse))
+    if(addAudit(aAudit))
     {
       if(index < 0 ) { index = 0; }
-      if(index > numberOfWarehouse()) { index = numberOfWarehouse() - 1; }
-      warehouse.remove(aWarehouse);
-      warehouse.add(index, aWarehouse);
+      if(index > numberOfAudits()) { index = numberOfAudits() - 1; }
+      audits.remove(aAudit);
+      audits.add(index, aAudit);
       wasAdded = true;
     }
     return wasAdded;
   }
 
-  public boolean addOrMoveWarehouseAt(Warehouse aWarehouse, int index)
+  public boolean addOrMoveAuditAt(Audit aAudit, int index)
   {
     boolean wasAdded = false;
-    if(warehouse.contains(aWarehouse))
+    if(audits.contains(aAudit))
     {
       if(index < 0 ) { index = 0; }
-      if(index > numberOfWarehouse()) { index = numberOfWarehouse() - 1; }
-      warehouse.remove(aWarehouse);
-      warehouse.add(index, aWarehouse);
+      if(index > numberOfAudits()) { index = numberOfAudits() - 1; }
+      audits.remove(aAudit);
+      audits.add(index, aAudit);
       wasAdded = true;
     } 
     else 
     {
-      wasAdded = addWarehouseAt(aWarehouse, index);
+      wasAdded = addAuditAt(aAudit, index);
+    }
+    return wasAdded;
+  }
+  /* Code from template association_SetOptionalOneToOne */
+  public boolean setWarehouse(Warehouse aNewWarehouse)
+  {
+    boolean wasSet = false;
+    if (warehouse != null && !warehouse.equals(aNewWarehouse) && equals(warehouse.getIMS()))
+    {
+      //Unable to setWarehouse, as existing warehouse would become an orphan
+      return wasSet;
+    }
+
+    warehouse = aNewWarehouse;
+    IMS anOldIMS = aNewWarehouse != null ? aNewWarehouse.getIMS() : null;
+
+    if (!this.equals(anOldIMS))
+    {
+      if (anOldIMS != null)
+      {
+        anOldIMS.warehouse = null;
+      }
+      if (warehouse != null)
+      {
+        warehouse.setIMS(this);
+      }
+    }
+    wasSet = true;
+    return wasSet;
+  }
+  /* Code from template association_MinimumNumberOfMethod */
+  public static int minimumNumberOfSuppliers()
+  {
+    return 0;
+  }
+  /* Code from template association_AddManyToOne */
+  public Supplier addSupplier(String aName)
+  {
+    return new Supplier(aName, this);
+  }
+
+  public boolean addSupplier(Supplier aSupplier)
+  {
+    boolean wasAdded = false;
+    if (suppliers.contains(aSupplier)) { return false; }
+    IMS existingIMS = aSupplier.getIMS();
+    boolean isNewIMS = existingIMS != null && !this.equals(existingIMS);
+    if (isNewIMS)
+    {
+      aSupplier.setIMS(this);
+    }
+    else
+    {
+      suppliers.add(aSupplier);
+    }
+    wasAdded = true;
+    return wasAdded;
+  }
+
+  public boolean removeSupplier(Supplier aSupplier)
+  {
+    boolean wasRemoved = false;
+    //Unable to remove aSupplier, as it must always have a iMS
+    if (!this.equals(aSupplier.getIMS()))
+    {
+      suppliers.remove(aSupplier);
+      wasRemoved = true;
+    }
+    return wasRemoved;
+  }
+  /* Code from template association_AddIndexControlFunctions */
+  public boolean addSupplierAt(Supplier aSupplier, int index)
+  {  
+    boolean wasAdded = false;
+    if(addSupplier(aSupplier))
+    {
+      if(index < 0 ) { index = 0; }
+      if(index > numberOfSuppliers()) { index = numberOfSuppliers() - 1; }
+      suppliers.remove(aSupplier);
+      suppliers.add(index, aSupplier);
+      wasAdded = true;
+    }
+    return wasAdded;
+  }
+
+  public boolean addOrMoveSupplierAt(Supplier aSupplier, int index)
+  {
+    boolean wasAdded = false;
+    if(suppliers.contains(aSupplier))
+    {
+      if(index < 0 ) { index = 0; }
+      if(index > numberOfSuppliers()) { index = numberOfSuppliers() - 1; }
+      suppliers.remove(aSupplier);
+      suppliers.add(index, aSupplier);
+      wasAdded = true;
+    } 
+    else 
+    {
+      wasAdded = addSupplierAt(aSupplier, index);
+    }
+    return wasAdded;
+  }
+  /* Code from template association_MinimumNumberOfMethod */
+  public static int minimumNumberOfReceipts()
+  {
+    return 0;
+  }
+  /* Code from template association_AddManyToOne */
+  public Receipt addReceipt(Date aDate, Transaction aTransaction)
+  {
+    return new Receipt(aDate, this, aTransaction);
+  }
+
+  public boolean addReceipt(Receipt aReceipt)
+  {
+    boolean wasAdded = false;
+    if (receipts.contains(aReceipt)) { return false; }
+    IMS existingIMS = aReceipt.getIMS();
+    boolean isNewIMS = existingIMS != null && !this.equals(existingIMS);
+    if (isNewIMS)
+    {
+      aReceipt.setIMS(this);
+    }
+    else
+    {
+      receipts.add(aReceipt);
+    }
+    wasAdded = true;
+    return wasAdded;
+  }
+
+  public boolean removeReceipt(Receipt aReceipt)
+  {
+    boolean wasRemoved = false;
+    //Unable to remove aReceipt, as it must always have a iMS
+    if (!this.equals(aReceipt.getIMS()))
+    {
+      receipts.remove(aReceipt);
+      wasRemoved = true;
+    }
+    return wasRemoved;
+  }
+  /* Code from template association_AddIndexControlFunctions */
+  public boolean addReceiptAt(Receipt aReceipt, int index)
+  {  
+    boolean wasAdded = false;
+    if(addReceipt(aReceipt))
+    {
+      if(index < 0 ) { index = 0; }
+      if(index > numberOfReceipts()) { index = numberOfReceipts() - 1; }
+      receipts.remove(aReceipt);
+      receipts.add(index, aReceipt);
+      wasAdded = true;
+    }
+    return wasAdded;
+  }
+
+  public boolean addOrMoveReceiptAt(Receipt aReceipt, int index)
+  {
+    boolean wasAdded = false;
+    if(receipts.contains(aReceipt))
+    {
+      if(index < 0 ) { index = 0; }
+      if(index > numberOfReceipts()) { index = numberOfReceipts() - 1; }
+      receipts.remove(aReceipt);
+      receipts.add(index, aReceipt);
+      wasAdded = true;
+    } 
+    else 
+    {
+      wasAdded = addReceiptAt(aReceipt, index);
+    }
+    return wasAdded;
+  }
+  /* Code from template association_MinimumNumberOfMethod */
+  public static int minimumNumberOfEmployees()
+  {
+    return 0;
+  }
+  /* Code from template association_AddManyToOne */
+  public Employee addEmployee(String aPassword)
+  {
+    return new Employee(aPassword, this);
+  }
+
+  public boolean addEmployee(Employee aEmployee)
+  {
+    boolean wasAdded = false;
+    if (employees.contains(aEmployee)) { return false; }
+    IMS existingIMS = aEmployee.getIMS();
+    boolean isNewIMS = existingIMS != null && !this.equals(existingIMS);
+    if (isNewIMS)
+    {
+      aEmployee.setIMS(this);
+    }
+    else
+    {
+      employees.add(aEmployee);
+    }
+    wasAdded = true;
+    return wasAdded;
+  }
+
+  public boolean removeEmployee(Employee aEmployee)
+  {
+    boolean wasRemoved = false;
+    //Unable to remove aEmployee, as it must always have a iMS
+    if (!this.equals(aEmployee.getIMS()))
+    {
+      employees.remove(aEmployee);
+      wasRemoved = true;
+    }
+    return wasRemoved;
+  }
+  /* Code from template association_AddIndexControlFunctions */
+  public boolean addEmployeeAt(Employee aEmployee, int index)
+  {  
+    boolean wasAdded = false;
+    if(addEmployee(aEmployee))
+    {
+      if(index < 0 ) { index = 0; }
+      if(index > numberOfEmployees()) { index = numberOfEmployees() - 1; }
+      employees.remove(aEmployee);
+      employees.add(index, aEmployee);
+      wasAdded = true;
+    }
+    return wasAdded;
+  }
+
+  public boolean addOrMoveEmployeeAt(Employee aEmployee, int index)
+  {
+    boolean wasAdded = false;
+    if(employees.contains(aEmployee))
+    {
+      if(index < 0 ) { index = 0; }
+      if(index > numberOfEmployees()) { index = numberOfEmployees() - 1; }
+      employees.remove(aEmployee);
+      employees.add(index, aEmployee);
+      wasAdded = true;
+    } 
+    else 
+    {
+      wasAdded = addEmployeeAt(aEmployee, index);
+    }
+    return wasAdded;
+  }
+  /* Code from template association_MinimumNumberOfMethod */
+  public static int minimumNumberOfOrders()
+  {
+    return 0;
+  }
+  /* Code from template association_AddManyToOne */
+  public Order addOrder(Date aOrderedDate, Product... allProducts)
+  {
+    return new Order(aOrderedDate, this, allProducts);
+  }
+
+  public boolean addOrder(Order aOrder)
+  {
+    boolean wasAdded = false;
+    if (orders.contains(aOrder)) { return false; }
+    IMS existingIMS = aOrder.getIMS();
+    boolean isNewIMS = existingIMS != null && !this.equals(existingIMS);
+    if (isNewIMS)
+    {
+      aOrder.setIMS(this);
+    }
+    else
+    {
+      orders.add(aOrder);
+    }
+    wasAdded = true;
+    return wasAdded;
+  }
+
+  public boolean removeOrder(Order aOrder)
+  {
+    boolean wasRemoved = false;
+    //Unable to remove aOrder, as it must always have a iMS
+    if (!this.equals(aOrder.getIMS()))
+    {
+      orders.remove(aOrder);
+      wasRemoved = true;
+    }
+    return wasRemoved;
+  }
+  /* Code from template association_AddIndexControlFunctions */
+  public boolean addOrderAt(Order aOrder, int index)
+  {  
+    boolean wasAdded = false;
+    if(addOrder(aOrder))
+    {
+      if(index < 0 ) { index = 0; }
+      if(index > numberOfOrders()) { index = numberOfOrders() - 1; }
+      orders.remove(aOrder);
+      orders.add(index, aOrder);
+      wasAdded = true;
+    }
+    return wasAdded;
+  }
+
+  public boolean addOrMoveOrderAt(Order aOrder, int index)
+  {
+    boolean wasAdded = false;
+    if(orders.contains(aOrder))
+    {
+      if(index < 0 ) { index = 0; }
+      if(index > numberOfOrders()) { index = numberOfOrders() - 1; }
+      orders.remove(aOrder);
+      orders.add(index, aOrder);
+      wasAdded = true;
+    } 
+    else 
+    {
+      wasAdded = addOrderAt(aOrder, index);
     }
     return wasAdded;
   }
@@ -370,9 +825,9 @@ public class IMS implements Serializable
     return 0;
   }
   /* Code from template association_AddManyToOne */
-  public Customer addCustomer()
+  public Customer addCustomer(String aId)
   {
-    return new Customer(this);
+    return new Customer(aId, this);
   }
 
   public boolean addCustomer(Customer aCustomer)
@@ -444,7 +899,7 @@ public class IMS implements Serializable
   /* Code from template association_AddManyToOne */
   public Transaction addTransaction(Date aDate, Customer aCustomer, Manager aManager)
   {
-    return new Transaction(aDate, aCustomer, aManager, this);
+    return new Transaction(aDate, this, aCustomer, aManager);
   }
 
   public boolean addTransaction(Transaction aTransaction)
@@ -586,9 +1041,9 @@ public class IMS implements Serializable
     return 0;
   }
   /* Code from template association_AddManyToOne */
-  public User addUser(String aFirstName, String aLastName, UserRole... allRoles)
+  public User addUser(String aName, UserRole... allRoles)
   {
-    return new User(aFirstName, aLastName, this, allRoles);
+    return new User(aName, this, allRoles);
   }
 
   public boolean addUser(User aUser)
@@ -662,11 +1117,46 @@ public class IMS implements Serializable
       products.remove(aProduct);
     }
     
-    while (warehouse.size() > 0)
+    while (audits.size() > 0)
     {
-      Warehouse aWarehouse = warehouse.get(warehouse.size() - 1);
-      aWarehouse.delete();
-      warehouse.remove(aWarehouse);
+      Audit aAudit = audits.get(audits.size() - 1);
+      aAudit.delete();
+      audits.remove(aAudit);
+    }
+    
+    Warehouse existingWarehouse = warehouse;
+    warehouse = null;
+    if (existingWarehouse != null)
+    {
+      existingWarehouse.delete();
+      existingWarehouse.setIMS(null);
+    }
+    while (suppliers.size() > 0)
+    {
+      Supplier aSupplier = suppliers.get(suppliers.size() - 1);
+      aSupplier.delete();
+      suppliers.remove(aSupplier);
+    }
+    
+    while (receipts.size() > 0)
+    {
+      Receipt aReceipt = receipts.get(receipts.size() - 1);
+      aReceipt.delete();
+      receipts.remove(aReceipt);
+    }
+    
+    while (employees.size() > 0)
+    {
+      Employee aEmployee = employees.get(employees.size() - 1);
+      aEmployee.delete();
+      employees.remove(aEmployee);
+    }
+    
+    while (orders.size() > 0)
+    {
+      Order aOrder = orders.get(orders.size() - 1);
+      aOrder.delete();
+      orders.remove(aOrder);
     }
     
     while (customers.size() > 0)
@@ -707,7 +1197,7 @@ public class IMS implements Serializable
     Transaction.reinitializeAutouniqueID(this.getTransactions());
   }
 
-  // line 15 "../../../../IMS.ump"
+  // line 20 "../../../../IMS.ump"
    public java.util.Date getCurrentDate(){
     java.util.Calendar cal = java.util.Calendar.getInstance();
     cal.set(Calendar.HOUR_OF_DAY, 0);

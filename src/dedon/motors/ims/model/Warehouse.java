@@ -6,7 +6,7 @@ import java.io.Serializable;
 import java.util.*;
 
 // line 70 "../../../../IMSPersistence.ump"
-// line 42 "../../../../IMS.ump"
+// line 59 "../../../../IMS.ump"
 public class Warehouse implements Serializable
 {
 
@@ -15,8 +15,8 @@ public class Warehouse implements Serializable
   //------------------------
 
   //Warehouse Associations
-  private List<Product> products;
   private IMS iMS;
+  private List<Product> products;
 
   //------------------------
   // CONSTRUCTOR
@@ -24,17 +24,22 @@ public class Warehouse implements Serializable
 
   public Warehouse(IMS aIMS)
   {
-    products = new ArrayList<Product>();
     boolean didAddIMS = setIMS(aIMS);
     if (!didAddIMS)
     {
       throw new RuntimeException("Unable to create warehouse due to iMS");
     }
+    products = new ArrayList<Product>();
   }
 
   //------------------------
   // INTERFACE
   //------------------------
+  /* Code from template association_GetOne */
+  public IMS getIMS()
+  {
+    return iMS;
+  }
   /* Code from template association_GetMany */
   public Product getProduct(int index)
   {
@@ -65,10 +70,33 @@ public class Warehouse implements Serializable
     int index = products.indexOf(aProduct);
     return index;
   }
-  /* Code from template association_GetOne */
-  public IMS getIMS()
+  /* Code from template association_SetOneToOptionalOne */
+  public boolean setIMS(IMS aNewIMS)
   {
-    return iMS;
+    boolean wasSet = false;
+    if (aNewIMS == null)
+    {
+      //Unable to setIMS to null, as warehouse must always be associated to a iMS
+      return wasSet;
+    }
+    
+    Warehouse existingWarehouse = aNewIMS.getWarehouse();
+    if (existingWarehouse != null && !equals(existingWarehouse))
+    {
+      //Unable to setIMS, the current iMS already has a warehouse, which would be orphaned if it were re-assigned
+      return wasSet;
+    }
+    
+    IMS anOldIMS = iMS;
+    iMS = aNewIMS;
+    iMS.setWarehouse(this);
+
+    if (anOldIMS != null)
+    {
+      anOldIMS.setWarehouse(null);
+    }
+    wasSet = true;
+    return wasSet;
   }
   /* Code from template association_MinimumNumberOfMethod */
   public static int minimumNumberOfProducts()
@@ -141,37 +169,18 @@ public class Warehouse implements Serializable
     }
     return wasAdded;
   }
-  /* Code from template association_SetOneToMany */
-  public boolean setIMS(IMS aIMS)
-  {
-    boolean wasSet = false;
-    if (aIMS == null)
-    {
-      return wasSet;
-    }
-
-    IMS existingIMS = iMS;
-    iMS = aIMS;
-    if (existingIMS != null && !existingIMS.equals(aIMS))
-    {
-      existingIMS.removeWarehouse(this);
-    }
-    iMS.addWarehouse(this);
-    wasSet = true;
-    return wasSet;
-  }
 
   public void delete()
   {
+    IMS existingIMS = iMS;
+    iMS = null;
+    if (existingIMS != null)
+    {
+      existingIMS.setWarehouse(null);
+    }
     while( !products.isEmpty() )
     {
       products.get(0).setWarehouse(null);
-    }
-    IMS placeholderIMS = iMS;
-    this.iMS = null;
-    if(placeholderIMS != null)
-    {
-      placeholderIMS.removeWarehouse(this);
     }
   }
   

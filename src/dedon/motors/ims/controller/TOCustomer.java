@@ -12,24 +12,24 @@ public class TOCustomer
   //------------------------
 
   //TOCustomer Attributes
-  private int id;
-  private String firstName;
+  private String id;
+  private String name;
 
   //------------------------
   // CONSTRUCTOR
   //------------------------
 
-  public TOCustomer(int aId, String aFirstName)
+  public TOCustomer(String aId, String aName)
   {
     id = aId;
-    firstName = aFirstName;
+    name = aName;
   }
 
   //------------------------
   // INTERFACE
   //------------------------
 
-  public boolean setId(int aId)
+  public boolean setId(String aId)
   {
     boolean wasSet = false;
     id = aId;
@@ -37,22 +37,22 @@ public class TOCustomer
     return wasSet;
   }
 
-  public boolean setFirstName(String aFirstName)
+  public boolean setName(String aName)
   {
     boolean wasSet = false;
-    firstName = aFirstName;
+    name = aName;
     wasSet = true;
     return wasSet;
   }
 
-  public int getId()
+  public String getId()
   {
     return id;
   }
 
-  public String getFirstName()
+  public String getName()
   {
-    return firstName;
+    return name;
   }
 
   public void delete()
@@ -63,6 +63,6 @@ public class TOCustomer
   {
     return super.toString() + "["+
             "id" + ":" + getId()+ "," +
-            "firstName" + ":" + getFirstName()+ "]";
+            "name" + ":" + getName()+ "]";
   }
 }

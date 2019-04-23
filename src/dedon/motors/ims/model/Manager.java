@@ -7,7 +7,7 @@ import java.util.*;
 import java.sql.Date;
 
 // line 16 "../../../../IMSPersistence.ump"
-// line 52 "../../../../IMS.ump"
+// line 69 "../../../../IMS.ump"
 public class Manager extends UserRole implements Serializable
 {
 
@@ -36,12 +36,20 @@ public class Manager extends UserRole implements Serializable
   public Manager(String aUserName, String aPassword, IMS aIMS)
   {
     super();
-    // line 59 "../../../../IMS.ump"
+    // line 76 "../../../../IMS.ump"
     if(aUserName == null || aUserName.length() == 0 ) {
       		throw new RuntimeException("The user name of a manager cannot be empty");
       	}
-      	if (aUserName.length() > 10 || aUserName.length() < 5) {
-      		throw new RuntimeException("Manager user name character should be between 5 to 10 characters");
+      	if (aUserName.length() > 20 || aUserName.length() < 5) {
+      		throw new RuntimeException("Manager user name character should be between 5 to 20 characters");
+      	}
+    // END OF UMPLE BEFORE INJECTION
+    // line 85 "../../../../IMS.ump"
+    if(aPassword == null || aPassword.length() == 0 ) {
+      		throw new RuntimeException("The password of a manager cannot be empty");
+      	}
+      	if (aPassword.length() > 10 || aPassword.length() < 5) {
+      		throw new RuntimeException("The password should be between 5 to 10 characters");
       	}
     // END OF UMPLE BEFORE INJECTION
     password = aPassword;
@@ -64,12 +72,12 @@ public class Manager extends UserRole implements Serializable
   public boolean setUserName(String aUserName)
   {
     boolean wasSet = false;
-    // line 59 "../../../../IMS.ump"
+    // line 76 "../../../../IMS.ump"
     if(aUserName == null || aUserName.length() == 0 ) {
       		throw new RuntimeException("The user name of a manager cannot be empty");
       	}
-      	if (aUserName.length() > 10 || aUserName.length() < 5) {
-      		throw new RuntimeException("Manager user name character should be between 5 to 10 characters");
+      	if (aUserName.length() > 20 || aUserName.length() < 5) {
+      		throw new RuntimeException("Manager user name character should be between 5 to 20 characters");
       	}
     // END OF UMPLE BEFORE INJECTION
     String anOldUserName = getUserName();
@@ -88,6 +96,14 @@ public class Manager extends UserRole implements Serializable
   public boolean setPassword(String aPassword)
   {
     boolean wasSet = false;
+    // line 85 "../../../../IMS.ump"
+    if(aPassword == null || aPassword.length() == 0 ) {
+      		throw new RuntimeException("The password of a manager cannot be empty");
+      	}
+      	if (aPassword.length() > 10 || aPassword.length() < 5) {
+      		throw new RuntimeException("The password should be between 5 to 10 characters");
+      	}
+    // END OF UMPLE BEFORE INJECTION
     password = aPassword;
     wasSet = true;
     return wasSet;
@@ -172,9 +188,9 @@ public class Manager extends UserRole implements Serializable
     return 0;
   }
   /* Code from template association_AddManyToOne */
-  public Transaction addTransaction(Date aDate, Customer aCustomer, IMS aIMS)
+  public Transaction addTransaction(Date aDate, IMS aIMS, Customer aCustomer)
   {
-    return new Transaction(aDate, aCustomer, this, aIMS);
+    return new Transaction(aDate, aIMS, aCustomer, this);
   }
 
   public boolean addTransaction(Transaction aTransaction)
