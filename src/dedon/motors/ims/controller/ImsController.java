@@ -241,19 +241,21 @@ public class ImsController {
 		String error = "";
 		
 		if (customerID == null) {
-			error = "The ID of a customer cannot be empty";
-		} else if (customerID == "") {
-			error = "The ID of a customer cannot be empty";
-		}
-		if (error.length() > 0) {
-			throw new InvalidInputException(error);
+			throw new InvalidInputException("The ID of a customer cannot be empty");
 		}
 		
 		try {
 			ims.addCustomer(user, customerID);
 			ImsPersistence.save(ims);
 		} catch (RuntimeException e) {
-			throw new InvalidInputException(e.getMessage());
+			error = e.getMessage();
+			if (user.getRoles().size() > 0) {
+				ImsController.deleteUser(user);
+			}
+			if (error.equals("Cannot create due to duplicate customerID")) {
+				error = "A customer with the same ID already exist";
+			}
+			throw new InvalidInputException(error);
 		}
 		
 	}
@@ -350,9 +352,6 @@ public class ImsController {
 	 * @throws InvalidInputException
 	 */
 	public static void createUser(String name) throws InvalidInputException {
-		if (name == null || name == "") {
-			throw new InvalidInputException("A user name cannot be empty.");
-		} 
 		
 		IMS ims = ImsApplication.getIms();
 		

@@ -5,8 +5,8 @@ package dedon.motors.ims.model;
 import java.io.Serializable;
 import java.util.*;
 
-// line 75 "../../../../IMSPersistence.ump"
-// line 99 "../../../../IMS.ump"
+// line 83 "../../../../IMSPersistence.ump"
+// line 114 "../../../../IMS.ump"
 public class User implements Serializable
 {
 
@@ -27,7 +27,7 @@ public class User implements Serializable
 
   public User(String aName, IMS aIMS)
   {
-    // line 103 "../../../../IMS.ump"
+    // line 118 "../../../../IMS.ump"
     if(aName == null || aName.length() == 0 ) {
       		throw new RuntimeException("The name of a user cannot be empty");
       	}
@@ -51,7 +51,7 @@ public class User implements Serializable
   public boolean setName(String aName)
   {
     boolean wasSet = false;
-    // line 103 "../../../../IMS.ump"
+    // line 118 "../../../../IMS.ump"
     if(aName == null || aName.length() == 0 ) {
       		throw new RuntimeException("The name of a user cannot be empty");
       	}
@@ -228,7 +228,7 @@ public class User implements Serializable
   // DEVELOPER CODE - PROVIDED AS-IS
   //------------------------
   
-  // line 79 "../../../../IMSPersistence.ump"
+  // line 87 "../../../../IMSPersistence.ump"
   private static final long serialVersionUID = 386717976743499839L ;
 
   

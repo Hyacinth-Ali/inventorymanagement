@@ -6,8 +6,8 @@ import java.io.Serializable;
 import java.util.*;
 import java.sql.Date;
 
-// line 44 "../../../../IMSPersistence.ump"
-// line 85 "../../../../IMS.ump"
+// line 45 "../../../../IMSPersistence.ump"
+// line 94 "../../../../IMS.ump"
 public class Customer extends UserRole implements Serializable
 {
 
@@ -36,6 +36,11 @@ public class Customer extends UserRole implements Serializable
   public Customer(User aUser, String aCustomerID, IMS aIMS)
   {
     super(aUser);
+    // line 100 "../../../../IMS.ump"
+    if(aCustomerID == null || aCustomerID.length() == 0 ) {
+      		throw new RuntimeException("The ID of a customer cannot be empty");
+      	}
+    // END OF UMPLE BEFORE INJECTION
     debt = 0;
     if (!setCustomerID(aCustomerID))
     {
@@ -56,6 +61,11 @@ public class Customer extends UserRole implements Serializable
   public boolean setCustomerID(String aCustomerID)
   {
     boolean wasSet = false;
+    // line 100 "../../../../IMS.ump"
+    if(aCustomerID == null || aCustomerID.length() == 0 ) {
+      		throw new RuntimeException("The ID of a customer cannot be empty");
+      	}
+    // END OF UMPLE BEFORE INJECTION
     String anOldCustomerID = getCustomerID();
     if (hasWithCustomerID(aCustomerID)) {
       return wasSet;
@@ -240,6 +250,14 @@ public class Customer extends UserRole implements Serializable
     super.delete();
   }
 
+  // line 51 "../../../../IMSPersistence.ump"
+   public static  void reinitializeUniqueID(List<Customer> customers){
+    customersByCustomerID = new HashMap<String, Customer>();
+    for (Customer customer : customers) {
+      customersByCustomerID.put(customer.getCustomerID(), customer);
+    }
+  }
+
 
   public String toString()
   {
@@ -252,7 +270,7 @@ public class Customer extends UserRole implements Serializable
   // DEVELOPER CODE - PROVIDED AS-IS
   //------------------------
   
-  // line 47 "../../../../IMSPersistence.ump"
+  // line 48 "../../../../IMSPersistence.ump"
   private static final long serialVersionUID = 2315070137928790501L ;
 
   

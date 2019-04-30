@@ -9,6 +9,7 @@ class IMS {
     Product.reinitializeUniqueName(this.getProducts());
     Manager.reinitializeUniqueUserName(this.getManagers());
     Transaction.reinitializeAutouniqueID(this.getTransactions());
+    Customer.reinitializeUniqueID(this.getCustomers());
   }
 }
 
@@ -45,6 +46,13 @@ class Product {
   depend java.io.Serializable;
   isA Serializable;
   private static final long serialVersionUID = 2315070137928790501L;
+  
+   public static void reinitializeUniqueID(List<Customer> customers) {
+    customersByCustomerID = new HashMap<String, Customer>();
+    for (Customer customer : customers) {
+      customersByCustomerID.put(customer.getCustomerID(), customer);
+    }
+  }
   }
  
 

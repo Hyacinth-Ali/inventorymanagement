@@ -42,6 +42,15 @@ class Product
   	}
   }
   
+  before constructor, setPrice {
+  	if (aPrice == 0 ) {
+  		throw new RuntimeException("The price of a product cannot be zero");
+  	}
+  	if (aPrice < 0 ) {
+  		throw new RuntimeException("The price of a product cannot be negative");
+  	}
+  }
+  
 } 
 
 class Item {
@@ -86,6 +95,12 @@ class Customer {
 	isA UserRole;
 	unique String customerID;
 	lazy Double debt;
+	
+	before constructor, setCustomerID {
+  	if(aCustomerID == null || aCustomerID.length() == 0 ) {
+  		throw new RuntimeException("The ID of a customer cannot be empty");
+  	}
+  }
 }
 
 class Transaction {

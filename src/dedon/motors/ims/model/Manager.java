@@ -6,8 +6,8 @@ import java.io.Serializable;
 import java.util.*;
 import java.sql.Date;
 
-// line 15 "../../../../IMSPersistence.ump"
-// line 60 "../../../../IMS.ump"
+// line 16 "../../../../IMSPersistence.ump"
+// line 69 "../../../../IMS.ump"
 public class Manager extends UserRole implements Serializable
 {
 
@@ -36,7 +36,7 @@ public class Manager extends UserRole implements Serializable
   public Manager(User aUser, String aUserName, String aPassword, IMS aIMS)
   {
     super(aUser);
-    // line 67 "../../../../IMS.ump"
+    // line 76 "../../../../IMS.ump"
     if(aUserName == null || aUserName.length() == 0 ) {
       		throw new RuntimeException("The user name of a manager cannot be empty");
       	}
@@ -44,7 +44,7 @@ public class Manager extends UserRole implements Serializable
       		throw new RuntimeException("Manager user name character should be between 5 to 20 characters");
       	}
     // END OF UMPLE BEFORE INJECTION
-    // line 76 "../../../../IMS.ump"
+    // line 85 "../../../../IMS.ump"
     if(aPassword == null || aPassword.length() == 0 ) {
       		throw new RuntimeException("The password of a manager cannot be empty");
       	}
@@ -72,7 +72,7 @@ public class Manager extends UserRole implements Serializable
   public boolean setUserName(String aUserName)
   {
     boolean wasSet = false;
-    // line 67 "../../../../IMS.ump"
+    // line 76 "../../../../IMS.ump"
     if(aUserName == null || aUserName.length() == 0 ) {
       		throw new RuntimeException("The user name of a manager cannot be empty");
       	}
@@ -96,7 +96,7 @@ public class Manager extends UserRole implements Serializable
   public boolean setPassword(String aPassword)
   {
     boolean wasSet = false;
-    // line 76 "../../../../IMS.ump"
+    // line 85 "../../../../IMS.ump"
     if(aPassword == null || aPassword.length() == 0 ) {
       		throw new RuntimeException("The password of a manager cannot be empty");
       	}
@@ -272,7 +272,7 @@ public class Manager extends UserRole implements Serializable
     super.delete();
   }
 
-  // line 21 "../../../../IMSPersistence.ump"
+  // line 22 "../../../../IMSPersistence.ump"
    public static  void reinitializeUniqueUserName(List<Manager> managers){
     managersByUserName = new HashMap<String, Manager>();
     for (Manager manager : managers) {
@@ -292,7 +292,7 @@ public class Manager extends UserRole implements Serializable
   // DEVELOPER CODE - PROVIDED AS-IS
   //------------------------
   
-  // line 18 "../../../../IMSPersistence.ump"
+  // line 19 "../../../../IMSPersistence.ump"
   private static final long serialVersionUID = 2315072607928790501L ;
 
   

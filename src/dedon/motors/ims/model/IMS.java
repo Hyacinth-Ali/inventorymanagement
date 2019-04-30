@@ -1194,6 +1194,7 @@ public class IMS implements Serializable
     Product.reinitializeUniqueName(this.getProducts());
     Manager.reinitializeUniqueUserName(this.getManagers());
     Transaction.reinitializeAutouniqueID(this.getTransactions());
+    Customer.reinitializeUniqueID(this.getCustomers());
   }
 
   // line 20 "../../../../IMS.ump"

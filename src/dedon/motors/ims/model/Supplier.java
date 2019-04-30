@@ -3,7 +3,7 @@
 
 package dedon.motors.ims.model;
 
-// line 125 "../../../../IMS.ump"
+// line 140 "../../../../IMS.ump"
 public class Supplier
 {
 

@@ -5,7 +5,7 @@ package dedon.motors.ims.model;
 import java.io.Serializable;
 import java.util.*;
 
-// line 30 "../../../../IMSPersistence.ump"
+// line 31 "../../../../IMSPersistence.ump"
 // line 30 "../../../../IMS.ump"
 public class Product implements Serializable
 {
@@ -41,6 +41,14 @@ public class Product implements Serializable
       	}
       	if (aName.length() > 25) {
       		throw new RuntimeException("Product character cannot be more than 25");
+      	}
+    // END OF UMPLE BEFORE INJECTION
+    // line 46 "../../../../IMS.ump"
+    if (aPrice == 0 ) {
+      		throw new RuntimeException("The price of a product cannot be zero");
+      	}
+      	if (aPrice < 0 ) {
+      		throw new RuntimeException("The price of a product cannot be negative");
       	}
     // END OF UMPLE BEFORE INJECTION
     price = aPrice;
@@ -87,6 +95,14 @@ public class Product implements Serializable
   public boolean setPrice(double aPrice)
   {
     boolean wasSet = false;
+    // line 46 "../../../../IMS.ump"
+    if (aPrice == 0 ) {
+      		throw new RuntimeException("The price of a product cannot be zero");
+      	}
+      	if (aPrice < 0 ) {
+      		throw new RuntimeException("The price of a product cannot be negative");
+      	}
+    // END OF UMPLE BEFORE INJECTION
     price = aPrice;
     wasSet = true;
     return wasSet;
@@ -290,7 +306,7 @@ public class Product implements Serializable
     }
   }
 
-  // line 36 "../../../../IMSPersistence.ump"
+  // line 37 "../../../../IMSPersistence.ump"
    public static  void reinitializeUniqueName(List<Product> products){
     productsByName = new HashMap<String, Product>();
     for (Product product : products) {
@@ -311,7 +327,7 @@ public class Product implements Serializable
   // DEVELOPER CODE - PROVIDED AS-IS
   //------------------------
   
-  // line 33 "../../../../IMSPersistence.ump"
+  // line 34 "../../../../IMSPersistence.ump"
   private static final long serialVersionUID = 8896099581655989380L ;
 
   

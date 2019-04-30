@@ -3,7 +3,7 @@
 
 package dedon.motors.ims.model;
 
-// line 56 "../../../../IMS.ump"
+// line 65 "../../../../IMS.ump"
 public abstract class UserRole
 {
 
