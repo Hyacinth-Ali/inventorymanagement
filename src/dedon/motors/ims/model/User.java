@@ -5,7 +5,7 @@ package dedon.motors.ims.model;
 import java.io.Serializable;
 import java.util.*;
 
-// line 76 "../../../../IMSPersistence.ump"
+// line 75 "../../../../IMSPersistence.ump"
 // line 107 "../../../../IMS.ump"
 public class User implements Serializable
 {
@@ -288,17 +288,6 @@ public class User implements Serializable
     roles.clear();
   }
 
-  // line 83 "../../../../IMSPersistence.ump"
-   public static  void reinitializeAutouniqueID(List<User> users){
-    nextId = 0; 
-    for (User user : users) {
-      if (user.getId() > nextId) {
-        nextId = user.getId();
-      }
-    }
-    nextId++;
-  }
-
 
   public String toString()
   {
@@ -310,7 +299,7 @@ public class User implements Serializable
   // DEVELOPER CODE - PROVIDED AS-IS
   //------------------------
   
-  // line 80 "../../../../IMSPersistence.ump"
+  // line 79 "../../../../IMSPersistence.ump"
   private static final long serialVersionUID = 386717976743499839L ;
 
   

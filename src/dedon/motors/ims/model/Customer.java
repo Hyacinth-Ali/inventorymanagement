@@ -6,7 +6,7 @@ import java.io.Serializable;
 import java.util.*;
 import java.sql.Date;
 
-// line 45 "../../../../IMSPersistence.ump"
+// line 44 "../../../../IMSPersistence.ump"
 // line 94 "../../../../IMS.ump"
 public class Customer extends UserRole implements Serializable
 {
@@ -252,7 +252,7 @@ public class Customer extends UserRole implements Serializable
   // DEVELOPER CODE - PROVIDED AS-IS
   //------------------------
   
-  // line 48 "../../../../IMSPersistence.ump"
+  // line 47 "../../../../IMSPersistence.ump"
   private static final long serialVersionUID = 2315070137928790501L ;
 
   

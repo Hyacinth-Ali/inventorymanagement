@@ -6,7 +6,6 @@ class IMS {
   private static final long serialVersionUID = -2683593616927798071L;
   
   public void reinitialize() {
-    User.reinitializeAutouniqueID(this.getUsers());
     Product.reinitializeUniqueName(this.getProducts());
     Manager.reinitializeUniqueUserName(this.getManagers());
     Transaction.reinitializeAutouniqueID(this.getTransactions());
@@ -79,15 +78,6 @@ class User {
   	isA Serializable;
   	private static final long serialVersionUID = 386717976743499839L;
 	
-	public static void reinitializeAutouniqueID(List<User> users) {
-    nextId = 0; 
-    for (User user : users) {
-      if (user.getId() > nextId) {
-        nextId = user.getId();
-      }
-    }
-    nextId++;
-  }
 
 }
 

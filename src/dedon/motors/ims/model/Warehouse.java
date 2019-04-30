@@ -5,7 +5,7 @@ package dedon.motors.ims.model;
 import java.io.Serializable;
 import java.util.*;
 
-// line 70 "../../../../IMSPersistence.ump"
+// line 69 "../../../../IMSPersistence.ump"
 // line 59 "../../../../IMS.ump"
 public class Warehouse implements Serializable
 {
@@ -188,7 +188,7 @@ public class Warehouse implements Serializable
   // DEVELOPER CODE - PROVIDED AS-IS
   //------------------------
   
-  // line 73 "../../../../IMSPersistence.ump"
+  // line 72 "../../../../IMSPersistence.ump"
   private static final long serialVersionUID = 386717977557499839L ;
 
   

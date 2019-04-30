@@ -6,7 +6,7 @@ import java.io.Serializable;
 import java.sql.Date;
 import java.util.*;
 
-// line 52 "../../../../IMSPersistence.ump"
+// line 51 "../../../../IMSPersistence.ump"
 // line 100 "../../../../IMS.ump"
 public class Transaction implements Serializable
 {
@@ -402,7 +402,7 @@ public class Transaction implements Serializable
     }
   }
 
-  // line 58 "../../../../IMSPersistence.ump"
+  // line 57 "../../../../IMSPersistence.ump"
    public static  void reinitializeAutouniqueID(List<Transaction> transactions){
     nextId = 0; 
     for (Transaction transaction : transactions) {
@@ -429,7 +429,7 @@ public class Transaction implements Serializable
   // DEVELOPER CODE - PROVIDED AS-IS
   //------------------------
   
-  // line 55 "../../../../IMSPersistence.ump"
+  // line 54 "../../../../IMSPersistence.ump"
   private static final long serialVersionUID = 8896099585515989380L ;
 
   

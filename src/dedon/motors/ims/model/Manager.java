@@ -6,7 +6,7 @@ import java.io.Serializable;
 import java.util.*;
 import java.sql.Date;
 
-// line 16 "../../../../IMSPersistence.ump"
+// line 15 "../../../../IMSPersistence.ump"
 // line 69 "../../../../IMS.ump"
 public class Manager extends UserRole implements Serializable
 {
@@ -272,7 +272,7 @@ public class Manager extends UserRole implements Serializable
     super.delete();
   }
 
-  // line 22 "../../../../IMSPersistence.ump"
+  // line 21 "../../../../IMSPersistence.ump"
    public static  void reinitializeUniqueUserName(List<Manager> managers){
     managersByUserName = new HashMap<String, Manager>();
     for (Manager manager : managers) {
@@ -292,7 +292,7 @@ public class Manager extends UserRole implements Serializable
   // DEVELOPER CODE - PROVIDED AS-IS
   //------------------------
   
-  // line 19 "../../../../IMSPersistence.ump"
+  // line 18 "../../../../IMSPersistence.ump"
   private static final long serialVersionUID = 2315072607928790501L ;
 
   

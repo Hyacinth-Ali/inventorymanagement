@@ -5,7 +5,7 @@ package dedon.motors.ims.model;
 import java.io.Serializable;
 import java.util.*;
 
-// line 31 "../../../../IMSPersistence.ump"
+// line 30 "../../../../IMSPersistence.ump"
 // line 30 "../../../../IMS.ump"
 public class Product implements Serializable
 {
@@ -275,7 +275,7 @@ public class Product implements Serializable
     }
   }
 
-  // line 37 "../../../../IMSPersistence.ump"
+  // line 36 "../../../../IMSPersistence.ump"
    public static  void reinitializeUniqueName(List<Product> products){
     productsByName = new HashMap<String, Product>();
     for (Product product : products) {
@@ -295,7 +295,7 @@ public class Product implements Serializable
   // DEVELOPER CODE - PROVIDED AS-IS
   //------------------------
   
-  // line 34 "../../../../IMSPersistence.ump"
+  // line 33 "../../../../IMSPersistence.ump"
   private static final long serialVersionUID = 8896099581655989380L ;
 
   
