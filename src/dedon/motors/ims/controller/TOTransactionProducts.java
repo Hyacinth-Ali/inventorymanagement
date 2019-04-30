@@ -3,26 +3,26 @@
 
 package dedon.motors.ims.controller;
 
-// line 8 "../../../../IMSTransferObjects.ump"
-public class TOProduct
+// line 26 "../../../../IMSTransferObjects.ump"
+public class TOTransactionProducts
 {
 
   //------------------------
   // MEMBER VARIABLES
   //------------------------
 
-  //TOProduct Attributes
+  //TOTransactionProducts Attributes
   private String name;
-  private double price;
+  private String quantity;
 
   //------------------------
   // CONSTRUCTOR
   //------------------------
 
-  public TOProduct(String aName, double aPrice)
+  public TOTransactionProducts(String aName, String aQuantity)
   {
     name = aName;
-    price = aPrice;
+    quantity = aQuantity;
   }
 
   //------------------------
@@ -37,10 +37,10 @@ public class TOProduct
     return wasSet;
   }
 
-  public boolean setPrice(double aPrice)
+  public boolean setQuantity(String aQuantity)
   {
     boolean wasSet = false;
-    price = aPrice;
+    quantity = aQuantity;
     wasSet = true;
     return wasSet;
   }
@@ -50,9 +50,9 @@ public class TOProduct
     return name;
   }
 
-  public double getPrice()
+  public String getQuantity()
   {
-    return price;
+    return quantity;
   }
 
   public void delete()
@@ -63,6 +63,6 @@ public class TOProduct
   {
     return super.toString() + "["+
             "name" + ":" + getName()+ "," +
-            "price" + ":" + getPrice()+ "]";
+            "quantity" + ":" + getQuantity()+ "]";
   }
 }

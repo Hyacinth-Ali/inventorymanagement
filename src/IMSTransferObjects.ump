@@ -7,16 +7,23 @@ class TOCustomer {
 
 class TOProduct {
 	name;
-	Integer price;
+	Double price;
 }
 
 class TOTransaction {
 	Integer id;
-	name;
+	Date date;
+	Double totalAmount;
+	lazy Double amountPaid;
 }
 
 class TOManager{
 	name;
 	userName;
 	password;
+}
+
+class TOTransactionProducts {
+	name;
+	quantity;
 }

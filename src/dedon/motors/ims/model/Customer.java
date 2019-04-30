@@ -7,7 +7,7 @@ import java.util.*;
 import java.sql.Date;
 
 // line 44 "../../../../IMSPersistence.ump"
-// line 84 "../../../../IMS.ump"
+// line 85 "../../../../IMS.ump"
 public class Customer extends UserRole implements Serializable
 {
 

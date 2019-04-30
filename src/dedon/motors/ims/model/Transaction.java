@@ -7,7 +7,7 @@ import java.sql.Date;
 import java.util.*;
 
 // line 51 "../../../../IMSPersistence.ump"
-// line 90 "../../../../IMS.ump"
+// line 91 "../../../../IMS.ump"
 public class Transaction implements Serializable
 {
 
@@ -106,6 +106,11 @@ public class Transaction implements Serializable
   public double getAmountPaid()
   {
     return amountPaid;
+  }
+
+  public double getUnpaidAmount()
+  {
+    return getTotalAmount() - getAmountPaid();
   }
 
   public int getId()
@@ -419,7 +424,8 @@ public class Transaction implements Serializable
     return super.toString() + "["+
             "id" + ":" + getId()+ "," +
             "totalAmount" + ":" + getTotalAmount()+ "," +
-            "amountPaid" + ":" + getAmountPaid()+ "]" + System.getProperties().getProperty("line.separator") +
+            "amountPaid" + ":" + getAmountPaid()+ "," +
+            "unpaidAmount" + ":" + getUnpaidAmount()+ "]" + System.getProperties().getProperty("line.separator") +
             "  " + "date" + "=" + (getDate() != null ? !getDate().equals(this)  ? getDate().toString().replaceAll("  ","    ") : "this" : "null") + System.getProperties().getProperty("line.separator") +
             "  " + "iMS = "+(getIMS()!=null?Integer.toHexString(System.identityHashCode(getIMS())):"null") + System.getProperties().getProperty("line.separator") +
             "  " + "customer = "+(getCustomer()!=null?Integer.toHexString(System.identityHashCode(getCustomer())):"null") + System.getProperties().getProperty("line.separator") +

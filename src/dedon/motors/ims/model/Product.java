@@ -22,6 +22,7 @@ public class Product implements Serializable
 
   //Product Attributes
   private String name;
+  private double price;
 
   //Product Associations
   private List<Item> items;
@@ -32,9 +33,9 @@ public class Product implements Serializable
   // CONSTRUCTOR
   //------------------------
 
-  public Product(String aName, IMS aIMS)
+  public Product(String aName, double aPrice, IMS aIMS)
   {
-    // line 36 "../../../../IMS.ump"
+    // line 37 "../../../../IMS.ump"
     if(aName == null || aName.length() == 0 ) {
       		throw new RuntimeException("The name of a product cannot be empty");
       	}
@@ -42,6 +43,7 @@ public class Product implements Serializable
       		throw new RuntimeException("Product character cannot be more than 25");
       	}
     // END OF UMPLE BEFORE INJECTION
+    price = aPrice;
     if (!setName(aName))
     {
       throw new RuntimeException("Cannot create due to duplicate name");
@@ -61,7 +63,7 @@ public class Product implements Serializable
   public boolean setName(String aName)
   {
     boolean wasSet = false;
-    // line 36 "../../../../IMS.ump"
+    // line 37 "../../../../IMS.ump"
     if(aName == null || aName.length() == 0 ) {
       		throw new RuntimeException("The name of a product cannot be empty");
       	}
@@ -82,6 +84,14 @@ public class Product implements Serializable
     return wasSet;
   }
 
+  public boolean setPrice(double aPrice)
+  {
+    boolean wasSet = false;
+    price = aPrice;
+    wasSet = true;
+    return wasSet;
+  }
+
   public String getName()
   {
     return name;
@@ -95,6 +105,11 @@ public class Product implements Serializable
   public static boolean hasWithName(String aName)
   {
     return getWithName(aName) != null;
+  }
+
+  public double getPrice()
+  {
+    return price;
   }
   /* Code from template association_GetMany */
   public Item getItem(int index)
@@ -287,7 +302,8 @@ public class Product implements Serializable
   public String toString()
   {
     return super.toString() + "["+
-            "name" + ":" + getName()+ "]" + System.getProperties().getProperty("line.separator") +
+            "name" + ":" + getName()+ "," +
+            "price" + ":" + getPrice()+ "]" + System.getProperties().getProperty("line.separator") +
             "  " + "iMS = "+(getIMS()!=null?Integer.toHexString(System.identityHashCode(getIMS())):"null") + System.getProperties().getProperty("line.separator") +
             "  " + "warehouse = "+(getWarehouse()!=null?Integer.toHexString(System.identityHashCode(getWarehouse())):"null");
   }  

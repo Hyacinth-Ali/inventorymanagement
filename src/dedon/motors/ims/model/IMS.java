@@ -366,9 +366,9 @@ public class IMS implements Serializable
     return 0;
   }
   /* Code from template association_AddManyToOne */
-  public Product addProduct(String aName)
+  public Product addProduct(String aName, double aPrice)
   {
-    return new Product(aName, this);
+    return new Product(aName, aPrice, this);
   }
 
   public boolean addProduct(Product aProduct)

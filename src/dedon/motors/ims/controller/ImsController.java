@@ -1,5 +1,6 @@
 package dedon.motors.ims.controller;
 
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,24 +19,67 @@ import dedon.motors.ims.persistence.ImsPersistence;
 public class ImsController {
 	
 	/******************************/
-	//Product CRUD, Begin
+	//Product Controller Begin
 	/******************************/
 	/**
 	 * Creates an instance of a product.
 	 * @param name of the product.
+	 * @param price of an item of the product
 	 * @throws InvalidInputException and exception that can be thrown.
 	 */
-	public static void createProduct(String name) throws InvalidInputException {
+	public static void createProduct(String name, double price) throws InvalidInputException {
 		IMS ims = ImsApplication.getIms();
 		try {
-			ims.addProduct(name);
+			ims.addProduct(name, price);
 			ImsPersistence.save(ims);
-			/*for (Product p : ims.getProducts()) {
-				System.out.println("Name : " + p.getName());
-			}*/		
 		} catch (RuntimeException e) {
 			throw new InvalidInputException (e.getMessage());
 		}
+	}
+	
+	/**
+	 * Adds items to existing product.
+	 * @param product to be added items
+	 * @param quantity number of items
+	 * @throws InvalidInputException
+	 */
+	public static void addProductItems(Product product, int quantity) throws InvalidInputException {
+		for (int count = 1; count <= quantity; quantity++) {
+			try {
+				product.addItem();
+				ImsPersistence.save(ImsApplication.getIms());
+			} catch (RuntimeException e) {
+				throw new InvalidInputException(e.getMessage());
+			}
+		}
+	}
+	
+	/**
+	 * Removes items from a product. This happens when there is a purchase.
+	 * @param product of the items
+	 * @param quantity of the items to be removed
+	 * @throws InvalidInputException
+	 */
+	public static void removeProductItems(Product product, int quantity) throws InvalidInputException {
+		int itemsInStore = product.getItems().size();
+		//check that quantity in store is more than demanding quantities.
+		if (quantity > itemsInStore) {
+			throw new InvalidInputException("quantity of " + product.getName() + " is more than what we have inn store.");
+		} else {
+			for (Item item : product.getItems()) {
+				if (quantity > 0) {
+					try {
+						product.removeItem(item);
+						ImsPersistence.save(ImsApplication.getIms());
+						quantity--;
+					} catch (RuntimeException e) {
+						throw new InvalidInputException(e.getMessage());
+					}
+				}
+				
+			}
+		}
+		
 	}
 	
 	/**
@@ -55,6 +99,11 @@ public class ImsController {
 		
 	}
 	
+	/**
+	 * Helper method for finding a product.
+	 * @param name unique name of the product
+	 * @return the product.
+	 */
 	private static Product findProduct(String name) {
 		Product p = null;
 		IMS ims = ImsApplication.getIms();
@@ -74,16 +123,19 @@ public class ImsController {
 	public static List<TOProduct> getProducts() {
 		ArrayList<TOProduct> products = new ArrayList<TOProduct>();
 		for (Product p : ImsApplication.getIms().getProducts()) {
-			TOProduct toProduct = new TOProduct(p.getName());
+			TOProduct toProduct = new TOProduct(p.getName(), p.getPrice());
 			products.add(toProduct);
 		}
 		return products;
 	}
 	
 	/**
-	 * Updates product
+	 * Updates product name.
+	 * @param oldName to change.
+	 * @param newName to set.
+	 * @throws InvalidInputException
 	 */
-	public static void updateProduct(String oldName, String newName) throws InvalidInputException {
+	public static void updateProductName(String oldName, String newName) throws InvalidInputException {
 		Product product = findProduct(oldName);
 		if (product != null) {
 			try {
@@ -96,12 +148,31 @@ public class ImsController {
 		}
 	}
 	
+	/**
+	 * Updates product price.
+	 * @param name of the product.
+	 * @param newPrice new price of the product.
+	 * @throws InvalidInputException
+	 */
+	public static void updateProductPrice(String name, double newPrice) throws InvalidInputException {
+		Product product = findProduct(name);
+		if (product != null) {
+			try {
+				product.setPrice(newPrice);
+				ImsPersistence.save(ImsApplication.getIms());
+			} catch (RuntimeException e) {
+				throw new InvalidInputException(e.getMessage());
+			}
+			
+		}
+	}
+	
 	/******************************/
-	//Product CRUD, End
+	//Product Controllers, End
 	/******************************/
 	
 	/******************************/
-	//Customer CRUD, Begin
+	//Customer Controllers, Begin
 	/******************************/
 	
 	/**
@@ -123,6 +194,31 @@ public class ImsController {
 		return customers;
 	}
 	
+	/**
+	 * Retrieve debt of a customer.
+	 * @param id of the customer
+	 * @return the amount of the debt
+	 * @throws InvalidInputException
+	 */
+	public static double getCustomerDebt(String id) throws InvalidInputException {
+		double amount = 0;
+		Customer customer = findCustomer(id);
+		if (customer != null) {
+			for (Transaction transaction : customer.getTransactions()) {
+				amount += transaction.getUnpaidAmount();
+			}
+		} else {
+			throw new InvalidInputException("The customer does not exist.");
+		}
+		return amount;
+		
+	}
+	
+	/**
+	 * Helper method for finding a customer.
+	 * @param id of the customer.
+	 * @return the customer.
+	 */
 	private static Customer findCustomer(String id) {
 		Customer c = null;
 		for (Customer customer : ImsApplication.getIms().getCustomers()) {
@@ -135,11 +231,11 @@ public class ImsController {
 	}
 	
 	 /**
-	 * Create an object of a customer.
-	 * @param name of the customer.
-	 * @param id of the customer.
-	 * @throws InvalidInputException throws an exception.
-	 */
+	  * Creates an instance of a customer
+	  * @param customerID of the customer
+	  * @param user associated with customer role.
+	  * @throws InvalidInputException
+	  */
 	public static void createCustomer(String customerID, User user) throws InvalidInputException{
 		IMS ims = ImsApplication.getIms();
 		String error = "";
@@ -162,7 +258,11 @@ public class ImsController {
 		
 	}
 	
-	
+	/**
+	 * Deletes object of a customer.
+	 * @param id of the customer.
+	 * @throws InvalidInputException
+	 */
 	public static void deleteCustomer(String id) throws InvalidInputException{
 		
 		Customer customer = findCustomer(id);
@@ -176,6 +276,12 @@ public class ImsController {
 		}
 	}
 	
+	/**
+	 * Updates the id of a customer.
+	 * @param oldID of the customer.
+	 * @param newID of the customer.
+	 * @throws InvalidInputException
+	 */
 	public static void upDateCustomerID(String oldID, String newID) 
 			throws InvalidInputException {
 		Customer customer = findCustomer(oldID);
@@ -193,6 +299,12 @@ public class ImsController {
 		
 	}
 	
+	/**
+	 * Updates the name of a customer
+	 * @param id of the customer.
+	 * @param newName of the customer
+	 * @throws InvalidInputException
+	 */
 	public static void upDateCustomerName(String id, String newName) 
 			throws InvalidInputException {
 		Customer customer = findCustomer(id);
@@ -211,21 +323,19 @@ public class ImsController {
 	}
 	
 	/******************************/
-	//Customer CRUD, End
+	//Customer Controllers, End
 	/******************************/
 	
 	/*********************************/
-	// User CRUD, Begin
+	// User Controllers, Begin
 	/**********************************/
  
 	/**
 	 * Delete instance of a user and all its roles
-	 * @param id
+	 * @param user to be deleted
 	 * @throws InvalidInputException
 	 */
-	public static void deleteUser(UserRole role) throws InvalidInputException{
-		User user = role.getUser();
-		
+	public static void deleteUser(User user) throws InvalidInputException{
 		try {
 			user.delete();
 			ImsPersistence.save(ImsApplication.getIms());
@@ -234,29 +344,33 @@ public class ImsController {
 		}
 	}
 	
-	
+	/**
+	 * Creates object of a user
+	 * @param name of the user
+	 * @throws InvalidInputException
+	 */
 	public static void createUser(String name) throws InvalidInputException {
-		String error = "";
-		
 		if (name == null || name == "") {
-			error = "A user name cannot be empty.";
+			throw new InvalidInputException("A user name cannot be empty.");
 		} 
 		
-		if (error.length() > 0  ) {
-			throw new InvalidInputException(error);
-		}
 		IMS ims = ImsApplication.getIms();
 		
 		try {
 			ims.addUser(name);
+			ImsPersistence.save(ImsApplication.getIms());
 		} catch (RuntimeException e) {
 			throw new InvalidInputException(e.getMessage());
 		}
 	}
 	
-	public static void updateUser(UserRole role, String newName) throws InvalidInputException {
-		User user = role.getUser();
-		
+	/**
+	 * Updates the name of a user.
+	 * @param user whose name is to be updated
+	 * @param newName
+	 * @throws InvalidInputException
+	 */
+	public static void updateUser(User user, String newName) throws InvalidInputException {
 		try {
 			user.setName(newName);
 			ImsPersistence.save(ImsApplication.getIms());
@@ -266,15 +380,15 @@ public class ImsController {
 	}
 	
 	/*********************************/
-	// User CRUD, Begin
+	// User Controllers, End
 	/**********************************/
 	
 	/*********************************/
-	// Manager CRUD, Begin
+	// Manager Controllers, Begin
 	/**********************************/
 	
 	/**
-	 * Query method for Manager
+	 * Query method for retrieving managers
 	 * @return list of Manager
 	 */
 	public static List<TOManager> getManagers() {
@@ -293,6 +407,11 @@ public class ImsController {
 		return managers;
 	}
 	
+	/**
+	 * Helper method for finding a manager.
+	 * @param userName of the manager
+	 * @return the manager
+	 */
 	private static Manager findManager(String userName) {
 		Manager manager = null;
 		for (Manager m : ImsApplication.getIms().getManagers()) {
@@ -305,10 +424,18 @@ public class ImsController {
 	}
 	
 	 /**
-	 * Create an object of a Manager.
+	 * 
 	 * @param name of the customer.
 	 * @param id of the customer.
 	 * @throws InvalidInputException throws an exception.
+	 */
+	
+	/**
+	 * Create an object of a Manager.
+	 * @param userName of the manager
+	 * @param password of the manager
+	 * @param user to be associated with the manager.
+	 * @throws InvalidInputException
 	 */
 	public static void createManager(String userName, String password, User user) throws InvalidInputException{
 		IMS ims = ImsApplication.getIms();
@@ -332,7 +459,11 @@ public class ImsController {
 		
 	}
 	
-	
+	/**
+	 * Deletes a manager from the system.
+	 * @param userName of the manager
+	 * @throws InvalidInputException
+	 */
 	public static void deleteManager(String userName) throws InvalidInputException{
 		
 		Manager manager = findManager(userName);
@@ -346,6 +477,12 @@ public class ImsController {
 		}
 	}
 	
+	/**
+	 * Updates the user name of a manager
+	 * @param oldUserName of the manager
+	 * @param newUserName of the manager
+	 * @throws InvalidInputException
+	 */
 	public static void upDateManagerUserName(String oldUserName, String newUserName) 
 			throws InvalidInputException {
 		Manager manager = findManager(oldUserName);
@@ -363,6 +500,12 @@ public class ImsController {
 		
 	}
 	
+	/**
+	 * Updates the password of a manager
+	 * @param oldUserName of the manager
+	 * @param newPassword of the manager
+	 * @throws InvalidInputException
+	 */
 	public static void upDateManagerPassword(String oldUserName, String newPassword) 
 			throws InvalidInputException {
 		Manager manager = findManager(oldUserName);
@@ -380,6 +523,12 @@ public class ImsController {
 		
 	}
 	
+	/**
+	 * Updates the name of a manager.
+	 * @param oldUserName of the manager
+	 * @param newName of the manager
+	 * @throws InvalidInputException
+	 */
 	public static void upDateManagerName(String oldUserName, String newName) 
 			throws InvalidInputException {
 		Manager manager = findManager(oldUserName);
@@ -400,41 +549,24 @@ public class ImsController {
 	
 	
 	/*********************************/
-	// Manager CRUD, End
+	// Manager Controllers, End
 	/**********************************/
 	
+
 	/*********************************/
-	// Item CRUD, Begin
+	// Transaction Controllers Begin
 	/**********************************/
 	
 	/**
-	 * Creates an instance of an Item.
-	 * @param price of the item.
-	 * @throws InvalidInputException and exception that can be thrown.
+	 * Query method for list of a customer transactions.
+	 * @param customer
+	 * @return list of transactions
 	 */
-	public static void createItem(Product product) throws InvalidInputException {
-		IMS ims = ImsApplication.getIms();
-		try {
-			product.addItem();
-			ImsPersistence.save(ims);
-		} catch (RuntimeException e) {
-			throw new InvalidInputException (e.getMessage());
-		}
-	}
-
-	
-	/*********************************/
-	// Item CRUD, End
-	/**********************************/
-
-	/*********************************/
-	// Transaction CRUD, Begin
-	/**********************************/
-	public static List<TOTransaction> getTransactions() {
+	public static List<TOTransaction> getCustomerTransactions(Customer customer) {
 		ArrayList<TOTransaction> transactions = new ArrayList<TOTransaction>();
-		for (Transaction t : ImsApplication.getIms().getTransactions()) {
-			TOTransaction toTransaction = new TOTransaction(t.getId(), t.getCustomer().getFirstName() + 
-					" Transaction");
+		for (Transaction t : customer.getTransactions()) {
+			TOTransaction toTransaction = new TOTransaction(t.getId(), t.getDate(), t.getTotalAmount());
+			toTransaction.setAmountPaid(t.getAmountPaid());
 			transactions.add(toTransaction);
 		}
 		return transactions;
@@ -455,32 +587,61 @@ public class ImsController {
 	
 	
 	/**
-	 * Create an instance of a transaction.
-	 * @param customer the buyer.
+	 * Creates a transaction
+	 * @param date of the transaction
+	 * @param customerID of the buyer
+	 * @param managerUserName of the seller
+	 * @throws InvalidInputException
 	 */
-	public static void createTransaction(int customerID) throws InvalidInputException {
+	public static void createTransaction(Date date, String customerID, String managerUserName) throws InvalidInputException {
 		IMS ims = ImsApplication.getIms();
+		Customer c = findCustomer(customerID);
+		Manager manager = findManager(managerUserName);
+		String error = "";
+		
+		if (c == null) {
+			error = "You need a customer to create a transaction.";
+		} else if (manager == null) {
+			error = "You need a manager to create a transaction.";
+		}
+		if (error.length() > 0) {
+			throw new InvalidInputException(error);
+		}
+		
 		try {
-			ims.addTransaction(findCustomer(customerID));
+			ims.addTransaction(date, c, manager);
 			ImsPersistence.save(ims);
 		} catch (RuntimeException e) {
 			throw new InvalidInputException(e.getMessage());
 		}
 	}
 	
-	public static void addProduct(Transaction transaction, Product product, int unitPrice, int quantity) {
-		Product dProduct = null;
-		for (Product p : ImsApplication.getIms().getProducts()) {
+	/**
+	 * Add products for a transaction.
+	 * @param transaction to be added products
+	 * @param product to be added to a transaction.
+	 * @throws InvalidInputException
+	 */
+	public static void addTransactionProduct(Transaction transaction, Product product) throws InvalidInputException {
+		String error = "";
+		for (Product p : transaction.getProducts()) {
 			if (p.equals(product)) {
-				dProduct = p;
-				dProduct.setUnitprice(unitPrice);
-				dProduct.setQuantity(quantity);
+				error = "The product has already been added to this transaction.";
 				break;
 			}
 		}
-		transaction.addProduct(dProduct);
+		if (error.length() > 0) {
+			throw new InvalidInputException(error);
+		} else {
+			transaction.addProduct(product);
+		}
 	}
 	
+	/**
+	 * Deletes a transaction
+	 * @param id of the transaction
+	 * @throws InvalidInputException
+	 */
 	public static void deleteTransaction(int id) throws InvalidInputException{
 		Transaction transaction = findTransaction(id);
 		if (transaction != null) {
@@ -493,18 +654,73 @@ public class ImsController {
 		}
 	}
 	
-	public static void submitSelection(Transaction transaction) {
-		int number = 1;
+	/**
+	 * First checkout details
+	 * @param transaction
+	 */
+	private static void setCheckoutValues(Transaction transaction) {
 		for (Product product : transaction.getProducts()) {
-			int totalAmount = product.getQuantity() * product.getUnitprice();
-			System.out.println(number + " " + product.getName() + " " + product.getUnitprice() + " " +
-					totalAmount);
-			number++;
+			double totalAmount = product.getPrice() * product.getItems().size();
+			transaction.setTotalAmount(totalAmount);
 		}
 	}
 	
-	public static void clearSelection(Transaction transaction) {
-		transaction.getProducts().clear();
+	/**
+	 * Query method for first checkout details
+	 * @param id of the transaction.
+	 * @return the transaction
+	 * @throws InvalidInputException
+	 */
+	public static TOTransaction firstCheckOut(int id) throws InvalidInputException {
+		Transaction transaction = findTransaction(id);
+		TOTransaction toTransaction = null;
+		if (transaction != null) {
+			setCheckoutValues(transaction);
+			toTransaction = new TOTransaction(transaction.getId(), transaction.getDate(), 
+					transaction.getTotalAmount());
+		} else {
+			throw new InvalidInputException("The transaction does not exist.");
+		}
+		return toTransaction;
+		
 	}
+	
+	/**
+	 * Final step to purchase products
+	 * @param transaction of the purchase
+	 * @param amountPaid paid for the transaction
+	 * @throws InvalidInputException
+	 */
+	public static void lastCheckOutPurchase(Transaction transaction, double amountPaid) throws InvalidInputException {
+		try {
+			for (Product product : transaction.getProducts()) {
+				double totalAmount = product.getPrice() * product.getItems().size();
+				transaction.setTotalAmount(totalAmount);
+				transaction.setAmountPaid(amountPaid);
+				ImsPersistence.save(ImsApplication.getIms());
+			}
+		} catch (RuntimeException e) {
+			throw new InvalidInputException(e.getMessage());
+		}
+	}
+	
+	/**
+	 * Clears selection of a transaction.
+	 * @param transaction
+	 * @throws InvalidInputException
+	 */
+	public static void clearSelection(Transaction transaction) throws InvalidInputException {
+		try {
+			transaction.getProducts().clear();
+			ImsPersistence.save(ImsApplication.getIms());
+		} catch (RuntimeException e) {
+			throw new InvalidInputException(e.getMessage());
+		}
+		
+	}
+	
+	/*********************************/
+	// Transaction Controllers End
+	/**********************************/
 
 }

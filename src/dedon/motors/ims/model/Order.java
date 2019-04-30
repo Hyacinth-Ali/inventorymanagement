@@ -5,7 +5,7 @@ package dedon.motors.ims.model;
 import java.sql.Date;
 import java.util.*;
 
-// line 149 "../../../../IMS.ump"
+// line 151 "../../../../IMS.ump"
 public class Order
 {
 

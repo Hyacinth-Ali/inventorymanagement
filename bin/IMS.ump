@@ -30,6 +30,7 @@ class IMS
 class Product
 {
   unique name;
+  Double price;
   1 <@>- 0..* Item items;
   
   before constructor, setName {
@@ -92,6 +93,7 @@ class Transaction {
 	autounique id;
 	lazy Double totalAmount;
 	lazy Double amountPaid; 
+	Double unpaidAmount = { getTotalAmount() - getAmountPaid() };
 }
 
 class User {

@@ -6,7 +6,7 @@ import java.io.Serializable;
 import java.util.*;
 
 // line 75 "../../../../IMSPersistence.ump"
-// line 97 "../../../../IMS.ump"
+// line 99 "../../../../IMS.ump"
 public class User implements Serializable
 {
 
@@ -27,7 +27,7 @@ public class User implements Serializable
 
   public User(String aName, IMS aIMS)
   {
-    // line 101 "../../../../IMS.ump"
+    // line 103 "../../../../IMS.ump"
     if(aName == null || aName.length() == 0 ) {
       		throw new RuntimeException("The name of a user cannot be empty");
       	}
@@ -51,7 +51,7 @@ public class User implements Serializable
   public boolean setName(String aName)
   {
     boolean wasSet = false;
-    // line 101 "../../../../IMS.ump"
+    // line 103 "../../../../IMS.ump"
     if(aName == null || aName.length() == 0 ) {
       		throw new RuntimeException("The name of a user cannot be empty");
       	}
