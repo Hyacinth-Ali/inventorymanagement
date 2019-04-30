@@ -148,9 +148,9 @@ public class Product implements Serializable
     return 0;
   }
   /* Code from template association_AddManyToOne */
-  public Item addItem(double aPrice)
+  public Item addItem()
   {
-    return new Item(aPrice, this);
+    return new Item(this);
   }
 
   public boolean addItem(Item aItem)

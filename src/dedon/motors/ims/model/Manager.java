@@ -7,7 +7,7 @@ import java.util.*;
 import java.sql.Date;
 
 // line 15 "../../../../IMSPersistence.ump"
-// line 69 "../../../../IMS.ump"
+// line 59 "../../../../IMS.ump"
 public class Manager extends UserRole implements Serializable
 {
 
@@ -33,10 +33,10 @@ public class Manager extends UserRole implements Serializable
   // CONSTRUCTOR
   //------------------------
 
-  public Manager(String aUserName, String aPassword, IMS aIMS)
+  public Manager(User aUser, String aUserName, String aPassword, IMS aIMS)
   {
-    super();
-    // line 76 "../../../../IMS.ump"
+    super(aUser);
+    // line 66 "../../../../IMS.ump"
     if(aUserName == null || aUserName.length() == 0 ) {
       		throw new RuntimeException("The user name of a manager cannot be empty");
       	}
@@ -44,7 +44,7 @@ public class Manager extends UserRole implements Serializable
       		throw new RuntimeException("Manager user name character should be between 5 to 20 characters");
       	}
     // END OF UMPLE BEFORE INJECTION
-    // line 85 "../../../../IMS.ump"
+    // line 75 "../../../../IMS.ump"
     if(aPassword == null || aPassword.length() == 0 ) {
       		throw new RuntimeException("The password of a manager cannot be empty");
       	}
@@ -72,7 +72,7 @@ public class Manager extends UserRole implements Serializable
   public boolean setUserName(String aUserName)
   {
     boolean wasSet = false;
-    // line 76 "../../../../IMS.ump"
+    // line 66 "../../../../IMS.ump"
     if(aUserName == null || aUserName.length() == 0 ) {
       		throw new RuntimeException("The user name of a manager cannot be empty");
       	}
@@ -96,7 +96,7 @@ public class Manager extends UserRole implements Serializable
   public boolean setPassword(String aPassword)
   {
     boolean wasSet = false;
-    // line 85 "../../../../IMS.ump"
+    // line 75 "../../../../IMS.ump"
     if(aPassword == null || aPassword.length() == 0 ) {
       		throw new RuntimeException("The password of a manager cannot be empty");
       	}

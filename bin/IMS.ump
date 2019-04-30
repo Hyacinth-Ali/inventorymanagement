@@ -44,16 +44,6 @@ class Product
 } 
 
 class Item {
-	Double price;
-	
-	before constructor, setPrice {
-  	if(aPrice == 0.00 ) {
-  		throw new RuntimeException("Price of an item cannot be zero.");
-  	}
-  	if (aPrice < 0.00) {
-  		throw new RuntimeException("Price of an item cannot be negative value.");
-  	}
-  }
 }
 
 class Warehouse
@@ -121,7 +111,7 @@ association {
 	* Transaction transactions -- 1 Customer customer;
     1 Transaction -> * Product products;
     * Transaction transactions -- 1 Manager manager;
-    0..1 User user -- 1..2 UserRole roles;
+    1 User user -- 0..2 UserRole roles;
     1 Transaction transaction -- 0..* Receipt receipts;
     1 Audit -> * Transaction transactions;
     1 Audit -> * Order orders;

@@ -681,9 +681,9 @@ public class IMS implements Serializable
     return 0;
   }
   /* Code from template association_AddManyToOne */
-  public Employee addEmployee(String aPassword)
+  public Employee addEmployee(User aUser, String aPassword)
   {
-    return new Employee(aPassword, this);
+    return new Employee(aUser, aPassword, this);
   }
 
   public boolean addEmployee(Employee aEmployee)
@@ -825,9 +825,9 @@ public class IMS implements Serializable
     return 0;
   }
   /* Code from template association_AddManyToOne */
-  public Customer addCustomer(String aCustomerID)
+  public Customer addCustomer(User aUser, String aCustomerID)
   {
-    return new Customer(aCustomerID, this);
+    return new Customer(aUser, aCustomerID, this);
   }
 
   public boolean addCustomer(Customer aCustomer)
@@ -969,9 +969,9 @@ public class IMS implements Serializable
     return 0;
   }
   /* Code from template association_AddManyToOne */
-  public Manager addManager(String aUserName, String aPassword)
+  public Manager addManager(User aUser, String aUserName, String aPassword)
   {
-    return new Manager(aUserName, aPassword, this);
+    return new Manager(aUser, aUserName, aPassword, this);
   }
 
   public boolean addManager(Manager aManager)
@@ -1041,9 +1041,9 @@ public class IMS implements Serializable
     return 0;
   }
   /* Code from template association_AddManyToOne */
-  public User addUser(String aName, UserRole... allRoles)
+  public User addUser(String aName)
   {
-    return new User(aName, this, allRoles);
+    return new User(aName, this);
   }
 
   public boolean addUser(User aUser)

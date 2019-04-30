@@ -6,7 +6,7 @@ import java.io.Serializable;
 import java.util.*;
 
 // line 69 "../../../../IMSPersistence.ump"
-// line 59 "../../../../IMS.ump"
+// line 49 "../../../../IMS.ump"
 public class Warehouse implements Serializable
 {
 

@@ -7,9 +7,16 @@ class TOCustomer {
 
 class TOProduct {
 	name;
+	Integer price;
 }
 
 class TOTransaction {
 	Integer id;
 	name;
+}
+
+class TOManager{
+	name;
+	userName;
+	password;
 }

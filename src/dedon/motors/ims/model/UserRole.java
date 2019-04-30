@@ -3,7 +3,7 @@
 
 package dedon.motors.ims.model;
 
-// line 65 "../../../../IMS.ump"
+// line 55 "../../../../IMS.ump"
 public abstract class UserRole
 {
 
@@ -18,8 +18,14 @@ public abstract class UserRole
   // CONSTRUCTOR
   //------------------------
 
-  public UserRole()
-  {}
+  public UserRole(User aUser)
+  {
+    boolean didAddUser = setUser(aUser);
+    if (!didAddUser)
+    {
+      throw new RuntimeException("Unable to create role due to user");
+    }
+  }
 
   //------------------------
   // INTERFACE
@@ -29,27 +35,45 @@ public abstract class UserRole
   {
     return user;
   }
-
-  public boolean hasUser()
+  /* Code from template association_SetOneToAtMostN */
+  public boolean setUser(User aUser)
   {
-    boolean has = user != null;
-    return has;
+    boolean wasSet = false;
+    //Must provide user to role
+    if (aUser == null)
+    {
+      return wasSet;
+    }
+
+    //user already at maximum (2)
+    if (aUser.numberOfRoles() >= User.maximumNumberOfRoles())
+    {
+      return wasSet;
+    }
+    
+    User existingUser = user;
+    user = aUser;
+    if (existingUser != null && !existingUser.equals(aUser))
+    {
+      boolean didRemove = existingUser.removeRole(this);
+      if (!didRemove)
+      {
+        user = existingUser;
+        return wasSet;
+      }
+    }
+    user.addRole(this);
+    wasSet = true;
+    return wasSet;
   }
 
   public void delete()
   {
-    if (user != null)
+    User placeholderUser = user;
+    this.user = null;
+    if(placeholderUser != null)
     {
-      if (user.numberOfRoles() <= 1)
-      {
-        user.delete();
-      }
-      else
-      {
-        User placeholderUser = user;
-        this.user = null;
-        placeholderUser.removeRole(this);
-      }
+      placeholderUser.removeRole(this);
     }
   }
 

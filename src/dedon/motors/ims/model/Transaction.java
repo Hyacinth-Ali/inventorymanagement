@@ -7,7 +7,7 @@ import java.sql.Date;
 import java.util.*;
 
 // line 51 "../../../../IMSPersistence.ump"
-// line 100 "../../../../IMS.ump"
+// line 90 "../../../../IMS.ump"
 public class Transaction implements Serializable
 {
 

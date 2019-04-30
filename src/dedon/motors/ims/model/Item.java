@@ -11,9 +11,6 @@ public class Item
   // MEMBER VARIABLES
   //------------------------
 
-  //Item Attributes
-  private double price;
-
   //Item Associations
   private Product product;
 
@@ -21,17 +18,8 @@ public class Item
   // CONSTRUCTOR
   //------------------------
 
-  public Item(double aPrice, Product aProduct)
+  public Item(Product aProduct)
   {
-    // line 50 "../../../../IMS.ump"
-    if(aPrice == 0.00 ) {
-      		throw new RuntimeException("Price of an item cannot be zero.");
-      	}
-      	if (aPrice < 0.00) {
-      		throw new RuntimeException("Price of an item cannot be negative value.");
-      	}
-    // END OF UMPLE BEFORE INJECTION
-    price = aPrice;
     boolean didAddProduct = setProduct(aProduct);
     if (!didAddProduct)
     {
@@ -42,27 +30,6 @@ public class Item
   //------------------------
   // INTERFACE
   //------------------------
-
-  public boolean setPrice(double aPrice)
-  {
-    boolean wasSet = false;
-    // line 50 "../../../../IMS.ump"
-    if(aPrice == 0.00 ) {
-      		throw new RuntimeException("Price of an item cannot be zero.");
-      	}
-      	if (aPrice < 0.00) {
-      		throw new RuntimeException("Price of an item cannot be negative value.");
-      	}
-    // END OF UMPLE BEFORE INJECTION
-    price = aPrice;
-    wasSet = true;
-    return wasSet;
-  }
-
-  public double getPrice()
-  {
-    return price;
-  }
   /* Code from template association_GetOne */
   public Product getProduct()
   {
@@ -98,11 +65,4 @@ public class Item
     }
   }
 
-
-  public String toString()
-  {
-    return super.toString() + "["+
-            "price" + ":" + getPrice()+ "]" + System.getProperties().getProperty("line.separator") +
-            "  " + "product = "+(getProduct()!=null?Integer.toHexString(System.identityHashCode(getProduct())):"null");
-  }
 }

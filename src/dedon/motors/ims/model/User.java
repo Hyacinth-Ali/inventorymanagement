@@ -6,7 +6,7 @@ import java.io.Serializable;
 import java.util.*;
 
 // line 75 "../../../../IMSPersistence.ump"
-// line 107 "../../../../IMS.ump"
+// line 97 "../../../../IMS.ump"
 public class User implements Serializable
 {
 
@@ -25,9 +25,9 @@ public class User implements Serializable
   // CONSTRUCTOR
   //------------------------
 
-  public User(String aName, IMS aIMS, UserRole... allRoles)
+  public User(String aName, IMS aIMS)
   {
-    // line 111 "../../../../IMS.ump"
+    // line 101 "../../../../IMS.ump"
     if(aName == null || aName.length() == 0 ) {
       		throw new RuntimeException("The name of a user cannot be empty");
       	}
@@ -42,11 +42,6 @@ public class User implements Serializable
       throw new RuntimeException("Unable to create user due to iMS");
     }
     roles = new ArrayList<UserRole>();
-    boolean didAddRoles = setRoles(allRoles);
-    if (!didAddRoles)
-    {
-      throw new RuntimeException("Unable to create User, must have 1 to 2 roles");
-    }
   }
 
   //------------------------
@@ -56,7 +51,7 @@ public class User implements Serializable
   public boolean setName(String aName)
   {
     boolean wasSet = false;
-    // line 111 "../../../../IMS.ump"
+    // line 101 "../../../../IMS.ump"
     if(aName == null || aName.length() == 0 ) {
       		throw new RuntimeException("The name of a user cannot be empty");
       	}
@@ -130,14 +125,16 @@ public class User implements Serializable
   /* Code from template association_MinimumNumberOfMethod */
   public static int minimumNumberOfRoles()
   {
-    return 1;
+    return 0;
   }
   /* Code from template association_MaximumNumberOfMethod */
   public static int maximumNumberOfRoles()
   {
     return 2;
   }
-  /* Code from template association_AddMNToOptionalOne */
+  /* Code from template association_AddOptionalNToOne */
+
+
   public boolean addRole(UserRole aRole)
   {
     boolean wasAdded = false;
@@ -146,17 +143,17 @@ public class User implements Serializable
     {
       return wasAdded;
     }
+
     User existingUser = aRole.getUser();
-    if (existingUser != null && existingUser.numberOfRoles() <= minimumNumberOfRoles())
+    boolean isNewUser = existingUser != null && !this.equals(existingUser);
+    if (isNewUser)
     {
-      return wasAdded;
+      aRole.setUser(this);
     }
-    else if (existingUser != null)
+    else
     {
-      existingUser.roles.remove(aRole);
+      roles.add(aRole);
     }
-    roles.add(aRole);
-    setUser(aRole,this);
     wasAdded = true;
     return wasAdded;
   }
@@ -164,81 +161,13 @@ public class User implements Serializable
   public boolean removeRole(UserRole aRole)
   {
     boolean wasRemoved = false;
-    if (roles.contains(aRole) && numberOfRoles() > minimumNumberOfRoles())
+    //Unable to remove aRole, as it must always have a user
+    if (!this.equals(aRole.getUser()))
     {
       roles.remove(aRole);
-      setUser(aRole,null);
       wasRemoved = true;
     }
     return wasRemoved;
-  }
-  /* Code from template association_SetMNToOptionalOne */
-  public boolean setRoles(UserRole... newRoles)
-  {
-    boolean wasSet = false;
-    if (newRoles.length < minimumNumberOfRoles() || newRoles.length > maximumNumberOfRoles())
-    {
-      return wasSet;
-    }
-
-    ArrayList<UserRole> checkNewRoles = new ArrayList<UserRole>();
-    HashMap<User,Integer> userToNewRoles = new HashMap<User,Integer>();
-    for (UserRole aRole : newRoles)
-    {
-      if (checkNewRoles.contains(aRole))
-      {
-        return wasSet;
-      }
-      else if (aRole.getUser() != null && !this.equals(aRole.getUser()))
-      {
-        User existingUser = aRole.getUser();
-        if (!userToNewRoles.containsKey(existingUser))
-        {
-          userToNewRoles.put(existingUser, new Integer(existingUser.numberOfRoles()));
-        }
-        Integer currentCount = userToNewRoles.get(existingUser);
-        int nextCount = currentCount - 1;
-        if (nextCount < 1)
-        {
-          return wasSet;
-        }
-        userToNewRoles.put(existingUser, new Integer(nextCount));
-      }
-      checkNewRoles.add(aRole);
-    }
-
-    roles.removeAll(checkNewRoles);
-
-    for (UserRole orphan : roles)
-    {
-      setUser(orphan, null);
-    }
-    roles.clear();
-    for (UserRole aRole : newRoles)
-    {
-      if (aRole.getUser() != null)
-      {
-        aRole.getUser().roles.remove(aRole);
-      }
-      setUser(aRole, this);
-      roles.add(aRole);
-    }
-    wasSet = true;
-    return wasSet;
-  }
-  /* Code from template association_GetPrivate */
-  private void setUser(UserRole aRole, User aUser)
-  {
-    try
-    {
-      java.lang.reflect.Field mentorField = aRole.getClass().getDeclaredField("user");
-      mentorField.setAccessible(true);
-      mentorField.set(aRole, aUser);
-    }
-    catch (Exception e)
-    {
-      throw new RuntimeException("Issue internally setting aUser to aRole", e);
-    }
   }
   /* Code from template association_AddIndexControlFunctions */
   public boolean addRoleAt(UserRole aRole, int index)
@@ -281,11 +210,11 @@ public class User implements Serializable
     {
       placeholderIMS.removeUser(this);
     }
-    for(UserRole aRole : roles)
+    for(int i=roles.size(); i > 0; i--)
     {
-      setUser(aRole,null);
+      UserRole aRole = roles.get(i - 1);
+      aRole.delete();
     }
-    roles.clear();
   }
 
 

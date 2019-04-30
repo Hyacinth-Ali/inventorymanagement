@@ -5,7 +5,10 @@ import java.util.List;
 
 import dedon.motors.ims.application.ImsApplication;
 import dedon.motors.ims.model.Customer;
+import dedon.motors.ims.model.Employee;
 import dedon.motors.ims.model.IMS;
+import dedon.motors.ims.model.Item;
+import dedon.motors.ims.model.Manager;
 import dedon.motors.ims.model.Product;
 import dedon.motors.ims.model.Transaction;
 import dedon.motors.ims.model.User;
@@ -137,10 +140,9 @@ public class ImsController {
 	 * @param id of the customer.
 	 * @throws InvalidInputException throws an exception.
 	 */
-	public static void createCustomer(String name, String customerID, int userID) throws InvalidInputException{
+	public static void createCustomer(String customerID, User user) throws InvalidInputException{
 		IMS ims = ImsApplication.getIms();
 		String error = "";
-		User user = findUser(userID);
 		
 		if (customerID == null) {
 			error = "The ID of a customer cannot be empty";
@@ -151,61 +153,15 @@ public class ImsController {
 			throw new InvalidInputException(error);
 		}
 		
-		if (user != null) {
-			for (UserRole role : user.getRoles()) {
-				if (role instanceof Customer) {
-					throw new InvalidInputException("The customer already exist.");
-				}
-				try { 
-					Customer customer = ims.addCustomer(customerID);
-					user.addRole(customer);
-					ImsPersistence.save(ims);
-				} catch (RuntimeException e) {
-					error = e.getMessage();
-					if (error.equals("Cannot create due to duplicate id")) {
-						error = "Cannot create due to duplicate customer id";
-					}
-					throw new InvalidInputException (error);
-				}
-			}
-			
-		} else {
-			Customer c = null;
-			try {
-				c = ims.addCustomer(customerID);
-				ims.addUser(name, c);
-				ImsPersistence.save(ims);
-			} catch (RuntimeException e) {
-				if (c != null) {
-					c.delete();
-				}
-				error = e.getMessage();
-				if (error.equals("Cannot create due to duplicate id")) {
-					error = "The customer already exist";
-					throw new InvalidInputException(error);
-				} else if (error.equals("The name of a user cannot be empty")) {
-					error = "Cannot create a customer without name";
-					throw new InvalidInputException(error);
-				} else {
-					throw new InvalidInputException(error);
-				}
-					
-				
-			}
+		try {
+			ims.addCustomer(user, customerID);
+			ImsPersistence.save(ims);
+		} catch (RuntimeException e) {
+			throw new InvalidInputException(e.getMessage());
 		}
-		
 		
 	}
 	
-	private static User findUser(int id) {
-		User user = null;
-		for (User u: ImsApplication.getIms().getUsers()) {
-			if (u.getId() == id) {
-				user = u;
-			}
-		}
-		return user;
-	}
 	
 	public static void deleteCustomer(String id) throws InvalidInputException{
 		
@@ -220,18 +176,36 @@ public class ImsController {
 		}
 	}
 	
-	public static void upDateCustomer(int userID, String oldName, String newName) 
+	public static void upDateCustomerID(String oldID, String newID) 
 			throws InvalidInputException {
-		
-		User user = findUser(userID);
-		if (user != null) {
+		Customer customer = findCustomer(oldID);
+		if (customer != null) {
 			try {
-				user.setName(newName);
+				customer.setCustomerID(newID);
 				ImsPersistence.save(ImsApplication.getIms());
 			} catch (RuntimeException e) {
 				throw new InvalidInputException(e.getMessage());
 			}
 			
+		} else {
+			throw new InvalidInputException("The customer does not exist.");
+		}
+		
+	}
+	
+	public static void upDateCustomerName(String id, String newName) 
+			throws InvalidInputException {
+		Customer customer = findCustomer(id);
+		if (customer != null) {
+			try {
+				customer.getUser().setName(newName);
+				ImsPersistence.save(ImsApplication.getIms());
+			} catch (RuntimeException e) {
+				throw new InvalidInputException(e.getMessage());
+			}
+			
+		} else {
+			throw new InvalidInputException("The customer does not exist.");
 		}
 		
 	}
@@ -249,14 +223,121 @@ public class ImsController {
 	 * @param id
 	 * @throws InvalidInputException
 	 */
-	public static void deleteUser(int id) throws InvalidInputException{
+	public static void deleteUser(UserRole role) throws InvalidInputException{
+		User user = role.getUser();
 		
-		User user = findUser(id);
-		if (user != null) {
-			for (UserRole role : user.getRoles()) {
-				role.delete();
-			}
+		try {
 			user.delete();
+			ImsPersistence.save(ImsApplication.getIms());
+		} catch(RuntimeException e) {
+			throw new InvalidInputException (e.getMessage());
+		}
+	}
+	
+	
+	public static void createUser(String name) throws InvalidInputException {
+		String error = "";
+		
+		if (name == null || name == "") {
+			error = "A user name cannot be empty.";
+		} 
+		
+		if (error.length() > 0  ) {
+			throw new InvalidInputException(error);
+		}
+		IMS ims = ImsApplication.getIms();
+		
+		try {
+			ims.addUser(name);
+		} catch (RuntimeException e) {
+			throw new InvalidInputException(e.getMessage());
+		}
+	}
+	
+	public static void updateUser(UserRole role, String newName) throws InvalidInputException {
+		User user = role.getUser();
+		
+		try {
+			user.setName(newName);
+			ImsPersistence.save(ImsApplication.getIms());
+		} catch (RuntimeException e) {
+			throw new InvalidInputException(e.getMessage());
+		}
+	}
+	
+	/*********************************/
+	// User CRUD, Begin
+	/**********************************/
+	
+	/*********************************/
+	// Manager CRUD, Begin
+	/**********************************/
+	
+	/**
+	 * Query method for Manager
+	 * @return list of Manager
+	 */
+	public static List<TOManager> getManagers() {
+		ArrayList<TOManager> managers = new ArrayList<TOManager>();
+		for (User user : ImsApplication.getIms().getUsers()) {
+			for (UserRole role : user.getRoles()) {
+				if (role instanceof Manager) {
+					Manager m = (Manager)role;
+					TOManager toManager = new TOManager(m.getUser().getName(), m.getUserName(),
+							m.getPassword());
+					managers.add(toManager);
+				}
+			}
+			
+		}
+		return managers;
+	}
+	
+	private static Manager findManager(String userName) {
+		Manager manager = null;
+		for (Manager m : ImsApplication.getIms().getManagers()) {
+			if (userName.equals(m.getUserName())) {
+				manager = m;
+				break;
+			}
+		}
+		return manager;
+	}
+	
+	 /**
+	 * Create an object of a Manager.
+	 * @param name of the customer.
+	 * @param id of the customer.
+	 * @throws InvalidInputException throws an exception.
+	 */
+	public static void createManager(String userName, String password, User user) throws InvalidInputException{
+		IMS ims = ImsApplication.getIms();
+		String error = "";
+		
+		if (userName == null || userName == "") {
+			error = "The manager user name cannot be empty";
+		} else if (password == null || password == "") {
+			error = "You cannot create a manager with empty password";
+		}
+		if (error.length() > 0) {
+			throw new InvalidInputException(error);
+		}
+		
+		try {
+			ims.addManager(user, userName, password);
+			ImsPersistence.save(ims);
+		} catch (RuntimeException e) {
+			throw new InvalidInputException(e.getMessage());
+		}
+		
+	}
+	
+	
+	public static void deleteManager(String userName) throws InvalidInputException{
+		
+		Manager manager = findManager(userName);
+		if (manager != null) {
+			manager.delete();
 		}
 		try {
 			ImsPersistence.save(ImsApplication.getIms());
@@ -265,7 +346,90 @@ public class ImsController {
 		}
 	}
 	
+	public static void upDateManagerUserName(String oldUserName, String newUserName) 
+			throws InvalidInputException {
+		Manager manager = findManager(oldUserName);
+		if (manager != null) {
+			try {
+				manager.setUserName(newUserName);
+				ImsPersistence.save(ImsApplication.getIms());
+			} catch (RuntimeException e) {
+				throw new InvalidInputException(e.getMessage());
+			}
+			
+		} else {
+			throw new InvalidInputException("The customer does not exist.");
+		}
+		
+	}
+	
+	public static void upDateManagerPassword(String oldUserName, String newPassword) 
+			throws InvalidInputException {
+		Manager manager = findManager(oldUserName);
+		if (manager != null) {
+			try {
+				manager.setPassword(newPassword);
+				ImsPersistence.save(ImsApplication.getIms());
+			} catch (RuntimeException e) {
+				throw new InvalidInputException(e.getMessage());
+			}
+			
+		} else {
+			throw new InvalidInputException("The customer does not exist.");
+		}
+		
+	}
+	
+	public static void upDateManagerName(String oldUserName, String newName) 
+			throws InvalidInputException {
+		Manager manager = findManager(oldUserName);
+		if (manager != null) {
+			try {
+				manager.getUser().setName(newName);
+				ImsPersistence.save(ImsApplication.getIms());
+			} catch (RuntimeException e) {
+				throw new InvalidInputException(e.getMessage());
+			}
+			
+		} else {
+			throw new InvalidInputException("The manager does not exist.");
+		}
+		
+	}
+	
+	
+	
+	/*********************************/
+	// Manager CRUD, End
+	/**********************************/
+	
+	/*********************************/
+	// Item CRUD, Begin
+	/**********************************/
+	
+	/**
+	 * Creates an instance of an Item.
+	 * @param price of the item.
+	 * @throws InvalidInputException and exception that can be thrown.
+	 */
+	public static void createItem(Product product) throws InvalidInputException {
+		IMS ims = ImsApplication.getIms();
+		try {
+			product.addItem();
+			ImsPersistence.save(ims);
+		} catch (RuntimeException e) {
+			throw new InvalidInputException (e.getMessage());
+		}
+	}
 
+	
+	/*********************************/
+	// Item CRUD, End
+	/**********************************/
+
+	/*********************************/
+	// Transaction CRUD, Begin
+	/**********************************/
 	public static List<TOTransaction> getTransactions() {
 		ArrayList<TOTransaction> transactions = new ArrayList<TOTransaction>();
 		for (Transaction t : ImsApplication.getIms().getTransactions()) {

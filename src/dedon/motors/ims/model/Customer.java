@@ -7,7 +7,7 @@ import java.util.*;
 import java.sql.Date;
 
 // line 44 "../../../../IMSPersistence.ump"
-// line 94 "../../../../IMS.ump"
+// line 84 "../../../../IMS.ump"
 public class Customer extends UserRole implements Serializable
 {
 
@@ -33,9 +33,9 @@ public class Customer extends UserRole implements Serializable
   // CONSTRUCTOR
   //------------------------
 
-  public Customer(String aCustomerID, IMS aIMS)
+  public Customer(User aUser, String aCustomerID, IMS aIMS)
   {
-    super();
+    super(aUser);
     debt = 0;
     if (!setCustomerID(aCustomerID))
     {

@@ -3,26 +3,28 @@
 
 package dedon.motors.ims.controller;
 
-// line 8 "../../../../IMSTransferObjects.ump"
-public class TOProduct
+// line 18 "../../../../IMSTransferObjects.ump"
+public class TOManager
 {
 
   //------------------------
   // MEMBER VARIABLES
   //------------------------
 
-  //TOProduct Attributes
+  //TOManager Attributes
   private String name;
-  private int price;
+  private String userName;
+  private String password;
 
   //------------------------
   // CONSTRUCTOR
   //------------------------
 
-  public TOProduct(String aName, int aPrice)
+  public TOManager(String aName, String aUserName, String aPassword)
   {
     name = aName;
-    price = aPrice;
+    userName = aUserName;
+    password = aPassword;
   }
 
   //------------------------
@@ -37,10 +39,18 @@ public class TOProduct
     return wasSet;
   }
 
-  public boolean setPrice(int aPrice)
+  public boolean setUserName(String aUserName)
   {
     boolean wasSet = false;
-    price = aPrice;
+    userName = aUserName;
+    wasSet = true;
+    return wasSet;
+  }
+
+  public boolean setPassword(String aPassword)
+  {
+    boolean wasSet = false;
+    password = aPassword;
     wasSet = true;
     return wasSet;
   }
@@ -50,9 +60,14 @@ public class TOProduct
     return name;
   }
 
-  public int getPrice()
+  public String getUserName()
   {
-    return price;
+    return userName;
+  }
+
+  public String getPassword()
+  {
+    return password;
   }
 
   public void delete()
@@ -63,6 +78,7 @@ public class TOProduct
   {
     return super.toString() + "["+
             "name" + ":" + getName()+ "," +
-            "price" + ":" + getPrice()+ "]";
+            "userName" + ":" + getUserName()+ "," +
+            "password" + ":" + getPassword()+ "]";
   }
 }
