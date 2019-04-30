@@ -1,0 +1,15 @@
+namespace dedon.motors.ims.controller;
+
+class TOCustomer {
+	id;
+	name;
+}
+
+class TOProduct {
+	name;
+}
+
+class TOTransaction {
+	Integer id;
+	name;
+}
