@@ -3,7 +3,7 @@
 
 package dedon.motors.ims.model;
 
-// line 146 "../../../../IMS.ump"
+// line 145 "../../../../IMS.ump"
 public class Employee extends UserRole
 {
 
@@ -24,7 +24,7 @@ public class Employee extends UserRole
   public Employee(String aPassword, IMS aIMS)
   {
     super();
-    // line 151 "../../../../IMS.ump"
+    // line 150 "../../../../IMS.ump"
     if(aPassword == null || aPassword.length() == 0 ) {
       		throw new RuntimeException("The password cannot be empty");
       	}
@@ -47,7 +47,7 @@ public class Employee extends UserRole
   public boolean setPassword(String aPassword)
   {
     boolean wasSet = false;
-    // line 151 "../../../../IMS.ump"
+    // line 150 "../../../../IMS.ump"
     if(aPassword == null || aPassword.length() == 0 ) {
       		throw new RuntimeException("The password cannot be empty");
       	}

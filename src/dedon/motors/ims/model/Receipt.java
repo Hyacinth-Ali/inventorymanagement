@@ -4,7 +4,7 @@
 package dedon.motors.ims.model;
 import java.sql.Date;
 
-// line 142 "../../../../IMS.ump"
+// line 141 "../../../../IMS.ump"
 public class Receipt
 {
 

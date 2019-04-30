@@ -11,6 +11,9 @@ public abstract class UserRole
   // MEMBER VARIABLES
   //------------------------
 
+  //UserRole Associations
+  private User user;
+
   //------------------------
   // CONSTRUCTOR
   //------------------------
@@ -21,8 +24,33 @@ public abstract class UserRole
   //------------------------
   // INTERFACE
   //------------------------
+  /* Code from template association_GetOne */
+  public User getUser()
+  {
+    return user;
+  }
+
+  public boolean hasUser()
+  {
+    boolean has = user != null;
+    return has;
+  }
 
   public void delete()
-  {}
+  {
+    if (user != null)
+    {
+      if (user.numberOfRoles() <= 1)
+      {
+        user.delete();
+      }
+      else
+      {
+        User placeholderUser = user;
+        this.user = null;
+        placeholderUser.removeRole(this);
+      }
+    }
+  }
 
 }

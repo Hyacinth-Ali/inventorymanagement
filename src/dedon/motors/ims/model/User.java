@@ -11,20 +11,11 @@ public class User implements Serializable
 {
 
   //------------------------
-  // STATIC VARIABLES
-  //------------------------
-
-  private static int nextId = 1;
-
-  //------------------------
   // MEMBER VARIABLES
   //------------------------
 
   //User Attributes
   private String name;
-
-  //Autounique Attributes
-  private int id;
 
   //User Associations
   private IMS iMS;
@@ -36,16 +27,15 @@ public class User implements Serializable
 
   public User(String aName, IMS aIMS, UserRole... allRoles)
   {
-    // line 112 "../../../../IMS.ump"
+    // line 111 "../../../../IMS.ump"
     if(aName == null || aName.length() == 0 ) {
       		throw new RuntimeException("The name of a user cannot be empty");
       	}
       	if (aName.length() > 30) {
-      		throw new RuntimeException("User characters of user name cannot be more than 30");
+      		throw new RuntimeException("The name cannot be more than 30 characters");
       	}
     // END OF UMPLE BEFORE INJECTION
     name = aName;
-    id = nextId++;
     boolean didAddIMS = setIMS(aIMS);
     if (!didAddIMS)
     {
@@ -66,12 +56,12 @@ public class User implements Serializable
   public boolean setName(String aName)
   {
     boolean wasSet = false;
-    // line 112 "../../../../IMS.ump"
+    // line 111 "../../../../IMS.ump"
     if(aName == null || aName.length() == 0 ) {
       		throw new RuntimeException("The name of a user cannot be empty");
       	}
       	if (aName.length() > 30) {
-      		throw new RuntimeException("User characters of user name cannot be more than 30");
+      		throw new RuntimeException("The name cannot be more than 30 characters");
       	}
     // END OF UMPLE BEFORE INJECTION
     name = aName;
@@ -82,11 +72,6 @@ public class User implements Serializable
   public String getName()
   {
     return name;
-  }
-
-  public int getId()
-  {
-    return id;
   }
   /* Code from template association_GetOne */
   public IMS getIMS()
@@ -152,59 +137,108 @@ public class User implements Serializable
   {
     return 2;
   }
-  /* Code from template association_AddUnidirectionalMN */
+  /* Code from template association_AddMNToOptionalOne */
   public boolean addRole(UserRole aRole)
   {
     boolean wasAdded = false;
     if (roles.contains(aRole)) { return false; }
-    if (numberOfRoles() < maximumNumberOfRoles())
+    if (numberOfRoles() >= maximumNumberOfRoles())
     {
-      roles.add(aRole);
-      wasAdded = true;
+      return wasAdded;
     }
+    User existingUser = aRole.getUser();
+    if (existingUser != null && existingUser.numberOfRoles() <= minimumNumberOfRoles())
+    {
+      return wasAdded;
+    }
+    else if (existingUser != null)
+    {
+      existingUser.roles.remove(aRole);
+    }
+    roles.add(aRole);
+    setUser(aRole,this);
+    wasAdded = true;
     return wasAdded;
   }
 
   public boolean removeRole(UserRole aRole)
   {
     boolean wasRemoved = false;
-    if (!roles.contains(aRole))
+    if (roles.contains(aRole) && numberOfRoles() > minimumNumberOfRoles())
     {
-      return wasRemoved;
+      roles.remove(aRole);
+      setUser(aRole,null);
+      wasRemoved = true;
     }
-
-    if (numberOfRoles() <= minimumNumberOfRoles())
-    {
-      return wasRemoved;
-    }
-
-    roles.remove(aRole);
-    wasRemoved = true;
     return wasRemoved;
   }
-  /* Code from template association_SetUnidirectionalMN */
+  /* Code from template association_SetMNToOptionalOne */
   public boolean setRoles(UserRole... newRoles)
   {
     boolean wasSet = false;
-    ArrayList<UserRole> verifiedRoles = new ArrayList<UserRole>();
-    for (UserRole aRole : newRoles)
-    {
-      if (verifiedRoles.contains(aRole))
-      {
-        continue;
-      }
-      verifiedRoles.add(aRole);
-    }
-
-    if (verifiedRoles.size() != newRoles.length || verifiedRoles.size() < minimumNumberOfRoles() || verifiedRoles.size() > maximumNumberOfRoles())
+    if (newRoles.length < minimumNumberOfRoles() || newRoles.length > maximumNumberOfRoles())
     {
       return wasSet;
     }
 
+    ArrayList<UserRole> checkNewRoles = new ArrayList<UserRole>();
+    HashMap<User,Integer> userToNewRoles = new HashMap<User,Integer>();
+    for (UserRole aRole : newRoles)
+    {
+      if (checkNewRoles.contains(aRole))
+      {
+        return wasSet;
+      }
+      else if (aRole.getUser() != null && !this.equals(aRole.getUser()))
+      {
+        User existingUser = aRole.getUser();
+        if (!userToNewRoles.containsKey(existingUser))
+        {
+          userToNewRoles.put(existingUser, new Integer(existingUser.numberOfRoles()));
+        }
+        Integer currentCount = userToNewRoles.get(existingUser);
+        int nextCount = currentCount - 1;
+        if (nextCount < 1)
+        {
+          return wasSet;
+        }
+        userToNewRoles.put(existingUser, new Integer(nextCount));
+      }
+      checkNewRoles.add(aRole);
+    }
+
+    roles.removeAll(checkNewRoles);
+
+    for (UserRole orphan : roles)
+    {
+      setUser(orphan, null);
+    }
     roles.clear();
-    roles.addAll(verifiedRoles);
+    for (UserRole aRole : newRoles)
+    {
+      if (aRole.getUser() != null)
+      {
+        aRole.getUser().roles.remove(aRole);
+      }
+      setUser(aRole, this);
+      roles.add(aRole);
+    }
     wasSet = true;
     return wasSet;
+  }
+  /* Code from template association_GetPrivate */
+  private void setUser(UserRole aRole, User aUser)
+  {
+    try
+    {
+      java.lang.reflect.Field mentorField = aRole.getClass().getDeclaredField("user");
+      mentorField.setAccessible(true);
+      mentorField.set(aRole, aUser);
+    }
+    catch (Exception e)
+    {
+      throw new RuntimeException("Issue internally setting aUser to aRole", e);
+    }
   }
   /* Code from template association_AddIndexControlFunctions */
   public boolean addRoleAt(UserRole aRole, int index)
@@ -247,6 +281,10 @@ public class User implements Serializable
     {
       placeholderIMS.removeUser(this);
     }
+    for(UserRole aRole : roles)
+    {
+      setUser(aRole,null);
+    }
     roles.clear();
   }
 
@@ -265,7 +303,6 @@ public class User implements Serializable
   public String toString()
   {
     return super.toString() + "["+
-            "id" + ":" + getId()+ "," +
             "name" + ":" + getName()+ "]" + System.getProperties().getProperty("line.separator") +
             "  " + "iMS = "+(getIMS()!=null?Integer.toHexString(System.identityHashCode(getIMS())):"null");
   }  

@@ -15,14 +15,14 @@ public class Customer extends UserRole implements Serializable
   // STATIC VARIABLES
   //------------------------
 
-  private static Map<String, Customer> customersById = new HashMap<String, Customer>();
+  private static Map<String, Customer> customersByCustomerID = new HashMap<String, Customer>();
 
   //------------------------
   // MEMBER VARIABLES
   //------------------------
 
   //Customer Attributes
-  private String id;
+  private String customerID;
   private double debt;
 
   //Customer Associations
@@ -33,13 +33,13 @@ public class Customer extends UserRole implements Serializable
   // CONSTRUCTOR
   //------------------------
 
-  public Customer(String aId, IMS aIMS)
+  public Customer(String aCustomerID, IMS aIMS)
   {
     super();
     debt = 0;
-    if (!setId(aId))
+    if (!setCustomerID(aCustomerID))
     {
-      throw new RuntimeException("Cannot create due to duplicate id");
+      throw new RuntimeException("Cannot create due to duplicate customerID");
     }
     boolean didAddIMS = setIMS(aIMS);
     if (!didAddIMS)
@@ -53,19 +53,19 @@ public class Customer extends UserRole implements Serializable
   // INTERFACE
   //------------------------
 
-  public boolean setId(String aId)
+  public boolean setCustomerID(String aCustomerID)
   {
     boolean wasSet = false;
-    String anOldId = getId();
-    if (hasWithId(aId)) {
+    String anOldCustomerID = getCustomerID();
+    if (hasWithCustomerID(aCustomerID)) {
       return wasSet;
     }
-    id = aId;
+    customerID = aCustomerID;
     wasSet = true;
-    if (anOldId != null) {
-      customersById.remove(anOldId);
+    if (anOldCustomerID != null) {
+      customersByCustomerID.remove(anOldCustomerID);
     }
-    customersById.put(aId, this);
+    customersByCustomerID.put(aCustomerID, this);
     return wasSet;
   }
 
@@ -77,19 +77,19 @@ public class Customer extends UserRole implements Serializable
     return wasSet;
   }
 
-  public String getId()
+  public String getCustomerID()
   {
-    return id;
+    return customerID;
   }
   /* Code from template attribute_GetUnique */
-  public static Customer getWithId(String aId)
+  public static Customer getWithCustomerID(String aCustomerID)
   {
-    return customersById.get(aId);
+    return customersByCustomerID.get(aCustomerID);
   }
   /* Code from template attribute_HasUnique */
-  public static boolean hasWithId(String aId)
+  public static boolean hasWithCustomerID(String aCustomerID)
   {
-    return getWithId(aId) != null;
+    return getWithCustomerID(aCustomerID) != null;
   }
 
   public double getDebt()
@@ -225,7 +225,7 @@ public class Customer extends UserRole implements Serializable
 
   public void delete()
   {
-    customersById.remove(getId());
+    customersByCustomerID.remove(getCustomerID());
     IMS placeholderIMS = iMS;
     this.iMS = null;
     if(placeholderIMS != null)
@@ -244,7 +244,7 @@ public class Customer extends UserRole implements Serializable
   public String toString()
   {
     return super.toString() + "["+
-            "id" + ":" + getId()+ "," +
+            "customerID" + ":" + getCustomerID()+ "," +
             "debt" + ":" + getDebt()+ "]" + System.getProperties().getProperty("line.separator") +
             "  " + "iMS = "+(getIMS()!=null?Integer.toHexString(System.identityHashCode(getIMS())):"null");
   }  

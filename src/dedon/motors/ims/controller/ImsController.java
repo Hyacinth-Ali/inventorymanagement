@@ -111,7 +111,7 @@ public class ImsController {
 			for (UserRole role : user.getRoles()) {
 				if (role instanceof Customer) {
 					Customer c = (Customer)role;
-					TOCustomer toCustomer = new TOCustomer(c.getId(), user.getName());
+					TOCustomer toCustomer = new TOCustomer(c.getCustomerID(), user.getName());
 					customers.add(toCustomer);
 				}
 			}
@@ -123,7 +123,7 @@ public class ImsController {
 	private static Customer findCustomer(String id) {
 		Customer c = null;
 		for (Customer customer : ImsApplication.getIms().getCustomers()) {
-			if (id == customer.getId()) {
+			if (id == customer.getCustomerID()) {
 				c = customer;
 				break;
 			}
@@ -139,7 +139,18 @@ public class ImsController {
 	 */
 	public static void createCustomer(String name, String customerID, int userID) throws InvalidInputException{
 		IMS ims = ImsApplication.getIms();
+		String error = "";
 		User user = findUser(userID);
+		
+		if (customerID == null) {
+			error = "The ID of a customer cannot be empty";
+		} else if (customerID == "") {
+			error = "The ID of a customer cannot be empty";
+		}
+		if (error.length() > 0) {
+			throw new InvalidInputException(error);
+		}
+		
 		if (user != null) {
 			for (UserRole role : user.getRoles()) {
 				if (role instanceof Customer) {
@@ -150,16 +161,36 @@ public class ImsController {
 					user.addRole(customer);
 					ImsPersistence.save(ims);
 				} catch (RuntimeException e) {
-					throw new InvalidInputException ("Customer cannot be created due to "+e.getMessage());
+					error = e.getMessage();
+					if (error.equals("Cannot create due to duplicate id")) {
+						error = "Cannot create due to duplicate customer id";
+					}
+					throw new InvalidInputException (error);
 				}
 			}
 			
 		} else {
+			Customer c = null;
 			try {
-				Customer c = ims.addCustomer(customerID);
+				c = ims.addCustomer(customerID);
 				ims.addUser(name, c);
+				ImsPersistence.save(ims);
 			} catch (RuntimeException e) {
-				throw new InvalidInputException(e.getMessage());
+				if (c != null) {
+					c.delete();
+				}
+				error = e.getMessage();
+				if (error.equals("Cannot create due to duplicate id")) {
+					error = "The customer already exist";
+					throw new InvalidInputException(error);
+				} else if (error.equals("The name of a user cannot be empty")) {
+					error = "Cannot create a customer without name";
+					throw new InvalidInputException(error);
+				} else {
+					throw new InvalidInputException(error);
+				}
+					
+				
 			}
 		}
 		
@@ -209,6 +240,32 @@ public class ImsController {
 	//Customer CRUD, End
 	/******************************/
 	
+	/*********************************/
+	// User CRUD, Begin
+	/**********************************/
+ 
+	/**
+	 * Delete instance of a user and all its roles
+	 * @param id
+	 * @throws InvalidInputException
+	 */
+	public static void deleteUser(int id) throws InvalidInputException{
+		
+		User user = findUser(id);
+		if (user != null) {
+			for (UserRole role : user.getRoles()) {
+				role.delete();
+			}
+			user.delete();
+		}
+		try {
+			ImsPersistence.save(ImsApplication.getIms());
+		} catch (RuntimeException e) {
+			throw new InvalidInputException (e.getMessage());
+		}
+	}
+	
+
 	public static List<TOTransaction> getTransactions() {
 		ArrayList<TOTransaction> transactions = new ArrayList<TOTransaction>();
 		for (Transaction t : ImsApplication.getIms().getTransactions()) {

@@ -13,7 +13,7 @@ import dedon.motors.ims.application.ImsApplication;
 import dedon.motors.ims.model.IMS;
 import dedon.motors.ims.persistence.ImsPersistence;
 
-public class ImsControllerTest {
+public class ImsProductTest {
 	
 private static int nextCustomerID = 1;
 	

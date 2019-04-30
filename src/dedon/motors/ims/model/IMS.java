@@ -825,9 +825,9 @@ public class IMS implements Serializable
     return 0;
   }
   /* Code from template association_AddManyToOne */
-  public Customer addCustomer(String aId)
+  public Customer addCustomer(String aCustomerID)
   {
-    return new Customer(aId, this);
+    return new Customer(aCustomerID, this);
   }
 
   public boolean addCustomer(Customer aCustomer)

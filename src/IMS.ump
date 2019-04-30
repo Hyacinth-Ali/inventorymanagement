@@ -93,7 +93,7 @@ class Manager
 
 class Customer {
 	isA UserRole;
-	unique String id;
+	unique String customerID;
 	lazy Double debt;
 }
 
@@ -106,14 +106,13 @@ class Transaction {
 
 class User {
   	name;
- 	autounique id;
  	
 	before constructor, setName {
   	if(aName == null || aName.length() == 0 ) {
   		throw new RuntimeException("The name of a user cannot be empty");
   	}
   	if (aName.length() > 30) {
-  		throw new RuntimeException("User characters of user name cannot be more than 30");
+  		throw new RuntimeException("The name cannot be more than 30 characters");
   	}
   	}
 }
@@ -122,7 +121,7 @@ association {
 	* Transaction transactions -- 1 Customer customer;
     1 Transaction -> * Product products;
     * Transaction transactions -- 1 Manager manager;
-    1 User -> 1..2 UserRole roles;
+    0..1 User user -- 1..2 UserRole roles;
     1 Transaction transaction -- 0..* Receipt receipts;
     1 Audit -> * Transaction transactions;
     1 Audit -> * Order orders;
